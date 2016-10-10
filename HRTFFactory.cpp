@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <assert.h>
 #include <emscripten/bind.h>
 #include "3DTI_Toolkit_Core/HRTF.h"
 
@@ -8,11 +9,14 @@ using namespace emscripten;
 
 class HRIR {
 public:
-  HRIR( float* data, int azimuth, int elevation )
+  HRIR( std::vector<float> data, int azimuth, int elevation )
     : azimuth( azimuth ), elevation( elevation )
   {
-    for ( int i = 0; i < 1024; i++ ) {
+    printf("Size %i\n", data.size() );
+    // assert(data.size() == 512);
+    for ( int i = 0; i < data.size(); i++ ) {
       buffer[i] = data[i];
+      // printf("i = %f\n", buffer[i]);
     }
   }
   ~HRIR() {};
@@ -59,10 +63,18 @@ public:
 
 // Binding code
 EMSCRIPTEN_BINDINGS(HRTFModule) {
+  register_vector<float>("VectorFloat");
   register_vector<HRIR>("VectorHRIR");
 
   class_<HRIR>("HRIR")
-    .constructor<float*, int, int>()
+    .constructor<std::vector<float>, int, int>()
+    ;
+
+  class_<HRTFFactory>("HRTFFactory")
+    .class_function("create", &HRTFFactory::create)
+    ;
+
+  class_<CHRTF>("CHRTF")
     ;
 }
 
