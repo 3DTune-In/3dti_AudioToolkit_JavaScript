@@ -1,19 +1,22 @@
 
 #include <stdio.h>
 #include <vector>
+#include <emscripten/bind.h>
 #include "3DTI_Toolkit_Core/HRTF.h"
+
+using namespace emscripten;
 
 class HRIR {
 public:
-  HRIR( void* data, int azimuth, int elevation )
+  HRIR( float* data, int azimuth, int elevation )
     : azimuth( azimuth ), elevation( elevation )
   {
     for ( int i = 0; i < 1024; i++ ) {
-      buffer[i] = (float)data[i];
+      buffer[i] = data[i];
     }
   }
   ~HRIR() {};
-private:
+
   float buffer[1024];
   int azimuth, elevation;
 };
@@ -49,6 +52,17 @@ public:
       hrtf.AddHRIR( h.azimuth, h.elevation, std::move(hrir_value) );
     }
 
-    return hrft;
+    return hrtf;
   }
 };
+
+
+// Binding code
+EMSCRIPTEN_BINDINGS(HRTFModule) {
+  register_vector<HRIR>("VectorHRIR");
+
+  class_<HRIR>("HRIR")
+    .constructor<float*, int, int>()
+    ;
+}
+
