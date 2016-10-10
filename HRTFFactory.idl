@@ -1,0 +1,12 @@
+
+interface CHRTF {
+  void CHRTF();
+};
+
+interface HRIR {
+  void HRIR( float[] data, long azimuth, long elevation );
+};
+
+interface HRTFFactory {
+  [Value] static CHRTF create( HRIR[] hrirs );
+};
