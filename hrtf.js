@@ -1,3 +1,5 @@
+const ctx = new AudioContext()
+
 const assetsUrl = '/assets'
 
 const hrirUrls = [
@@ -190,16 +192,17 @@ const hrirUrls = [
   'IRC_1032_C_R0195_T345_P345.wav',
 ].map(filename => `${assetsUrl}/${filename}`)
 
+/**
+ * Returns an object with azimuth and elevation angles extracted
+ * from a URL.
+ */
 const getAnglesFromUrl = url => {
-  const [, azimuth, elevation] = url.split(/.+T(\d{3})_P(\d{3})/)
+  const [, azimuth, elevation] = url.split(/.+T(\d{3})_P(\d{3})/).map(x => parseInt(x))
   return { azimuth, elevation }
 }
 
 /**
  * Fetches a wav file and returns it as an array buffer.
- * 
- * @param  {String}  url A URL to a wav file
- * @return {Promise}     A promise resolving with the wav contents
  */
 const fetchWavFile = url => {
   return new Promise((resolve, reject) => {
@@ -216,13 +219,20 @@ const fetchWavFile = url => {
 }
 
 /**
- * Returns 
- * 
- * @param  {[type]} urls [description]
- * @return {[type]}      [description]
+ * Returns a Promise resolving with an AudioBuffer decoded from
+ * an ArrayBuffer.
+ */
+const decodeBuffer = buffer => {
+  return ctx.decodeAudioData(buffer)
+}
+
+/**
+ * Returns an array of HRIR-looking objects from a set of HRIR
+ * wav URLs
  */
 const fetchWavFiles = urls => {
   return Promise.all(urls.map(fetchWavFile))
+    .then(buffers => Promise.all(buffers.map(decodeBuffer)))
     .then(buffers => {
       return buffers.map((x, i) => {
         return Object.assign(
@@ -234,10 +244,27 @@ const fetchWavFiles = urls => {
     })
 }
 
+// Just do it
 fetchWavFiles(hrirUrls)
   .then(results => {
-    console.log({ results })
+    const hrirs = results.map(hrir => {
+      const { buffer, azimuth, elevation } = hrir
 
-    
+      const bufferVec = new Module.VectorFloat
+      for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+        for (let i = 0; i < buffer.length; i++) {
+          bufferVec.push_back(buffer.getChannelData(channel)[i])
+        }
+      }
+      return new Module.HRIR(bufferVec, azimuth, elevation)
+    })
+
+    const hrirsVec = new Module.VectorHRIR()
+    hrirs.forEach(hrir => {
+      hrirsVec.push_back(hrir)
+    })
+
+    const hrtf = Module.HRTFFactory.create(hrirsVec)
   })
+  // TODO: Send hrtf to a core instance etc.
   .catch(err => console.log({ err }))
