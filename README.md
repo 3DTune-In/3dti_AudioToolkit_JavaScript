@@ -45,4 +45,4 @@ npm i -g http-server
 http-server --port 8080 .
 ```
 
-Now, open [http://localhost:8080] in your browser!
+Now, open [http://localhost:8080](http://localhost:8080) in your browser!
