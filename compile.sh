@@ -1,6 +1,6 @@
-
-emcc -std=c++11 \
-HRTFFactory.h \
-3DTI_Toolkit_Core/*.cpp \
--o hello.html --preload-file tests/hello_world_file.txt \
--I 3DTI_Toolkit_Core/
+emcc \
+  -std=c++11 \
+  --bind \
+  -I 3DTI_Toolkit_Core \
+  -o HRTFFactory.js \
+  HRTFFactory.cpp 3DTI_Toolkit_Core/*.cpp
