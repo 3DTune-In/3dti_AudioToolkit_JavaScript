@@ -247,6 +247,9 @@ const fetchWavFiles = urls => {
 // Just do it
 fetchWavFiles(hrirUrls)
   .then(results => {
+
+    // Create an array of Module.HRIR instances containing a buffer
+    // of a compatible format
     const hrirs = results.map(hrir => {
       const { buffer, azimuth, elevation } = hrir
 
@@ -259,11 +262,13 @@ fetchWavFiles(hrirUrls)
       return new Module.HRIR(bufferVec, azimuth, elevation)
     })
 
+    // Transform that array into a vector
     const hrirsVec = new Module.VectorHRIR()
     hrirs.forEach(hrir => {
       hrirsVec.push_back(hrir)
     })
 
+    // Create an HRTF instance using the factory
     const hrtf = Module.HRTFFactory.create(hrirsVec)
   })
   // TODO: Send hrtf to a core instance etc.
