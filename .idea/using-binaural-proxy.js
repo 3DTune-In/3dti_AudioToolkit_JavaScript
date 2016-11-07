@@ -22,16 +22,13 @@ const ctx = withBinauralListener(new AudioContext())
 
 /**
  * `withBinauralListener` proxies the `AudioContext.listener` property,
- * which now is an instance of `BinauralListener`, which has the same API
- * as `AudioListener`.
+ * which now is an instance of `BinauralListener`, which has a superset
+ * of the `AudioListener` node's API.
  */
 ctx.listener.positionX = 150
 
-// Plus extra?
+// 3DTI specific
 ctx.listener.loadHRTF(hrtf)
-
-// Create some kind of audio source
-const sound = ctx.createAudioBuffer() // etc
 
 /* - - - - - Binaural panner - - - - - */
 
@@ -61,6 +58,9 @@ panner.setInterpolation(true)
 panner.setFrequencyConvolution(ConvolutionMethod.FREQUENCY_DOMAIN)
 
 /* - - - - - Audio chain - - - - - */
+
+// Create some kind of audio source
+const sound = ctx.createAudioBuffer() // etc
 
 /**
  * Connecting a source to the panner and the panner to the main output
