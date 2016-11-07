@@ -1,11 +1,50 @@
 # 3DTI JavaScript Wrapper
 
+JavaScript wrapper for the 3DTI Toolkit. Currently it only exposes an `HRTFFactory` that can be populated with IIR sample data.
+
 ## Setup
 
 ```sh
 # Install the toolkit core submodule
 git submodule init
 git submodule update
+```
+
+## Usage example
+
+For a full implementation, check out [hrtf.js](hrt.js).
+
+```js
+// Returns an array of objects with the shape { buffer, azimuth, elevation }
+function fetchWavFiles(urls) { ... }
+
+// Load the samples and populate the HRTFFactory
+fetchWavFiles(hrirUrls)
+  .then(results => {
+  
+    // Create an array of Module.HRIR instances containing a buffer
+    // of a compatible format
+    const hrirs = results.map(hrir => {
+      const { buffer, azimuth, elevation } = hrir
+
+      const bufferVec = new Module.VectorFloat
+      for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+        for (let i = 0; i < buffer.length; i++) {
+          bufferVec.push_back(buffer.getChannelData(channel)[i])
+        }
+      }
+      return new Module.HRIR(bufferVec, azimuth, elevation)
+    })
+
+    // Transform that array into a vector
+    const hrirsVec = new Module.VectorHRIR()
+    hrirs.forEach(hrir => {
+      hrirsVec.push_back(hrir)
+    })
+
+    // Create an HRTF instance using the factory
+    const hrtf = Module.HRTFFactory.create(hrirsVec)
+  })
 ```
 
 ## Compile the wrapper
@@ -27,6 +66,8 @@ If you're feeling lazy, you can run this harangue by executing
 bash ./compile.sh
 ```
 
+The output of the compilation is `HRTFFactory.js`.
+
 ## Run the thing in the browser
 
 You need a tool for running a web server locally on your computer.
@@ -45,4 +86,11 @@ npm i -g http-server
 http-server --port 8080 .
 ```
 
-Now, open [http://localhost:8080](http://localhost:8080) in your browser.
+Now, open [http://localhost:8080](http://localhost:8080) in your browser. If you see something like
+
+```
+pre-main prep time: 794 ms
+(187) Size 1024
+```
+
+it means 187 IIR samples have been loaded and added to the `HRTFFactory`.
