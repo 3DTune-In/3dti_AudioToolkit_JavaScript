@@ -14,6 +14,8 @@ git submodule update
 
 For a full implementation, check out [hrtf.js](hrt.js).
 
+Ideas on how this API should look and be consumed by developers are found inside [.idea](.idea).
+
 ```js
 // Returns an array of objects with the shape { buffer, azimuth, elevation }
 function fetchWavFiles(urls) { ... }
