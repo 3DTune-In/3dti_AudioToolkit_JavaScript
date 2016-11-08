@@ -1,3 +1,15 @@
+/**
+ * This file examplifies usage of the binaural spatialization, using a
+ * proxy approach. Instead of consuming the core API as is, a layer
+ * of smartness simply replaces the Web Audio API spatialization with
+ * the 3DTI toolkit one.
+ *
+ * This might be an addition to the JavaScript wrapper apart from the
+ * core API. That way, the convenience of the proxy approach would be
+ * available for those who prefer it, and the control of using the core
+ * API for those who instead want that.
+ */
+
 import { withBinauralListener, createHRTFFromSofa } from '3dti-toolkit/hrtf'
 
 /* - - - - - Loading HRIRs - - - - - */
