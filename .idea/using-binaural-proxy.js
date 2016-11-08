@@ -1,13 +1,13 @@
-import { withBinauralListener, createFromSofa, ConvolutionMethod } from '3dti-toolkit/hrtf'
+import { withBinauralListener, createHRTFFromSofa } from '3dti-toolkit/hrtf'
 
 /* - - - - - Loading HRIRs - - - - - */
 
 /**
  * The API for loading HRIRs is a question for another file, but let's
- * assume we have a `createFromSofa` method that does synchronous HTTP
+ * assume we have a `createHRTFFromSofa` method that does synchronous HTTP
  * requests à la 2002.
  */
-const hrtf = createFromSofa('https://example.com/hrirs.sofa')
+const hrtf = createHRTFFromSofa('https://example.com/hrirs.sofa')
 
 /* - - - - - Proxying context - - - - - */
 
@@ -38,8 +38,7 @@ ctx.listener.loadHRTF(hrtf)
  * API `PannerNode`.
  *
  * The `BinauralPannerNode` works by adding a `ScriptProcessorNode`
- * that processes the audio for all `BinauralPannerNode`s added to the
- * audio chain.
+ * that transforms the audio of its source(s).
  */
 const panner = ctx.createPanner()
 panner.setPosition(x, y, z)
@@ -55,7 +54,7 @@ panner.setInterpolation(true)
  * Configures the convolution method; true to activate convolution in
  * frequency domain, false to activate convolution in time domain.
  */
-panner.setFrequencyConvolution(ConvolutionMethod.FREQUENCY_DOMAIN)
+panner.setFrequencyConvolution(true)
 
 /* - - - - - Audio chain - - - - - */
 
