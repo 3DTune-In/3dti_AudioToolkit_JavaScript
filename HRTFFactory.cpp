@@ -3,7 +3,7 @@
 #include <vector>
 #include <assert.h>
 #include <emscripten/bind.h>
-#include "3DTI_Toolkit_Core/HRTF.h"
+#include "3DTI_Toolkit_Core/BinauralSpatializer/HRTF.h"
 
 using namespace emscripten;
 

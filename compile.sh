@@ -3,4 +3,7 @@ emcc \
   --bind \
   -I 3DTI_Toolkit_Core \
   -o HRTFFactory.js \
-  HRTFFactory.cpp 3DTI_Toolkit_Core/*.cpp
+  -D _3DTI_AXIS_CONVENTION_OPENFRAMEWORK \
+  HRTFFactory.cpp \
+  3DTI_Toolkit_Core/Common/*.cpp \
+  3DTI_Toolkit_Core/BinauralSpatializer/*.cpp
