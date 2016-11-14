@@ -47,7 +47,7 @@ public:
       HRIR_struct hrir_value;
       hrir_value.leftHRIR.resize(length);
       hrir_value.rightHRIR.resize(length);
-      
+
       // For wav files the delay is incorporated in the HRIR, so the variable delay is zero
       hrir_value.leftDelay  = 0;
       hrir_value.rightDelay = 0;
@@ -57,7 +57,7 @@ public:
         hrir_value.leftHRIR[j]  = h.buffer[j];
         hrir_value.rightHRIR[j] = h.buffer[j + length];
       }
- 
+
       hrtf.AddHRIR( h.azimuth, h.elevation, std::move(hrir_value) );
     }
 
@@ -125,6 +125,7 @@ EMSCRIPTEN_BINDINGS(HRTFModule) {
 
   // CSingleSourceDSP
   class_<Binaural::CSingleSourceDSP>("CSingleSourceDSP")
+    .smart_ptr<std::shared_ptr<Binaural::CSingleSourceDSP>>("CSingleSourceDSPPtr")
     .function("SetInterpolation", &Binaural::CSingleSourceDSP::SetInterpolation)
     .function("SetFrequencyConvolution", &Binaural::CSingleSourceDSP::SetFrequencyConvolution)
     .function("GetSourceTransform", &Binaural::CSingleSourceDSP::GetSourceTransform)
