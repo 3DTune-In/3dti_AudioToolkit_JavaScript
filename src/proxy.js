@@ -13,11 +13,14 @@ const definePositionForAxis = (listenerTraget, propName, axis) => {
       const transform = listenerTarget.GetListenerTransform()
       const newTransform = new Transform()
       newTransform.SetOrientation(transform.getOrientation())
-      const position = .GetPosition()
+      const position = transform.GetPosition()
       position.SetAxis(axis, value)
+      newTransform.setPosition(position)
+
+      listenerTarget.SetListenerTransform(newTransform)
     }
   }
-  
+
   const param = new AudioParamProxy()
 
   Object.defineProperty(param, 'value', {
@@ -25,10 +28,10 @@ const definePositionForAxis = (listenerTraget, propName, axis) => {
     enumerable: true,
     writable: true,
     get() {
-      
+
     },
     set(value) {
-      
+
     },
   })
 
@@ -105,7 +108,7 @@ const createListenerProxy = () => {
 /**
  * Proxies an instance of `AudioContext`, overriding its `listener` and
  * `createPanner()` properties.
- * 
+ *
  * @param  {AudioContext} context An AudioContext instance
  * @return {AudioContext}         A proxied AudioContext instance
  */
@@ -116,10 +119,10 @@ export const withBinauralListener = (context, hrtf = null) => {
 
   const listener = core.createListener()
   listener.loadHRTF(hrtf)
-  
+
   /**
    * Returns a new SingleSourceDSP instance.
-   * 
+   *
    * @return {[type]} [description]
    */
   const createPanner = () => {
@@ -135,6 +138,6 @@ export const withBinauralListener = (context, hrtf = null) => {
     ...context,
     listener,
     createPanner,
-  } 
-  
+  }
+
 }
