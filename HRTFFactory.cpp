@@ -80,8 +80,13 @@ EMSCRIPTEN_BINDINGS(HRTFModule) {
     ;
 
   // Buffers
-  class_<CMonoBuffer<unsigned int>>("CMonoBuffer");
-  class_<CStereoBuffer<unsigned int>>("CStereoBuffer");
+  class_<CBuffer<1, float>>("CMonoBuffer")
+    .constructor<int>()
+    .property("size", &CBuffer<1, float>::size);
+
+  class_<CBuffer<2, float>>("CStereoBuffer")
+    .constructor<int>()
+    .property("size", &CBuffer<2, float>::size);
 
   // CHRTF
   class_<CHRTF>("CHRTF")
