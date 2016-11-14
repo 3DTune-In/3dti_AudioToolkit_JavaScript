@@ -1,3 +1,17 @@
+const {
+  HRIR,
+  HRTFFactory,
+  CMonoBuffer,
+  CStereoBuffer,
+  CHRTF,
+  CVector3,
+  CQuaternion,
+  CTransform,
+  CListener,
+  CSingleSourceDSP,
+  CCore,
+} = window.Module
+
 const ctx = new AudioContext()
 
 const assetsUrl = '/assets'
@@ -270,6 +284,69 @@ fetchWavFiles(hrirUrls)
 
     // Create an HRTF instance using the factory
     const hrtf = Module.HRTFFactory.create(hrirsVec)
+    return hrtf
+  })
+  .then(hrtf => {
+    const core = new CCore()
+    const listener = core.CreateListener(0.09)
+    listener.LoadHRTF(hrtf)
+
+    const source = core.CreateSingleSourceDSP()
+    const sourceTransform = new CTransform()
+    sourceTransform.SetPosition(new CVector3(-20, 0, -10))
+    source.SetSourceTransform(sourceTransform)
+
+    // Synth
+    const oscillator = ctx.createOscillator()
+    oscillator.frequency.value = 440
+    const gain = ctx.createGain()
+    gain.gain.value = 0.3
+
+    let hasErrored = false
+
+    // Script processor
+    const scriptNode = ctx.createScriptProcessor(1024, 2, 2)
+    console.log('Audio processing is currently WIP...')
+    scriptNode.onaudioprocess = (audioProcessingEvent) => {
+      try {
+        const { inputBuffer, outputBuffer } = audioProcessingEvent
+
+        /*
+        const input = new CMonoBuffer(1024)
+        const spatializedOutput = new CStereoBuffer(1024 * 2)
+
+        const inputData = inputBuffer.getChannelData(0)
+        // input.Feed(inputData, inputData.length, 1)
+
+        for (let n = 0; n < inputData.length; n++) {
+          input[n] = inputData[n]
+        }
+
+        source.ProcessAnechoic(listener, input, spatializedOutput, 1024);
+
+        for (let channel = 0; channel < 2; channel++) {
+          const outputData = outputBuffer.getChannelData(channel)
+
+          for (let i = 0; i < spatializedOutput.GetNsamples(); i++) {
+            outputData[i] = spatializedOutput[(channel * inputData.length) + i]
+          }
+        }
+        */
+      }
+      catch (err) {
+        if (hasErrored === false) {
+          console.log('errored')
+          console.log(err)
+          hasErrored = true
+        }
+      }
+    }
+
+    oscillator.connect(scriptNode)
+    scriptNode.connect(gain)
+    gain.connect(ctx.destination)
+
+    oscillator.start(0)
   })
   // TODO: Send hrtf to a core instance etc.
   .catch(err => console.log({ err }))
