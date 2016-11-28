@@ -12,6 +12,20 @@ const {
   CCore,
 } = window.Module
 
+Module.Logger.SetErrorLogFile("errors.txt")
+
+let lastLogMessage = '';
+function printAnyNewLogs() {
+  const message = Module.Logger.GetLastLogMessage()
+  if (message !== lastLogMessage) {
+    console.log('- - - Logger - - -', message)
+    lastLogMessage = message
+  }
+
+  requestAnimationFrame(printAnyNewLogs)
+}
+printAnyNewLogs()
+
 const ctx = new AudioContext()
 
 const assetsUrl = '/assets'
@@ -258,6 +272,30 @@ const fetchWavFiles = urls => {
     })
 }
 
+let quit = false
+
+window.addEventListener('click', () => quit = false)
+
+const loadHrtfFrom3dti = (url) => {
+  return new Promise((resolve, reject) => {
+    FS.mount(MEMFS)
+
+    fetchWavFile(url)
+      .then(contents => {
+        // return Module.HRTFFactory.CreateFrom3dti(url, 512, 44100)
+        const [dir, filename] = url.replace(/^\//, '').split('/')
+        console.log({ dir, filename })
+        FS.mkdir(dir)
+        FS.writeFile(url, contents, { encoding: 'utf8' })
+        const stream = FS.readFile(url)
+        console.log({ stream })
+        resolve(Module.HRTFFactory.CreateFrom3dtiStream(stream, 512, 44100))
+        // resolve(contents)
+      })
+      .catch(reject)
+  })
+}
+
 // Just do it
 fetchWavFiles(hrirUrls)
   .then(results => {
@@ -286,10 +324,16 @@ fetchWavFiles(hrirUrls)
     const hrtf = Module.HRTFFactory.create(hrirsVec)
     return hrtf
   })
+// loadHrtfFrom3dti('/assets/IRC_1013_R_HRIR_512.3dti-hrtf')
   .then(hrtf => {
     const core = new CCore()
     const listener = core.CreateListener(0.09)
     listener.LoadHRTF(hrtf)
+
+    window.yo = {}
+    yo.listener = listener
+    yo.core = core
+    yo.hrtf = hrtf
 
     const source = core.CreateSingleSourceDSP()
     const sourceTransform = new CTransform()
@@ -303,42 +347,64 @@ fetchWavFiles(hrirUrls)
     gain.gain.value = 0.3
 
     let hasErrored = false
+    let frame = 0
 
     // Script processor
-    const scriptNode = ctx.createScriptProcessor(1024, 2, 2)
+    const scriptNode = ctx.createScriptProcessor(512, 2, 2)
+
     console.log('Audio processing is currently WIP...')
     scriptNode.onaudioprocess = (audioProcessingEvent) => {
+      if (quit || hasErrored) {
+        return
+      }
+
+      console.log('onaudioprocess')
+
       try {
         const { inputBuffer, outputBuffer } = audioProcessingEvent
 
-        /*
-        const input = new CMonoBuffer(1024)
-        const spatializedOutput = new CStereoBuffer(1024 * 2)
-
+        const inputVec = new Module.VectorFloat()
         const inputData = inputBuffer.getChannelData(0)
-        // input.Feed(inputData, inputData.length, 1)
 
         for (let n = 0; n < inputData.length; n++) {
-          input[n] = inputData[n]
+          inputVec.push_back(inputData[n])
+          // console.log(' -> added ', inputVec[n], 'to input buffer')
         }
 
-        source.ProcessAnechoic(listener, input, spatializedOutput, 1024);
+        const input = HRTFFactory.CreateMonoBuffer(inputVec)
+        // let spatializedOutput = new CStereoBuffer(512 * 2)
 
-        for (let channel = 0; channel < 2; channel++) {
-          const outputData = outputBuffer.getChannelData(channel)
+        // console.log('printing buffer:')
+        // HRTFFactory.PrintBuffer(input)
 
-          for (let i = 0; i < spatializedOutput.GetNsamples(); i++) {
-            outputData[i] = spatializedOutput[(channel * inputData.length) + i]
-          }
-        }
-        */
+        // source.ProcessAnechoic(listener, input, spatializedOutput);
+        const spatializedOutput = HRTFFactory.GetSpatializedAudio(source, listener, input)
+
+        // for (let k = 0; k < spatializedOutput.size; k++) {
+          debugger;
+          console.log('spatialized', spatializedOutput)
+        // }
+
+        // for (let channel = 0; channel < 2; channel++) {
+        //   const outputData = outputBuffer.getChannelData(channel)
+
+        //   for (let i = 0; i < outputData.length; i++) {
+        //     outputData[i] = spatializedOutput[(channel * outputData.length) + i] || 0
+        //   }
+        // }
       }
       catch (err) {
         if (hasErrored === false) {
           console.log('errored')
-          console.log(err)
+          console.error(err)
+          console.log(Module.stackTrace())
           hasErrored = true
         }
+      }
+
+      frame++
+      if (true || frame > 10) {
+        quit = true
       }
     }
 
@@ -350,3 +416,4 @@ fetchWavFiles(hrirUrls)
   })
   // TODO: Send hrtf to a core instance etc.
   .catch(err => console.log({ err }))
+
