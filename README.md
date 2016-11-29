@@ -1,10 +1,16 @@
 # 3DTI JavaScript Wrapper
 
-JavaScript wrapper for the 3DTI Toolkit.
+JavaScript wrapper for the 3DTI Toolkit. The wrapper is built using [Emscripten](https://kripken.github.io/emscripten-site/index.html).
 
 At the moment, only binaural spatialization has been successfully ported.
 
 ## Setup
+
+#### Install `emcc`
+
+The Emscripten compiler is called `emcc`. You need the `emcc` binary to be executable and globally accessible from the terminal, together with its dependencies. To download, install and setup `emcc`, go to the [Emscripten downloads page](https://kripken.github.io/emscripten-site/docs/getting_started/downloads.html).
+
+#### Download submodules
 
 ```sh
 # Install the toolkit core submodule
