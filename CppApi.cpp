@@ -12,6 +12,23 @@
 using namespace emscripten;
 
 /**
+ * The most important stuff first: logging.
+ */
+class Logger
+{
+public:
+  static std::string GetLastLogMessage() {
+    TDebuggerResultStruct lastLogEntry = GET_LAST_RESULT_STRUCT();
+    return lastLogEntry.description + " | " + lastLogEntry.suggestion + " | " + lastLogEntry.filename + " | line number: " + std::to_string(lastLogEntry.linenumber);
+  }
+
+  static std::string GetLastErrorMessage() {
+    TDebuggerResultStruct lastLogEntry = GET_FIRST_ERROR_STRUCT();
+    return lastLogEntry.description + " | " + lastLogEntry.suggestion + " | " + lastLogEntry.filename + " | line number: " + std::to_string(lastLogEntry.linenumber);
+  }
+};
+
+/**
  * Basically a wrapper around std::vector<float>
  */
 class FloatList
@@ -177,6 +194,13 @@ private:
 
 // Bindings
 EMSCRIPTEN_BINDINGS(Toolkit) {
+
+  /**
+   * Logger
+   */
+  class_<Logger>("Logger")
+    .class_function("GetLastLogMessage", &Logger::GetLastLogMessage)
+    .class_function("GetLastErrorMessage", &Logger::GetLastErrorMessage);
 
   // List of HRIRs
   register_vector<HRIR>("HRIRVector");
