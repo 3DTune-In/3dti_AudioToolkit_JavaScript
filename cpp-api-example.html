@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>hrtf loading</title>
+
+  <style>
+  label { display: block; }
+  </style>
+</head>
+<body>
+  <div>
+    <p class="state">Loading...</p>
+
+    <button class="playback-toggle">Run/stop</button>
+
+    <form>
+      <label>
+        x
+        <input type="range" min="-40" max="40" id="control-x" />
+      </label>
+
+      <label>
+        y
+        <input type="range" min="-40" max="40" id="control-y" />
+      </label>
+
+      <label>
+        z
+        <input type="range" min="-40" max="40" id="control-z" />
+      </label>
+    </form>
+  </div>
+  <script src="cpp-api.js"></script>
+  <script src="cpp-api-example.js"></script>
+</body>
+</html>

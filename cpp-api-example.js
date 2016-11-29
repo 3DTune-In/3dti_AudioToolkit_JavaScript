@@ -1,34 +1,17 @@
 const {
-  HRIR,
-  HRTFFactory,
-  CMonoBuffer,
-  CStereoBuffer,
-  CHRTF,
+  VectorFloat,
+  FloatList,
   CVector3,
-  CQuaternion,
   CTransform,
-  CListener,
-  CSingleSourceDSP,
-  CCore,
+  HRIR,
+  HRIRVector,
+  BinauralAPI,
 } = window.Module
-
-Module.Logger.SetErrorLogFile("errors.txt")
-
-let lastLogMessage = '';
-function printAnyNewLogs() {
-  const message = Module.Logger.GetLastLogMessage()
-  if (message !== lastLogMessage) {
-    console.log('- - - Logger - - -', message)
-    lastLogMessage = message
-  }
-
-  requestAnimationFrame(printAnyNewLogs)
-}
-printAnyNewLogs()
 
 const ctx = new AudioContext()
 
 const assetsUrl = '/assets'
+const audioSourceUrl = '/assets/hermans-jultal.wav'
 
 const hrirUrls = [
   'IRC_1032_C_R0195_T000_P000.wav',
@@ -221,6 +204,13 @@ const hrirUrls = [
 ].map(filename => `${assetsUrl}/${filename}`)
 
 /**
+ *
+ */
+const getFloatListWithFloats = floats => {
+
+}
+
+/**
  * Returns an object with azimuth and elevation angles extracted
  * from a URL.
  */
@@ -272,148 +262,120 @@ const fetchWavFiles = urls => {
     })
 }
 
-let quit = false
-
-window.addEventListener('click', () => quit = false)
-
-const loadHrtfFrom3dti = (url) => {
-  return new Promise((resolve, reject) => {
-    FS.mount(MEMFS)
-
-    fetchWavFile(url)
-      .then(contents => {
-        // return Module.HRTFFactory.CreateFrom3dti(url, 512, 44100)
-        const [dir, filename] = url.replace(/^\//, '').split('/')
-        console.log({ dir, filename })
-        FS.mkdir(dir)
-        FS.writeFile(url, contents, { encoding: 'utf8' })
-        const stream = FS.readFile(url)
-        console.log({ stream })
-        resolve(Module.HRTFFactory.CreateFrom3dtiStream(stream, 512, 44100))
-        // resolve(contents)
-      })
-      .catch(reject)
-  })
+/**
+ * Fetches an audio source to spatialize
+ */
+const fetchSourceAudio = url => {
+  return fetchWavFile(url).then(response => decodeBuffer(response))
 }
 
+/**
+ * UI
+ */
+let isRunning = true
+
+const $state = document.querySelector('.state')
+const $stateToggle = document.querySelector('.playback-toggle')
+
+const $controlX = document.querySelector('#control-x')
+const $controlY = document.querySelector('#control-y')
+const $controlZ = document.querySelector('#control-z')
+
+$controlX.value = -5
+$controlY.value = -10
+$controlZ.value = 15
+
+$stateToggle.addEventListener('click', () => {
+  isRunning = !isRunning
+  $state.innerHTML = isRunning ? 'Running' : 'Stopped'
+})
+
+/**
+ * API
+ */
+const api = new BinauralAPI()
+
 // Just do it
-fetchWavFiles(hrirUrls)
-  .then(results => {
-
-    // Create an array of Module.HRIR instances containing a buffer
-    // of a compatible format
-    const hrirs = results.map(hrir => {
-      const { buffer, azimuth, elevation } = hrir
-
-      const bufferVec = new Module.VectorFloat
+Promise.all([
+  fetchWavFiles(hrirUrls),
+  fetchSourceAudio(audioSourceUrl),
+])
+  .then(([results, audioSource]) => {
+    const hrirs = results.map(({ buffer, azimuth, elevation }) => {
+      data = new FloatList()
       for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
         for (let i = 0; i < buffer.length; i++) {
-          bufferVec.push_back(buffer.getChannelData(channel)[i])
+          data.Add(buffer.getChannelData(channel)[i])
         }
       }
-      return new Module.HRIR(bufferVec, azimuth, elevation)
+
+      return new HRIR(data, azimuth, elevation)
     })
 
-    // Transform that array into a vector
-    const hrirsVec = new Module.VectorHRIR()
-    hrirs.forEach(hrir => {
-      hrirsVec.push_back(hrir)
-    })
+    const hrirsVector = new HRIRVector()
+    for (const hrir of hrirs) {
+      hrirsVector.push_back(hrir)
+    }
 
-    // Create an HRTF instance using the factory
-    const hrtf = Module.HRTFFactory.create(hrirsVec)
-    return hrtf
-  })
-// loadHrtfFrom3dti('/assets/IRC_1013_R_HRIR_512.3dti-hrtf')
-  .then(hrtf => {
-    const core = new CCore()
-    const listener = core.CreateListener(0.09)
-    listener.LoadHRTF(hrtf)
+    const listener = api.CreateListener(hrirsVector, 0.09)
 
-    window.yo = {}
-    yo.listener = listener
-    yo.core = core
-    yo.hrtf = hrtf
+    const source = api.CreateSource()
 
-    const source = core.CreateSingleSourceDSP()
-    const sourceTransform = new CTransform()
-    sourceTransform.SetPosition(new CVector3(-20, 0, -10))
-    source.SetSourceTransform(sourceTransform)
+    // Source position controls
+    const updateSourcePosition = () => {
+      const sourceTransform = new CTransform()
+      sourceTransform.SetPosition(new CVector3(
+        parseFloat($controlX.value),
+        parseFloat($controlY.value),
+        parseFloat($controlZ.value)
+      ))
+      source.SetSourceTransform(sourceTransform)
+    }
 
-    // Synth
-    const oscillator = ctx.createOscillator()
-    oscillator.frequency.value = 440
+    $controlX.addEventListener('change', updateSourcePosition)
+    $controlY.addEventListener('change', updateSourcePosition)
+    $controlZ.addEventListener('change', updateSourcePosition)
+
+    updateSourcePosition()
+
+    // Audio source
+    const sourceNode = ctx.createBufferSource()
+    sourceNode.buffer = sourceNode
+    sourceNode.loop = true
+
     const gain = ctx.createGain()
     gain.gain.value = 0.3
 
-    let hasErrored = false
-    let frame = 0
-
     // Script processor
     const scriptNode = ctx.createScriptProcessor(512, 2, 2)
-
-    console.log('Audio processing is currently WIP...')
     scriptNode.onaudioprocess = (audioProcessingEvent) => {
-      if (quit || hasErrored) {
+      if (isRunning) {
         return
       }
 
-      console.log('onaudioprocess')
+      const { inputBuffer, outputBuffer } = audioProcessingEvent
 
-      try {
-        const { inputBuffer, outputBuffer } = audioProcessingEvent
-
-        const inputVec = new Module.VectorFloat()
-        const inputData = inputBuffer.getChannelData(0)
-
-        for (let n = 0; n < inputData.length; n++) {
-          inputVec.push_back(inputData[n])
-          // console.log(' -> added ', inputVec[n], 'to input buffer')
-        }
-
-        const input = HRTFFactory.CreateMonoBuffer(inputVec)
-        // let spatializedOutput = new CStereoBuffer(512 * 2)
-
-        // console.log('printing buffer:')
-        // HRTFFactory.PrintBuffer(input)
-
-        // source.ProcessAnechoic(listener, input, spatializedOutput);
-        const spatializedOutput = HRTFFactory.GetSpatializedAudio(source, listener, input)
-
-        // for (let k = 0; k < spatializedOutput.size; k++) {
-          debugger;
-          console.log('spatialized', spatializedOutput)
-        // }
-
-        // for (let channel = 0; channel < 2; channel++) {
-        //   const outputData = outputBuffer.getChannelData(channel)
-
-        //   for (let i = 0; i < outputData.length; i++) {
-        //     outputData[i] = spatializedOutput[(channel * outputData.length) + i] || 0
-        //   }
-        // }
-      }
-      catch (err) {
-        if (hasErrored === false) {
-          console.log('errored')
-          console.error(err)
-          console.log(Module.stackTrace())
-          hasErrored = true
-        }
+      const inputData = inputBuffer.getChannelData(0)
+      const inputMonoBuffer = new FloatList()
+      for (let i = 0; i < inputData.length; i++) {
+        inputMonoBuffer.Add(inputData[i])
       }
 
-      frame++
-      if (true || frame > 10) {
-        quit = true
+      const outputFloats = api.Spatialize(listener, source, inputMonoBuffer)
+
+      const outputDataLeft = outputBuffer.getChannelData(0)
+      const outputDataRight = outputBuffer.getChannelData(1)
+
+      for (let i = 0; i < outputDataLeft; i++) {
+        outputDataLeft[i] = outputFloats.Get((i * 2))
+        outputDataRight[i] = outputFloats.Get((i * 2) + 1)
       }
     }
 
-    oscillator.connect(scriptNode)
+    sourceNode.connect(scriptNode)
     scriptNode.connect(gain)
     gain.connect(ctx.destination)
 
-    oscillator.start(0)
+    sourceNode.start(0)
   })
-  // TODO: Send hrtf to a core instance etc.
   .catch(err => console.log({ err }))
-

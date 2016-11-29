@@ -2,7 +2,7 @@ emcc \
   -std=c++11 \
   --bind \
   -I 3DTI_Toolkit_Core \
-  -o HRTFFactory.js \
+  -o cpp-api.js \
   -D _3DTI_AXIS_CONVENTION_OPENFRAMEWORK \
   -D SWITCH_ON_3DTI_DEBUGGER \
   -g4 \
@@ -10,6 +10,6 @@ emcc \
   -s ASSERTIONS=2 \
   -s ALLOW_MEMORY_GROWTH=1 \
   -s ABORTING_MALLOC=0 \
-  HRTFFactory.cpp \
+  CppApi.cpp \
   3DTI_Toolkit_Core/Common/*.cpp \
   3DTI_Toolkit_Core/BinauralSpatializer/*.cpp
