@@ -340,7 +340,7 @@ Promise.all([
 
     // Audio source
     const sourceNode = ctx.createBufferSource()
-    sourceNode.buffer = sourceNode
+    sourceNode.buffer = audioSource
     sourceNode.loop = true
 
     const gain = ctx.createGain()
@@ -349,7 +349,7 @@ Promise.all([
     // Script processor
     const scriptNode = ctx.createScriptProcessor(512, 2, 2)
     scriptNode.onaudioprocess = (audioProcessingEvent) => {
-      if (isRunning) {
+      if (!isRunning) {
         return
       }
 
@@ -366,7 +366,7 @@ Promise.all([
       const outputDataLeft = outputBuffer.getChannelData(0)
       const outputDataRight = outputBuffer.getChannelData(1)
 
-      for (let i = 0; i < outputDataLeft; i++) {
+      for (let i = 0; i < outputDataLeft.length; i++) {
         outputDataLeft[i] = outputFloats.Get((i * 2))
         outputDataRight[i] = outputFloats.Get((i * 2) + 1)
       }
@@ -377,5 +377,7 @@ Promise.all([
     gain.connect(ctx.destination)
 
     sourceNode.start(0)
+
+    $state.innerHTML = 'Running'
   })
-  .catch(err => console.log({ err }))
+  .catch(err => console.error(err))
