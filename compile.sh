@@ -8,6 +8,6 @@ emcc \
   -D _3DTI_AXIS_CONVENTION_OPENFRAMEWORK \
   -s ALLOW_MEMORY_GROWTH=1 \
   -s ABORTING_MALLOC=0 \
-  CppApi.cpp \
+  JsWrapperGlue.cpp \
   3DTI_Toolkit_Core/Common/*.cpp \
   3DTI_Toolkit_Core/BinauralSpatializer/*.cpp
