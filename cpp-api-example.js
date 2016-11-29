@@ -204,13 +204,6 @@ const hrirUrls = [
 ].map(filename => `${assetsUrl}/${filename}`)
 
 /**
- *
- */
-const getFloatListWithFloats = floats => {
-
-}
-
-/**
  * Returns an object with azimuth and elevation angles extracted
  * from a URL.
  */
@@ -270,6 +263,22 @@ const fetchSourceAudio = url => {
 }
 
 /**
+ * Returns a number that ensure to not be within a given range
+ */
+function outsideRange(value, lower, upper) {
+  if (value > lower && value < upper) {
+    const distToLower = Math.abs(value - lower)
+    const distToUpper = Math.abs(upper - value)
+
+    return distToUpper > distToLower
+      ? upper
+      : lower
+  }
+
+  return value
+}
+
+/**
  * UI
  */
 let isRunning = true
@@ -280,6 +289,10 @@ const $stateToggle = document.querySelector('.playback-toggle')
 const $controlX = document.querySelector('#control-x')
 const $controlY = document.querySelector('#control-y')
 const $controlZ = document.querySelector('#control-z')
+
+const $valueX = document.querySelector('.value-x')
+const $valueY = document.querySelector('.value-y')
+const $valueZ = document.querySelector('.value-z')
 
 $controlX.value = -5
 $controlY.value = -10
@@ -323,13 +336,25 @@ Promise.all([
 
     // Source position controls
     const updateSourcePosition = () => {
+      const x = $controlX.value
+      const y = $controlY.value
+      const z = outsideRange($controlZ.value, -1, 1)
+
       const sourceTransform = new CTransform()
       sourceTransform.SetPosition(new CVector3(
-        parseFloat($controlX.value),
-        parseFloat($controlY.value),
-        parseFloat($controlZ.value)
+        parseFloat(x),
+        parseFloat(y),
+        parseFloat(z)
       ))
       source.SetSourceTransform(sourceTransform)
+
+      $controlX.value = x
+      $controlY.value = y
+      $controlZ.value = z
+
+      $valueX.innerHTML = x
+      $valueY.innerHTML = y
+      $valueZ.innerHTML = z
     }
 
     $controlX.addEventListener('change', updateSourcePosition)
