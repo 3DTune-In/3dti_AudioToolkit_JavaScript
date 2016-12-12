@@ -224,7 +224,8 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
    * Binaural lib
    */
   class_<Binaural::CListener>("CListener")
-    .smart_ptr<std::shared_ptr<Binaural::CListener>>("CListener_ptr");
+    .smart_ptr<std::shared_ptr<Binaural::CListener>>("CListener_ptr")
+    .function("SetListenerTransform", &Binaural::CListener::SetListenerTransform);
 
   class_<Binaural::CSingleSourceDSP>("CSingleSourceDSP")
     .smart_ptr<std::shared_ptr<Binaural::CSingleSourceDSP>>("CSingleSourceDSP_ptr")
