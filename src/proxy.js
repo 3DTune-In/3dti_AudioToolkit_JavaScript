@@ -29,6 +29,22 @@ function readOnlyPropertyDescriptor(name, value) {
 }
 
 /**
+ * Adds a property that throws a TypeError when invoked.
+ */
+function unimplementedPropertyDescriptor(name) {
+  const accessor = () => {
+    throw new TypeError(`${name} is not yet implemented.`)
+  }
+
+  return {
+    configurable: false,
+    enumerable: true,
+    get: accessor,
+    set: accessor,
+  }
+}
+
+/**
  * Adds position{X,Y,Z} audio param (shims) to an object.
  */
 function addPositionParams(audioCtx, target) {
@@ -90,6 +106,15 @@ function createListener(audioCtx, hrirs) {
   listener.positionX.value = listener.positionX.defaultValue
   listener.positionY.value = listener.positionY.defaultValue
   listener.positionZ.value = listener.positionZ.defaultValue
+
+  // Add properties that are not yet implemented
+  Object.defineProperty(listener, 'forwardX', unimplementedPropertyDescriptor('forwardX'))
+  Object.defineProperty(listener, 'forwardY', unimplementedPropertyDescriptor('forwardY'))
+  Object.defineProperty(listener, 'forwardZ', unimplementedPropertyDescriptor('forwardZ'))
+  Object.defineProperty(listener, 'upX', unimplementedPropertyDescriptor('upX'))
+  Object.defineProperty(listener, 'upY', unimplementedPropertyDescriptor('upY'))
+  Object.defineProperty(listener, 'upZ', unimplementedPropertyDescriptor('upZ'))
+  Object.defineProperty(listener, 'setOrientation', unimplementedPropertyDescriptor('setOrientation'))
 
   return listener
 }
@@ -181,6 +206,20 @@ export default function withBinauralListener(audioCtx, hrirs) {
 
     Object.defineProperty(panner, 'connect', readOnlyPropertyDescriptor('connect', connect))
     Object.defineProperty(panner, 'disconnect', readOnlyPropertyDescriptor('disconnect', disconnect))
+
+    // Add properties that are not yet implemented
+    Object.defineProperty(panner, 'coneInnerAngle', unimplementedPropertyDescriptor('coneInnerAngle'))
+    Object.defineProperty(panner, 'coneOuterAngle', unimplementedPropertyDescriptor('coneOuterAngle'))
+    Object.defineProperty(panner, 'coneOuterGain', unimplementedPropertyDescriptor('coneOuterGain'))
+    Object.defineProperty(panner, 'distanceModel', unimplementedPropertyDescriptor('distanceModel'))
+    Object.defineProperty(panner, 'maxDistance', unimplementedPropertyDescriptor('maxDistance'))
+    Object.defineProperty(panner, 'orientationX', unimplementedPropertyDescriptor('orientationX'))
+    Object.defineProperty(panner, 'orientationY', unimplementedPropertyDescriptor('orientationY'))
+    Object.defineProperty(panner, 'orientationZ', unimplementedPropertyDescriptor('orientationZ'))
+    Object.defineProperty(panner, 'panningModel', unimplementedPropertyDescriptor('panningModel'))
+    Object.defineProperty(panner, 'refDistance', unimplementedPropertyDescriptor('refDistance'))
+    Object.defineProperty(panner, 'rolloffFactor', unimplementedPropertyDescriptor('rolloffFactor'))
+    Object.defineProperty(panner, 'setOrientation', unimplementedPropertyDescriptor('setOrientation'))
 
     addPositionParams(this, panner)
     panner.positionX.subscribe(value => updateSourcePosition(source, panner))

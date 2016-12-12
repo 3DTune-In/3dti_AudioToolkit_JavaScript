@@ -11,6 +11,8 @@ fetchHrirsVector(hrirUrls, ctx).then(hrirs => {
   console.log(proxiedCtx.listener)
   console.log(proxiedCtx.createPanner)
 
+  window.proxiedCtx = proxiedCtx
+
   const oscillator = proxiedCtx.createOscillator()
   oscillator.frequency.value = 440
   const gain = proxiedCtx.createGain()
