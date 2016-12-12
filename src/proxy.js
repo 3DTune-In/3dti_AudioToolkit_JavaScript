@@ -1,143 +1,198 @@
-import {
-  Core, HRTF, Listener, SingleSourceDSP, Transform, Quaternion, AnechoicOutput,
-  AXIS_X, AXIS_Y, AXIS_Z,
-} from '3dti-toolkit/hrtf'
+import createAudioParam from 'audio-param-shim'
+import enableCustomConnects from 'custom-audio-node-connect'
+import { fetchHrirsVector, hrirUrls } from './hrir.js'
 
-const definePositionForAxis = (listenerTraget, propName, axis) => {
-  class AudioParamProxy extends AudioParam {
-    get value() {
-      return listenerTarget.GetListenerTransform().position[axis]
-    }
+// TODO: Don't depend on window.Module, use import instead
+const {
+  VectorFloat,
+  FloatList,
+  CVector3,
+  CTransform,
+  HRIR,
+  HRIRVector,
+  BinauralAPI,
+} = window.Module
 
-    set value() {
-      const transform = listenerTarget.GetListenerTransform()
-      const newTransform = new Transform()
-      newTransform.SetOrientation(transform.getOrientation())
-      const position = transform.GetPosition()
-      position.SetAxis(axis, value)
-      newTransform.setPosition(position)
+const AxisPositionParam = createAudioParam('axisPosition', 0, -1000, 1000)
 
-      listenerTarget.SetListenerTransform(newTransform)
-    }
+/**
+ * Returns a property descriptor that will throw an error when trying
+ * to assign the property a new value.
+ */
+function readOnlyPropertyDescriptor(name, value) {
+  return {
+    configurable: false,
+    enumerable: true,
+    get: () => value,
+    set: () => { throw new TypeError(`${name} is read-only`) },
   }
-
-  const param = new AudioParamProxy()
-
-  Object.defineProperty(param, 'value', {
-    configurable: false,
-    enumerable: true,
-    writable: true,
-    get() {
-
-    },
-    set(value) {
-
-    },
-  })
-
-  Object.defineProperty(listenerTarget, propName, {
-    configurable: false,
-    enumerable: true,
-    writable: false,
-    get() {
-      return param
-    },
-  })
 }
 
-const defineForwardForAxis = (listenerTraget, propName, axis) => {
-  const param = {}
+/**
+ * Adds position{X,Y,Z} audio param (shims) to an object.
+ */
+function addPositionParams(audioCtx, target) {
+  const positionX = new AxisPositionParam(audioCtx)
+  const positionY = new AxisPositionParam(audioCtx)
+  const positionZ = new AxisPositionParam(audioCtx)
 
-  Object.defineProperty(param, 'value', {
-    configurable: false,
-    enumerable: true,
-    writable: true,
-    get() {
-      return listenerTarget.GetListenerTransform().position[axis]
-    },
-    set(value) {
-      const transform = listenerTarget.GetListenerTransform()
-      const newTransform = new Transform()
-      newTransform.SetOrientation(transform.getOrientation())
-      const position = .GetPosition()
-      position.SetAxis(axis, value)
-    },
-  })
+  Object.defineProperty(target, 'positionX', readOnlyPropertyDescriptor('positionX', positionX))
+  Object.defineProperty(target, 'positionY', readOnlyPropertyDescriptor('positionY', positionY))
+  Object.defineProperty(target, 'positionZ', readOnlyPropertyDescriptor('positionZ', positionZ))
 
-  Object.defineProperty(listenerTarget, propName, {
-    enumerable: true,
-    writable: false,
-    get() {
-      return param
+  Object.defineProperty(target, 'setPosition', {
+    value: function(x, y, z) {
+      target.positionX.value = x
+      target.positionY.value = y
+      target.positionZ.value = z
     }
   })
 }
 
-const createListenerProxy = () => {
-  const listener = core.createListener()
+/**
+ * Updates a CListener's position using its position{X,Y,Z} audio
+ * params' values.
+ */
+function updateListenerPosition(listener) {
+  const position = new CVector3(listener.positionX.value, listener.positionY.value, listener.positionZ.value)
+  const sourceTransform = new CTransform()
+  sourceTransform.SetPosition(position)
+  listener.SetListenerTransform(sourceTransform)
+}
 
-  definePositionForAxis(listener, 'positionX', AXIS_X)
-  definePositionForAxis(listener, 'positionY', AXIS_Y)
-  definePositionForAxis(listener, 'positionZ', AXIS_Z)
+/**
+ * Updates a CSingleSourceDSP's position using its position{X,Y,Z}
+ * audio params' values.
+ */
+function updateSourcePosition(source, panner) {
+  const position = new CVector3(panner.positionX.value, panner.positionY.value, panner.positionZ.value)
+  const sourceTransform = new CTransform()
+  sourceTransform.SetPosition(position)
+  source.SetSourceTransform(sourceTransform)
+}
 
-  defineForwardForAxis(listener, 'forwardX', AXIS_X)
-  defineForwardForAxis(listener, 'forwardY', AXIS_Y)
-  defineForwardForAxis(listener, 'forwardZ', AXIS_Z)
+/**
+ * Creates a CListener that has the same API as AudioListener.
+ */
+function createListener(audioCtx, hrirs) {
+  const listener = api.CreateListener(hrirs, 0.0875)
 
-  // defineAxisGetterAndSetter(listener, 'upX', AXIS_X)
-  // defineAxisGetterAndSetter(listener, 'upY', AXIS_Y)
-  // defineAxisGetterAndSetter(listener, 'upZ', AXIS_Z)
+  // Listener position params
+  addPositionParams(audioCtx, listener)
 
-  /**
-   * @deprecated
-   */
-  listener.setPosition = (x, y, z) => {}
+  // TODO: This will effectively cause `setPosition(x, y, z)` to trigger
+  // three updates to the listener's position. Ideally, we should commit
+  // everything in one single update.
+  listener.positionX.subscribe(value => updateListenerPosition(listener))
+  listener.positionY.subscribe(value => updateListenerPosition(listener))
+  listener.positionZ.subscribe(value => updateListenerPosition(listener))
 
-  listener.setOrientation = (frontX, frontY, frontZ, upX, upY, upZ) => {
-    const position = listener.GetListenerTransform().GetPosition()
-    const orientation = new Quaternion(1, frontX, frontY, frontZ)
-    const transform = new Transform()
-    transform.SetPosition(position)
-    transform.SetOrientation(orientation)
-    listener.SetListenerTransform(transform)
-  }
+  listener.positionX.value = listener.positionX.defaultValue
+  listener.positionY.value = listener.positionY.defaultValue
+  listener.positionZ.value = listener.positionZ.defaultValue
 
   return listener
 }
 
+// An instance of the 3DTI toolkit factory
+const api = new BinauralAPI()
+
 /**
- * Proxies an instance of `AudioContext`, overriding its `listener` and
- * `createPanner()` properties.
+ * Proxies everything binaural on the given AudioContext instance.
  *
- * @param  {AudioContext} context An AudioContext instance
- * @return {AudioContext}         A proxied AudioContext instance
+ * @param  {AudioContext} audioCtx An AudioContext instance
+ * @return {AudioContext}          A proxied AudioContext instance
  */
-export const withBinauralListener = (context, hrtf = null) => {
-  const sources = []
-
-  const core = new Core()
-
-  const listener = core.createListener()
-  listener.loadHRTF(hrtf)
+export default function withBinauralListener(audioCtx, hrirs) {
 
   /**
-   * Returns a new SingleSourceDSP instance.
-   *
-   * @return {[type]} [description]
+   * AudioListener shim
    */
-  const createPanner = () => {
-    const panner = core.createSingleSourceDSP()
+  let listener = null
 
-    panner.connect = (destination) => {
-      sources.push(panner)
-      // ...
+  // Override the `AudioContext`'s connect method, allowing arbitrary nodes,
+  // in our case a custom panner, to be added to chains.
+  enableCustomConnects(audioCtx, node => node.input || node)
+
+  /**
+   * Proxy the `listener` property on the audio context.
+   */
+  const audioCtxProxy = new Proxy(audioCtx, {
+    get(target, name) {
+      if (name === 'listener') {
+        if (listener === null) {
+          listener = createListener(target, hrirs)
+        }
+        return listener
+      }
+      else if (name in target) {
+        if (typeof target[name] === 'function') {
+          return target[name].bind(target)
+        }
+
+        return target[name]
+      }
+
+      return undefined
+    },
+  })
+
+  /**
+   * createPanner() override that returns an object that uses the
+   * toolkit spatialization.
+   */
+  audioCtxProxy.createPanner = function create3dtiPanner() {
+    const panner =  {
+      input: this.createGain()
     }
-  }
 
-  return {
-    ...context,
-    listener,
-    createPanner,
-  }
+    const source = api.CreateSource()
+    const scriptNode = this.createScriptProcessor(512, 2, 2)
 
+    scriptNode.onaudioprocess = (audioProcessingEvent) => {
+      const { inputBuffer, outputBuffer } = audioProcessingEvent
+
+      const inputData = inputBuffer.getChannelData(0)
+      const inputMonoBuffer = new FloatList()
+      for (let i = 0; i < inputData.length; i++) {
+        inputMonoBuffer.Add(inputData[i])
+      }
+
+      const outputFloats = api.Spatialize(this.listener, source, inputMonoBuffer)
+
+      const outputDataLeft = outputBuffer.getChannelData(0)
+      const outputDataRight = outputBuffer.getChannelData(1)
+
+      for (let i = 0; i < outputDataLeft.length; i++) {
+        outputDataLeft[i] = outputFloats.Get((i * 2))
+        outputDataRight[i] = outputFloats.Get((i * 2) + 1)
+      }
+    }
+
+    function connect(output) {
+      panner.input.connect(scriptNode)
+      scriptNode.connect(output)
+    }
+
+    function disconnect(output) {
+      panner.input.disconnect(scriptNode)
+      scriptNode.disconnect(output)
+    }
+
+    Object.defineProperty(panner, 'connect', readOnlyPropertyDescriptor('connect', connect))
+    Object.defineProperty(panner, 'disconnect', readOnlyPropertyDescriptor('disconnect', disconnect))
+
+    addPositionParams(this, panner)
+    panner.positionX.subscribe(value => updateSourcePosition(source, panner))
+    panner.positionY.subscribe(value => updateSourcePosition(source, panner))
+    panner.positionZ.subscribe(value => updateSourcePosition(source, panner))
+
+    panner.positionX.value = panner.positionX.defaultValue
+    panner.positionY.value = panner.positionY.defaultValue
+    panner.positionZ.value = panner.positionZ.defaultValue
+
+    return panner
+  }.bind(audioCtxProxy)
+
+  return audioCtxProxy
 }
