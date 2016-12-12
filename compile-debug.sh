@@ -12,4 +12,5 @@ emcc \
   -s ABORTING_MALLOC=0 \
   JsWrapperGlue.cpp \
   3DTI_Toolkit_Core/Common/*.cpp \
-  3DTI_Toolkit_Core/BinauralSpatializer/*.cpp
+  3DTI_Toolkit_Core/BinauralSpatializer/*.cpp \
+  3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.cpp
