@@ -2,7 +2,7 @@ emcc \
   -std=c++11 \
   --bind \
   -I 3DTI_Toolkit_Core \
-  -o build/3dti-toolkit.js \
+  -o build/3dti-toolkit-binaural.js \
   -D _3DTI_AXIS_CONVENTION_OPENFRAMEWORK \
   -D SWITCH_ON_3DTI_DEBUGGER \
   -g4 \
