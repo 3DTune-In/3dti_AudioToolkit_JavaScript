@@ -1,5 +1,5 @@
-import { fetchHrirsVector } from '../../src/hrir.js'
-import withBinauralListener from '../../src/proxy.js'
+import { fetchHrirsVector } from '../../src/binaural/hrir.js'
+import withBinauralListener from '../../src/binaural/proxy.js'
 
 import hrirUrls from './hrir-urls.js'
 
