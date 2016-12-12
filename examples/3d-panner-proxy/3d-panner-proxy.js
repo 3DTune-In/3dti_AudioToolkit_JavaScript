@@ -15,7 +15,6 @@ fetchHrirsVector(hrirUrls, ctx).then(hrirs => {
 
   const oscillator = proxiedCtx.createOscillator()
   oscillator.frequency.value = 440
-  const gain = proxiedCtx.createGain()
 
   const panner = proxiedCtx.createPanner()
   panner.positionX.value = -30
@@ -36,7 +35,9 @@ fetchHrirsVector(hrirUrls, ctx).then(hrirs => {
 
   oscillator.start()
 
-  window.addEventListener('click', () => panner.isRunning = !panner.isRunning)
+  window.addEventListener('click', () => {
+    panner.isRunning = !panner.isRunning
+  })
 })
 .catch(err => {
   console.error(err)

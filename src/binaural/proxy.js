@@ -1,15 +1,11 @@
 import createAudioParam from 'audio-param-shim'
 import enableCustomConnects from 'custom-audio-node-connect'
-import { fetchHrirsVector, hrirUrls } from './hrir.js'
 
 // TODO: Don't depend on window.Module, use import instead
 const {
-  VectorFloat,
   FloatList,
   CVector3,
   CTransform,
-  HRIR,
-  HRIRVector,
   BinauralAPI,
 } = window.Module
 
@@ -24,7 +20,9 @@ function readOnlyPropertyDescriptor(name, value) {
     configurable: false,
     enumerable: true,
     get: () => value,
-    set: () => { throw new TypeError(`${name} is read-only`) },
+    set: () => {
+      throw new TypeError(`${name} is read-only`)
+    },
   }
 }
 
@@ -61,7 +59,7 @@ function addPositionParams(audioCtx, target) {
       target.positionX.value = x
       target.positionY.value = y
       target.positionZ.value = z
-    }
+    },
   })
 }
 
@@ -99,9 +97,9 @@ function createListener(audioCtx, hrirs) {
   // TODO: This will effectively cause `setPosition(x, y, z)` to trigger
   // three updates to the listener's position. Ideally, we should commit
   // everything in one single update.
-  listener.positionX.subscribe(value => updateListenerPosition(listener))
-  listener.positionY.subscribe(value => updateListenerPosition(listener))
-  listener.positionZ.subscribe(value => updateListenerPosition(listener))
+  listener.positionX.subscribe(() => updateListenerPosition(listener))
+  listener.positionY.subscribe(() => updateListenerPosition(listener))
+  listener.positionZ.subscribe(() => updateListenerPosition(listener))
 
   listener.positionX.value = listener.positionX.defaultValue
   listener.positionY.value = listener.positionY.defaultValue
@@ -166,9 +164,9 @@ export default function withBinauralListener(audioCtx, hrirs) {
    * createPanner() override that returns an object that uses the
    * toolkit spatialization.
    */
-  audioCtxProxy.createPanner = function create3dtiPanner() {
-    const panner =  {
-      input: this.createGain()
+  audioCtxProxy.createPanner = function() {
+    const panner = {
+      input: this.createGain(),
     }
 
     const source = api.CreateSource()
@@ -222,9 +220,9 @@ export default function withBinauralListener(audioCtx, hrirs) {
     Object.defineProperty(panner, 'setOrientation', unimplementedPropertyDescriptor('setOrientation'))
 
     addPositionParams(this, panner)
-    panner.positionX.subscribe(value => updateSourcePosition(source, panner))
-    panner.positionY.subscribe(value => updateSourcePosition(source, panner))
-    panner.positionZ.subscribe(value => updateSourcePosition(source, panner))
+    panner.positionX.subscribe(() => updateSourcePosition(source, panner))
+    panner.positionY.subscribe(() => updateSourcePosition(source, panner))
+    panner.positionZ.subscribe(() => updateSourcePosition(source, panner))
 
     panner.positionX.value = panner.positionX.defaultValue
     panner.positionY.value = panner.positionY.defaultValue

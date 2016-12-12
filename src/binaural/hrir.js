@@ -14,7 +14,7 @@ const getAnglesFromUrl = url => {
  * Fetches a wav file and returns it as an array buffer.
  */
 const fetchWavFile = url => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const xhr = new XMLHttpRequest()
     xhr.open('GET', url, true)
     xhr.responseType = 'arraybuffer'

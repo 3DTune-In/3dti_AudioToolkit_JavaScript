@@ -1,0 +1,9 @@
+{
+  "extends": "alexander",
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "new-cap": 0
+  }
+}

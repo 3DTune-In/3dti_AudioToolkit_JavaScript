@@ -7,6 +7,7 @@
     "example": "examples"
   },
   "scripts": {
+    "lint": "eslint src examples",
     "clean": "rimraf 'build/*' '!build/.gitkeep'",
     "prebuild": "npm run clean",
     "build": "npm-run-all --parallel 'build:*'",
@@ -38,6 +39,8 @@
     "babel-preset-latest": "^6.16.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
+    "eslint": "^3.12.0",
+    "eslint-config-alexander": "^1.2.0",
     "http-server": "^0.9.0",
     "npm-run-all": "^3.1.2",
     "opn-cli": "^3.1.0",
