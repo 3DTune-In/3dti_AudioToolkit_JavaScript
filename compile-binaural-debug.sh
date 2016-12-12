@@ -10,7 +10,7 @@ emcc \
   -s ASSERTIONS=2 \
   -s ALLOW_MEMORY_GROWTH=1 \
   -s ABORTING_MALLOC=0 \
-  JsWrapperGlue.cpp \
+  JsWrapperGlue_Binaural.cpp \
   3DTI_Toolkit_Core/Common/*.cpp \
   3DTI_Toolkit_Core/BinauralSpatializer/*.cpp \
   3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.cpp
