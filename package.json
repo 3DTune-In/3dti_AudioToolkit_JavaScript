@@ -22,7 +22,12 @@
     "example:hls:build:w": "watchify -t babelify -p [sourcemapify --root 'examples/hls/' --base 'examples/hls/'] --debug -e ./examples/hls/hls.js -o ./examples/hls/hls.bundle.js",
     "example:hls:serve": "http-server -p 8342 .",
     "example:hls:open": "opn http://127.0.0.1:8342/examples/hls/",
-    "example:hls:dev": "npm-run-all --parallel 'example:hls:build:w' 'example:hls:serve' 'example:hls:open'"
+    "example:hls:dev": "npm-run-all --parallel 'example:hls:build:w' 'example:hls:serve' 'example:hls:open'",
+    "example:has:build": "browserify -t babelify -p [sourcemapify --root 'examples/has/' --base 'examples/has/'] --debug -e ./examples/has/has.js -o ./examples/has/has.bundle.js",
+    "example:has:build:w": "watchify -t babelify -p [sourcemapify --root 'examples/has/' --base 'examples/has/'] --debug -e ./examples/has/has.js -o ./examples/has/has.bundle.js",
+    "example:has:serve": "http-server -p 8342 .",
+    "example:has:open": "opn http://127.0.0.1:8342/examples/has/",
+    "example:has:dev": "npm-run-all --parallel 'example:has:build:w' 'example:has:serve' 'example:has:open'"
   },
   "repository": {
     "type": "git",
