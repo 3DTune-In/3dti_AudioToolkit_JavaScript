@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <vector>
 #include <emscripten/bind.h>
+#include "glue/Logger.hpp"
+#include "glue/FloatList.hpp"
 #include "3DTI_Toolkit_Core/Common/Buffer.h"
 #include "3DTI_Toolkit_Core/Common/Debugger.h"
 // #include "3DTI_Toolkit_Core/Common/Quaternion.h"
@@ -9,64 +11,6 @@
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.h"
 
 using namespace emscripten;
-
-/**
- * The most important stuff first: logging.
- */
-class Logger
-{
-public:
-  static std::string GetLastLogMessage() {
-    TDebuggerResultStruct lastLogEntry = GET_LAST_RESULT_STRUCT();
-    return lastLogEntry.description + " | " + lastLogEntry.suggestion + " | " + lastLogEntry.filename + " | line number: " + std::to_string(lastLogEntry.linenumber);
-  }
-
-  static std::string GetLastErrorMessage() {
-    TDebuggerResultStruct lastLogEntry = GET_FIRST_ERROR_STRUCT();
-    return lastLogEntry.description + " | " + lastLogEntry.suggestion + " | " + lastLogEntry.filename + " | line number: " + std::to_string(lastLogEntry.linenumber);
-  }
-};
-
-/**
- * Basically a wrapper around std::vector<float>
- */
-class FloatList
-{
-public:
-  FloatList()
-  {
-    data = std::vector<float>();
-  }
-
-  FloatList(std::vector<float> data)
-    : data(data)
-  {}
-
-  ~FloatList() {}
-
-  int Size()
-  {
-    return data.size();
-  }
-
-  void Add(float value)
-  {
-    data.push_back(value);
-  }
-
-  void Set(int index, float value)
-  {
-    data[index] = value;
-  }
-
-  float Get(int index)
-  {
-    return data[index];
-  }
-
-private:
-  std::vector<float> data;
-};
 
 /**
  * Processor

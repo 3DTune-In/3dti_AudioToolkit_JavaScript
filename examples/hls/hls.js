@@ -1,32 +1,17 @@
 import logCppErrors from '../logger.js'
-
-logCppErrors()
+import { getConfigs, subscribeToConfigChanges } from '../configs.js'
+import { fetchAudio } from '../fetch.js'
 
 const { CHearingLossSim, HLSProcessor, FloatList } = window.Module
 
-const $compress = document.querySelector('[name="compress"]')
-$compress.addEventListener('click', evt => {
-  config.compress = evt.target.checked
-  console.log(config)
-})
+// Setup logger
+logCppErrors()
 
-const $compressAfter = document.querySelector('[name="compressAfter"]')
-$compressAfter.addEventListener('click', evt => {
-  config.compressAfter = evt.target.checked
-  console.log(config)
+// Configs
+let configs = getConfigs()
+subscribeToConfigChanges((name, value, newConfigs) => {
+  configs = newConfigs
 })
-
-const $filter = document.querySelector('[name="filter"]')
-$filter.addEventListener('click', evt => {
-  config.filter = evt.target.checked
-  console.log(config)
-})
-
-const config = {
-  compress: $compress.checked,
-  compressAfter: $compressAfter.checked,
-  filter: $filter.checked,
-}
 
 const hls = new CHearingLossSim()
 
@@ -57,23 +42,7 @@ hls.SetBandGain_dB(6, -40, false)
 
 const ctx = new AudioContext()
 
-function loadSourceAudio() {
-  return new Promise(resolve => {
-    const xhr = new XMLHttpRequest()
-    xhr.open('GET', '/assets/ElectronicMusic.wav', true)
-    xhr.responseType = 'arraybuffer'
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
-        ctx.decodeAudioData(xhr.response).then(audioBuffer => {
-          resolve(audioBuffer)
-        })
-      }
-    }
-    xhr.send()
-  })
-}
-
-loadSourceAudio().then(audioBuffer => {
+fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
   const sourceNode = ctx.createBufferSource()
   sourceNode.buffer = audioBuffer
   sourceNode.loop = true
@@ -94,11 +63,11 @@ loadSourceAudio().then(audioBuffer => {
     const outputFloats = HLSProcessor.Process(
       hls,
       inputStereoBuffer,
-      config.filter,
-      config.filter,
-      config.compressAfter,
-      config.compress,
-      config.compress
+      configs.filter,
+      configs.filter,
+      configs.compressAfter,
+      configs.compress,
+      configs.compress
     )
 
     const outputDataLeft = outputBuffer.getChannelData(0)
