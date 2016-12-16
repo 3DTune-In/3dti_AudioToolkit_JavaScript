@@ -17,7 +17,12 @@
     "example:proxy:build:w": "watchify -t babelify -p [sourcemapify --root 'examples/3d-panner-proxy/' --base 'examples/3d-panner-proxy/'] --debug -e ./examples/3d-panner-proxy/3d-panner-proxy.js -o ./examples/3d-panner-proxy/3d-panner-proxy.bundle.js",
     "example:proxy:serve": "http-server -p 8341 .",
     "example:proxy:open": "opn http://127.0.0.1:8341/examples/3d-panner-proxy/",
-    "example:proxy:dev": "npm-run-all --parallel 'example:proxy:build:w' 'example:proxy:serve' 'example:proxy:open'"
+    "example:proxy:dev": "npm-run-all --parallel 'example:proxy:build:w' 'example:proxy:serve' 'example:proxy:open'",
+    "example:hls:build": "browserify -t babelify -p [sourcemapify --root 'examples/hls/' --base 'examples/hls/'] --debug -e ./examples/hls/hls.js -o ./examples/hls/hls.bundle.js",
+    "example:hls:build:w": "watchify -t babelify -p [sourcemapify --root 'examples/hls/' --base 'examples/hls/'] --debug -e ./examples/hls/hls.js -o ./examples/hls/hls.bundle.js",
+    "example:hls:serve": "http-server -p 8342 .",
+    "example:hls:open": "opn http://127.0.0.1:8342/examples/hls/",
+    "example:hls:dev": "npm-run-all --parallel 'example:hls:build:w' 'example:hls:serve' 'example:hls:open'"
   },
   "repository": {
     "type": "git",
