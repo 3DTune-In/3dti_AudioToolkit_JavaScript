@@ -14,25 +14,25 @@ subscribeToConfigChanges((name, value, newConfigs) => {
 })
 
 // Create simulator
-const hls = new CHearingAidSim()
+const has = new CHearingAidSim()
 
-hls.Setup(7, 125, 7, 1, 8000, 500, 1, 1, 1)
+has.Setup(7, 125, 7, 1, 8000, 500, 1, 1, 1)
 
-// hls.SetBandGain_dB(0, -60, true)
-// hls.SetBandGain_dB(1, -50, true)
-// hls.SetBandGain_dB(2, -40, true)
-// hls.SetBandGain_dB(3, -30, true)
-// hls.SetBandGain_dB(4, 0, true)
-// hls.SetBandGain_dB(5, 0, true)
-// hls.SetBandGain_dB(6, 0, true)
+// has.SetBandGain_dB(0, -60, true)
+// has.SetBandGain_dB(1, -50, true)
+// has.SetBandGain_dB(2, -40, true)
+// has.SetBandGain_dB(3, -30, true)
+// has.SetBandGain_dB(4, 0, true)
+// has.SetBandGain_dB(5, 0, true)
+// has.SetBandGain_dB(6, 0, true)
 
-// hls.SetBandGain_dB(0, 10, false)
-// hls.SetBandGain_dB(1, 10, false)
-// hls.SetBandGain_dB(2, 10, false)
-// hls.SetBandGain_dB(3, 0, false)
-// hls.SetBandGain_dB(4, -20, false)
-// hls.SetBandGain_dB(5, -30, false)
-// hls.SetBandGain_dB(6, -40, false)
+// has.SetBandGain_dB(0, 10, false)
+// has.SetBandGain_dB(1, 10, false)
+// has.SetBandGain_dB(2, 10, false)
+// has.SetBandGain_dB(3, 0, false)
+// has.SetBandGain_dB(4, -20, false)
+// has.SetBandGain_dB(5, -30, false)
+// has.SetBandGain_dB(6, -40, false)
 
 // Audio context
 const ctx = new AudioContext()
@@ -57,7 +57,7 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
     }
 
     const outputFloats = HASProcessor.Process(
-      hls,
+      has,
       inputStereoBuffer,
       configs.processLeft,
       configs.processRight
