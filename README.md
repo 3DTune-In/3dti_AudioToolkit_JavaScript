@@ -2,7 +2,25 @@
 
 JavaScript wrapper for the 3DTI Toolkit. The wrapper is built using [Emscripten](https://kripken.github.io/emscripten-site/index.html).
 
-At the moment, only binaural spatialization has been successfully ported.
+## Feature status
+
+**Hearing loss simulator**
+
+* 🦄 Working demo
+* 💔 Convenience helpers for easy drop-in replacement
+* 💔 Glitch-free playback
+
+**Hearing aid simulator**
+
+* 💔 Working demo
+* 💔 Convenience helpers for easy drop-in replacement
+* 💔 Glitch-free playback
+
+**Binaural spatialization**
+
+* 🦄 Working demo
+* 🦄 Convenience helpers for easy drop-in replacement
+* 💔 Glitch-free playback
 
 ## Setup
 
