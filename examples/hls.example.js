@@ -1,6 +1,6 @@
-import logCppErrors from '../logger.js'
-import { getConfigs, subscribeToConfigChanges } from '../configs.js'
-import { fetchAudio } from '../fetch.js'
+import logCppErrors from './common/logger.js'
+import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
+import { fetchAudio } from './common/fetch.js'
 
 const { CHearingLossSim, HLSProcessor, FloatList } = window.Module
 

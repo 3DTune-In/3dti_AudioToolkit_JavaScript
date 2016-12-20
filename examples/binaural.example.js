@@ -1,9 +1,9 @@
-import { fetchHrirsVector } from '../../src/binaural/hrir.js'
-import withBinauralListener from '../../src/binaural/proxy.js'
-import { fetchAudio } from '../fetch.js'
-import { getConfigs, subscribeToConfigChanges } from '../configs.js'
+import { fetchHrirsVector } from '../src/binaural/hrir.js'
+import withBinauralListener from '../src/binaural/proxy.js'
+import { fetchAudio } from './common/fetch.js'
+import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
 
-import hrirUrls from './hrir-urls.js'
+import hrirUrls from './binaural-hrir-urls.js'
 
 let configs = getConfigs()
 subscribeToConfigChanges((configName, newValue, newConfigs) => {

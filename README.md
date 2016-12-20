@@ -89,15 +89,16 @@ For example implementations, look in the examples' JavaScript files.
 
 ## Running examples in the browser
 
-Remember to first compile the corresponding wrapper.
+```sh
+# For *nix users:
+npm run start:nix
+
+# For Windows users (yes, you guessed it):
+npm run start:win
+```
+
+If you have already the wrappers compiled, you can simply run:
 
 ```sh
-# Binaural demo
-npm run example:binaural:dev
-
-# Hearing aid simulator
-npm run example:has:dev
-
-# Hearing loss simulator
-npm run example:hls:dev
+npm run examples
 ```
