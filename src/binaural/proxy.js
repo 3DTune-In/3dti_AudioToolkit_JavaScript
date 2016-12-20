@@ -131,7 +131,7 @@ export default function withBinauralListener(audioCtx, hrirs) {
   /**
    * AudioListener shim
    */
-  let listener = null
+  let listener = createListener(audioCtx, hrirs)
 
   // Override the `AudioContext`'s connect method, allowing arbitrary nodes,
   // in our case a custom panner, to be added to chains.
@@ -143,9 +143,6 @@ export default function withBinauralListener(audioCtx, hrirs) {
   const audioCtxProxy = new Proxy(audioCtx, {
     get(target, name) {
       if (name === 'listener') {
-        if (listener === null) {
-          listener = createListener(target, hrirs)
-        }
         return listener
       }
       else if (name in target) {
