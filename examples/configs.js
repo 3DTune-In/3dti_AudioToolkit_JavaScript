@@ -11,7 +11,15 @@ for (let i = 0; i < $configs.length; i++) {
 
 function handleConfigChange(evt) {
   const configName = evt.target.getAttribute('name')
-  configs[configName] = evt.target.checked
+  const type = evt.target.getAttribute('type')
+
+  if (type === 'checkbox') {
+    configs[configName] = evt.target.checked
+  }
+  else {
+    configs[configName] = evt.target.value
+  }
+
   subscribers.forEach(s => s(configName, evt.target.checked, configs))
 }
 
