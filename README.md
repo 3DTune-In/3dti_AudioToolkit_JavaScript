@@ -57,24 +57,28 @@ npm install
 
 ## Compiling the wrappers
 
-To build all the things in one swift command (Mac only):
-
-```sh
-npm run build:toolkit
-```
-
 To build the three wrappers separately:
 
 ```sh
-# For Mac users
+# For *nix users:
 ./compile-binaural-debug.sh
 ./compile-has-debug.sh
 ./compile-hls-debug.sh
 
-# For Windows users
+# For Windows users:
 compile-binaural-debug.bat
 compile-has-debug.bat
 compile-hls-debug.bat
+```
+
+To build all the things in one swift command:
+
+```sh
+# For *nix users:
+npm run build:toolkit:nix
+
+# For Windows users (yes, you guessed it):
+npm run build:toolkit:win
 ```
 
 ## Usage
