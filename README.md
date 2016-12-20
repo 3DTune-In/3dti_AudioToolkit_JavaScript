@@ -57,7 +57,7 @@ npm install
 
 ## Compiling the wrappers
 
-To build all the things in one swift command:
+To build all the things in one swift command (Mac only):
 
 ```sh
 npm run build
@@ -79,9 +79,13 @@ compile-hls-debug.bat
 
 ## Usage
 
-> Ideas, new and old, on how this API should look and be consumed by developers are found inside [.idea](.idea).
+Ideas, new and old, on how this API should look and be consumed by developers are found inside [.idea](.idea).
+
+For example implementations, look in the examples' JavaScript files.
 
 ## Running examples in the browser
+
+Remember to first compile the corresponding wrapper.
 
 ```sh
 # Binaural demo
