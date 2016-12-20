@@ -60,7 +60,7 @@ npm install
 To build all the things in one swift command (Mac only):
 
 ```sh
-npm run build
+npm run build:toolkit
 ```
 
 To build the three wrappers separately:

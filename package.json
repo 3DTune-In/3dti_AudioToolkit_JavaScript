@@ -11,6 +11,7 @@
     "clean": "rimraf 'build/*' '!build/.gitkeep'",
     "prebuild": "npm run clean",
     "build": "npm-run-all --parallel build:toolkit:* build:extensions",
+    "build:toolkit": "num-run-all build:toolkit:*",
     "build:toolkit:binaural": "sh ./compile-binaural.sh",
     "build:toolkit:has": "sh ./compile-has-debug.sh",
     "build:toolkit:hls": "sh ./compile-hls-debug.sh",
