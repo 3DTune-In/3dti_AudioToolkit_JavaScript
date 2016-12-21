@@ -42,7 +42,7 @@ To run the development environment you need `node` and [`npm`](npmjs.com), which
 
 Emscripten ships with its own copy of `node`, but you should configure it to use your globally installed one.
 
-Do that by changing the `NODE_JS` variable in the `.emscripten` configuration file located in your home directory to the directory where `node` is found.
+Do that by changing the `NODE_JS` variable in the `.emscripten` configuration file located in your home directory, to the path to your global `node` executable. (Propably `/usr/local/bin/node` or `C:\\Program Files\\nodejs\\node.exe`.)
 
 #### 4. Download submodules and node packages
 
