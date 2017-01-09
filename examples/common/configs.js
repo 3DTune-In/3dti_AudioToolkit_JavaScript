@@ -5,8 +5,17 @@ const $configs = document.querySelectorAll('.config')
 
 for (let i = 0; i < $configs.length; i++) {
   const node = $configs[i]
-  configs[node.getAttribute('name')] = node.checked
-  node.addEventListener('click', handleConfigChange)
+  // const elemType = node.nodeName.toLowerCase()
+  const type = node.getAttribute('type')
+
+  if (type === 'checkbox') {
+    configs[node.getAttribute('name')] = node.checked
+    node.addEventListener('click', handleConfigChange)
+  }
+  else {
+    configs[node.getAttribute('name')] = node.value
+    node.addEventListener('change', handleConfigChange)
+  }
 }
 
 function handleConfigChange(evt) {

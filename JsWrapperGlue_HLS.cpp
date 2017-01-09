@@ -50,6 +50,7 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
    * Compressor
    */
   class_<CCompressor>("CCompressor")
+  	.constructor<>()
   	.property("knee", &CCompressor::knee)
   	.property("ratio", &CCompressor::ratio)
   	.property("threshold", &CCompressor::threshold)

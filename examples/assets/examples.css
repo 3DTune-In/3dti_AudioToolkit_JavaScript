@@ -18,6 +18,10 @@ body {
   font-family: "Space Mono", monospace;
 }
 
+body.wide {
+  max-width: 800px;
+}
+
 h1, h2, h3, h4, h5, h6 {
   margin: 2em 0 1em;
   color: #393F44;
@@ -39,9 +43,36 @@ a:hover {
   color: #0074E2;
 }
 
+.panel {
+  display: flex;
+}
+
+.panel > * {
+  flex-grow: 1;
+}
+
+fieldset {
+  margin: 20px 10px 20px 0;
+  border: 1px solid #cdced0;
+}
+
+legend {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 label {
   display: block;
   margin: 1em 0;
+}
+
+input[type="range"][orient="vertical"] {
+  writing-mode: bt-lr; /* IE */
+  -webkit-appearance: slider-vertical; /* WebKit */
+  display: block;
+  width: 8px;
+  height: 175px;
+  padding: 0 5px;
 }
 
 button {
@@ -61,4 +92,11 @@ button:hover {
 
 button[disabled] {
   opacity: 0.25;
+}
+
+.filter-bands label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
