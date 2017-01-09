@@ -20,9 +20,10 @@ class HLSProcessor
 public:
 	HLSProcessor();
 
-	static FloatList Process(
+	static void Process(
 		CHearingLossSim & simulator,
 		FloatList & inputData,
+		FloatList & outputData,
 		bool fbProcessLeft,
 		bool fbProcessRight,
 		bool compressorFirst,
@@ -38,8 +39,12 @@ public:
 
       // FiltersBank::Process asserts the passed output buffer to have the
       // same size as the input buffer
-      outputBuffer.push_back(inputData.Get(i));
+      outputBuffer.push_back(0);
     }
+
+    // outputBuffer.reserve(inputBuffer.size());
+
+    // printf("%d %d %d %d \n", inputBuffer.size(), outputBuffer.size(), inputData.Size(), outputData.Size());
 
     // This ought to be done client side
     simulator.Compr_L.threshold = -20.f;
@@ -51,8 +56,10 @@ public:
 
     simulator.Process(inputBuffer, outputBuffer, fbProcessLeft, fbProcessRight, compressorFirst, compressL, compressR);
 
-    FloatList outputData(outputBuffer);
-    return outputData;
+    for (int i = 0; i < outputBuffer.size(); ++i)
+    {
+    	outputData.Set(i, outputBuffer[i]);
+    }
 	}
 };
 
@@ -74,7 +81,9 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
     .constructor<>()
     .function("Size", &FloatList::Size)
     .function("Add", &FloatList::Add)
-    .function("Get", &FloatList::Get);
+    .function("Get", &FloatList::Get)
+    .function("Set", &FloatList::Set)
+    ;
 
   /**
    * CHearingLossSim

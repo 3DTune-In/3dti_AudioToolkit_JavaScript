@@ -8,7 +8,7 @@ class FloatList
 public:
   FloatList()
   {
-    data = std::vector<float>();
+    // data = std::vector<float>();
   }
 
   FloatList(std::vector<float> data)
@@ -32,7 +32,7 @@ public:
     data[index] = value;
   }
 
-  float Get(int index)
+  const float& Get(int index)
   {
     return data[index];
   }

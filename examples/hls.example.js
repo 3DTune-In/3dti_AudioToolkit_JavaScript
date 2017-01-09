@@ -47,6 +47,14 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
   sourceNode.buffer = audioBuffer
   sourceNode.loop = true
 
+  const inputStereoBuffer = new FloatList()
+  const outputStereoBuffer = new FloatList()
+
+  for (let i = 0; i < 1024; i++) {
+    inputStereoBuffer.Add(0)
+    outputStereoBuffer.Add(0)
+  }
+
   const scriptNode = ctx.createScriptProcessor(512, 2, 2)
   scriptNode.onaudioprocess = (audioProcessingEvent) => {
     const { inputBuffer, outputBuffer } = audioProcessingEvent
@@ -54,15 +62,15 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
     const inputDataL = inputBuffer.getChannelData(0)
     const inputDataR = inputBuffer.getChannelData(1)
 
-    const inputStereoBuffer = new FloatList()
     for (let i = 0; i < inputDataL.length; i++) {
-      inputStereoBuffer.Add(inputDataL[i])
-      inputStereoBuffer.Add(inputDataR[i])
+      inputStereoBuffer.Set((i * 2), inputDataL[i])
+      inputStereoBuffer.Set((i * 2) + 1, inputDataR[i])
     }
 
-    const outputFloats = HLSProcessor.Process(
+    HLSProcessor.Process(
       hls,
       inputStereoBuffer,
+      outputStereoBuffer,
       configs.filter,
       configs.filter,
       configs.compressAfter,
@@ -74,8 +82,8 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
     const outputDataRight = outputBuffer.getChannelData(1)
 
     for (let i = 0; i < outputDataLeft.length; i++) {
-      outputDataLeft[i] = outputFloats.Get((i * 2))
-      outputDataRight[i] = outputFloats.Get((i * 2) + 1)
+      outputDataLeft[i] = outputStereoBuffer.Get((i * 2))
+      outputDataRight[i] = outputStereoBuffer.Get((i * 2) + 1)
     }
   }
 
