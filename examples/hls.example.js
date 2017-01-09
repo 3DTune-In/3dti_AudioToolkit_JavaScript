@@ -2,7 +2,7 @@ import logCppErrors from './common/logger.js'
 import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
 import { fetchAudio } from './common/fetch.js'
 
-const { CHearingLossSim, HLSProcessor, FloatList } = window.Module
+const { CHearingLossSim, HLSProcessor, FloatVector } = window.Module
 
 // Setup logger
 logCppErrors()
@@ -47,13 +47,15 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
   sourceNode.buffer = audioBuffer
   sourceNode.loop = true
 
-  const inputStereoBuffer = new FloatList()
-  const outputStereoBuffer = new FloatList()
+  const inputStereoBuffer = new FloatVector()
+  inputStereoBuffer.resize(1024, 0)
+  const outputStereoBuffer = new FloatVector()
+  outputStereoBuffer.resize(1024, 0)
 
-  for (let i = 0; i < 1024; i++) {
-    inputStereoBuffer.Add(0)
-    outputStereoBuffer.Add(0)
-  }
+  // for (let i = 0; i < 1024; i++) {
+  //   inputStereoBuffer.push_back(0)
+  //   outputStereoBuffer.push_back(0)
+  // }
 
   const scriptNode = ctx.createScriptProcessor(512, 2, 2)
   scriptNode.onaudioprocess = (audioProcessingEvent) => {
@@ -63,8 +65,8 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
     const inputDataR = inputBuffer.getChannelData(1)
 
     for (let i = 0; i < inputDataL.length; i++) {
-      inputStereoBuffer.Set((i * 2), inputDataL[i])
-      inputStereoBuffer.Set((i * 2) + 1, inputDataR[i])
+      inputStereoBuffer.set((i * 2), inputDataL[i])
+      inputStereoBuffer.set((i * 2) + 1, inputDataR[i])
     }
 
     HLSProcessor.Process(
@@ -82,8 +84,8 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
     const outputDataRight = outputBuffer.getChannelData(1)
 
     for (let i = 0; i < outputDataLeft.length; i++) {
-      outputDataLeft[i] = outputStereoBuffer.Get((i * 2))
-      outputDataRight[i] = outputStereoBuffer.Get((i * 2) + 1)
+      outputDataLeft[i] = outputStereoBuffer.get((i * 2))
+      outputDataRight[i] = outputStereoBuffer.get((i * 2) + 1)
     }
   }
 

@@ -2,7 +2,6 @@
 #include <vector>
 #include <emscripten/bind.h>
 #include "glue/Logger.hpp"
-#include "glue/FloatList.hpp"
 #include "3DTI_Toolkit_Core/Common/Buffer.h"
 #include "3DTI_Toolkit_Core/Common/Debugger.h"
 // #include "3DTI_Toolkit_Core/Common/Quaternion.h"
@@ -22,8 +21,8 @@ public:
 
 	static void Process(
 		CHearingLossSim & simulator,
-		FloatList & inputData,
-		FloatList & outputData,
+		std::vector<float> & inputData,
+		std::vector<float> & outputData,
 		bool fbProcessLeft,
 		bool fbProcessRight,
 		bool compressorFirst,
@@ -33,9 +32,9 @@ public:
 		CStereoBuffer<float> inputBuffer;
     CStereoBuffer<float> outputBuffer;
 
-    for (int i = 0; i < inputData.Size(); i++)
+    for (int i = 0; i < inputData.size(); i++)
     {
-      inputBuffer.push_back(inputData.Get(i));
+      inputBuffer.push_back(inputData[i]);
 
       // FiltersBank::Process asserts the passed output buffer to have the
       // same size as the input buffer
@@ -58,7 +57,7 @@ public:
 
     for (int i = 0; i < outputBuffer.size(); ++i)
     {
-    	outputData.Set(i, outputBuffer[i]);
+    	outputData[i] = outputBuffer[i];
     }
 	}
 };
@@ -66,6 +65,11 @@ public:
 
 // Bindings
 EMSCRIPTEN_BINDINGS(Toolkit) {
+	register_vector<float>("FloatVector");
+
+	// class_<CStereoBuffer>("CStereoBuffer")
+	// 	.constructor<>()
+	// 	;
 
   /**
    * Logger
@@ -73,17 +77,6 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   class_<Logger>("Logger")
     .class_function("GetLastLogMessage", &Logger::GetLastLogMessage)
     .class_function("GetLastErrorMessage", &Logger::GetLastErrorMessage);
-
-  /**
-   * FloatList bindings
-   */
-  class_<FloatList>("FloatList")
-    .constructor<>()
-    .function("Size", &FloatList::Size)
-    .function("Add", &FloatList::Add)
-    .function("Get", &FloatList::Get)
-    .function("Set", &FloatList::Set)
-    ;
 
   /**
    * CHearingLossSim
