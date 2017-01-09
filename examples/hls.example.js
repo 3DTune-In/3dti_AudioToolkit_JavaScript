@@ -2,7 +2,7 @@ import logCppErrors from './common/logger.js'
 import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
 import { fetchAudio } from './common/fetch.js'
 
-const { CHearingLossSim, HLSProcessor, FloatVector } = window.Module
+const { CHearingLossSim, HLSProcessor, CStereoBuffer } = window.Module
 
 // Setup logger
 logCppErrors()
@@ -47,9 +47,9 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
   sourceNode.buffer = audioBuffer
   sourceNode.loop = true
 
-  const inputStereoBuffer = new FloatVector()
+  const inputStereoBuffer = new CStereoBuffer()
   inputStereoBuffer.resize(1024, 0)
-  const outputStereoBuffer = new FloatVector()
+  const outputStereoBuffer = new CStereoBuffer()
   outputStereoBuffer.resize(1024, 0)
 
   // for (let i = 0; i < 1024; i++) {
@@ -69,8 +69,9 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
       inputStereoBuffer.set((i * 2) + 1, inputDataR[i])
     }
 
-    HLSProcessor.Process(
-      hls,
+    // HLSProcessor.Process(
+      // hls,
+    hls.Process(
       inputStereoBuffer,
       outputStereoBuffer,
       configs.filter,
