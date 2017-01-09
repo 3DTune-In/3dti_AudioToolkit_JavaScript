@@ -2,7 +2,7 @@ import logCppErrors from './common/logger.js'
 import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
 import { fetchAudio } from './common/fetch.js'
 
-const { CHearingLossSim, HLSProcessor, CStereoBuffer } = window.Module
+const { CHearingLossSim, CStereoBuffer } = window.Module
 
 // Setup logger
 logCppErrors()
@@ -48,14 +48,9 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
   sourceNode.loop = true
 
   const inputStereoBuffer = new CStereoBuffer()
-  inputStereoBuffer.resize(1024, 0)
   const outputStereoBuffer = new CStereoBuffer()
+  inputStereoBuffer.resize(1024, 0)
   outputStereoBuffer.resize(1024, 0)
-
-  // for (let i = 0; i < 1024; i++) {
-  //   inputStereoBuffer.push_back(0)
-  //   outputStereoBuffer.push_back(0)
-  // }
 
   const scriptNode = ctx.createScriptProcessor(512, 2, 2)
   scriptNode.onaudioprocess = (audioProcessingEvent) => {
@@ -69,8 +64,6 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
       inputStereoBuffer.set((i * 2) + 1, inputDataR[i])
     }
 
-    // HLSProcessor.Process(
-      // hls,
     hls.Process(
       inputStereoBuffer,
       outputStereoBuffer,
@@ -97,5 +90,5 @@ fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
   scriptNode.connect(volume)
   volume.connect(ctx.destination)
 
-  sourceNode.start(0)
+  document.querySelector('.start').addEventListener('click', () => sourceNode.start(0))
 })
