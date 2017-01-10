@@ -73,6 +73,9 @@ function updateListenerPosition(listener) {
   const sourceTransform = new CTransform()
   sourceTransform.SetPosition(position)
   listener.SetListenerTransform(sourceTransform)
+
+  position.delete()
+  sourceTransform.delete()
 }
 
 /**
@@ -84,6 +87,9 @@ function updateSourcePosition(source, panner) {
   const sourceTransform = new CTransform()
   sourceTransform.SetPosition(position)
   source.SetSourceTransform(sourceTransform)
+
+  position.delete()
+  sourceTransform.delete()
 }
 
 /**
