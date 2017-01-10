@@ -1,5 +1,5 @@
 // TODO: Don't depend on window.Module, use import instead
-const { HRIR, FloatList, HRIRVector } = window.Module
+const { HRIR, CMonoBuffer, HRIRVector } = window.Module
 
 /**
  * Returns an object with azimuth and elevation angles extracted
@@ -59,14 +59,17 @@ const fetchHrirFiles = (urls, audioCtx) => {
 export const fetchHrirsVector = (urls, audioCtx) => {
   return fetchHrirFiles(urls, audioCtx).then(results => {
     const hrirs = results.map(({ buffer, azimuth, elevation }) => {
-      const data = new FloatList()
-      for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
-        for (let i = 0; i < buffer.length; i++) {
-          data.Add(buffer.getChannelData(channel)[i])
-        }
+      const leftBuffer = new CMonoBuffer()
+      const rightBuffer = new CMonoBuffer()
+      const leftAudio = buffer.getChannelData(0)
+      const rightAudio = buffer.getChannelData(1)
+
+      for (let i = 0; i < leftAudio.length; i++) {
+        leftBuffer.set(i, leftAudio[i])
+        rightBuffer.set(i, rightAudio[i])
       }
 
-      return new HRIR(data, azimuth, elevation)
+      return new HRIR(leftBuffer, rightBuffer, azimuth, elevation)
     })
 
     const hrirsVector = new HRIRVector()

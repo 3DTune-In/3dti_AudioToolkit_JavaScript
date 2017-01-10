@@ -16,6 +16,7 @@ const $start = document.querySelector('.start')
 $start.addEventListener('click', function() {
   start()
   $start.setAttribute('disabled', true)
+  $start.innerHTML = 'Playing'
 })
 
 function start() {

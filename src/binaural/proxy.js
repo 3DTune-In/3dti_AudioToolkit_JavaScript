@@ -3,9 +3,10 @@ import enableCustomConnects from 'custom-audio-node-connect'
 
 // TODO: Don't depend on window.Module, use import instead
 const {
-  FloatList,
   CVector3,
   CTransform,
+  CMonoBuffer,
+  CStereoBuffer,
   BinauralAPI,
 } = window.Module
 
@@ -169,23 +170,29 @@ export default function withBinauralListener(audioCtx, hrirs) {
     const source = api.CreateSource()
     const scriptNode = this.createScriptProcessor(512, 2, 2)
 
+    const inputMonoBuffer = new CMonoBuffer()
+    inputMonoBuffer.resize(512, 0)
+
+    const outputStereoBuffer = new CStereoBuffer()
+    outputStereoBuffer.resize(1024, 0)
+
     scriptNode.onaudioprocess = (audioProcessingEvent) => {
       const { inputBuffer, outputBuffer } = audioProcessingEvent
 
       const inputData = inputBuffer.getChannelData(0)
-      const inputMonoBuffer = new FloatList()
+
       for (let i = 0; i < inputData.length; i++) {
-        inputMonoBuffer.Add(inputData[i])
+        inputMonoBuffer.set(i, inputData[i])
       }
 
-      const outputFloats = api.Spatialize(this.listener, source, inputMonoBuffer)
+      source.ProcessAnechoic(this.listener, inputMonoBuffer, outputStereoBuffer)
 
       const outputDataLeft = outputBuffer.getChannelData(0)
       const outputDataRight = outputBuffer.getChannelData(1)
 
       for (let i = 0; i < outputDataLeft.length; i++) {
-        outputDataLeft[i] = outputFloats.Get((i * 2))
-        outputDataRight[i] = outputFloats.Get((i * 2) + 1)
+        outputDataLeft[i] = outputStereoBuffer.get((i * 2))
+        outputDataRight[i] = outputStereoBuffer.get((i * 2) + 1)
       }
     }
 
