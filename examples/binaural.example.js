@@ -16,7 +16,7 @@ const $start = document.querySelector('.start')
 $start.addEventListener('click', function() {
   start()
   $start.setAttribute('disabled', true)
-  $start.innerHTML = 'Playing'
+  $start.innerHTML = 'Loading...'
 })
 
 function start() {
@@ -46,6 +46,8 @@ function start() {
     volume.connect(proxiedCtx.destination)
 
     oscillator.start()
+
+    $start.innerHTML = 'Playing...'
   })
   .catch(err => {
     console.error(err)
