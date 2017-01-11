@@ -34,9 +34,9 @@ function start() {
     sourceNode.loop = true
 
     const panner = proxiedCtx.createPanner()
-    panner.positionX.value = configs.x
-    panner.positionY.value = configs.y
-    panner.positionZ.value = configs.z
+    panner.positionX.value = parseFloat(configs.x)
+    panner.positionY.value = parseFloat(configs.y)
+    panner.positionZ.value = parseFloat(configs.z)
 
     const volume = proxiedCtx.createGain()
     volume.gain.gain = 0.3
