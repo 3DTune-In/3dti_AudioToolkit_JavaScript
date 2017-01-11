@@ -58,6 +58,8 @@ public:
     const int length = 512;
 
     CHRTF hrtf;
+
+    // TODO: Make frame rate into a parameter/variable
     hrtf.BeginSetup(hrirs.size(), length, 44100);
 
     for (int i = 0; i < hrirs.size(); ++i)
@@ -161,7 +163,7 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   class_<Binaural::CSingleSourceDSP>("CSingleSourceDSP")
     .smart_ptr<std::shared_ptr<Binaural::CSingleSourceDSP>>("CSingleSourceDSP_ptr")
     .function("SetSourceTransform", &Binaural::CSingleSourceDSP::SetSourceTransform)
-    .function("ProcessAnechoic", select_overload<void(const Binaural::CListener & listener, const CMonoBuffer<float> & inBuffer, CStereoBuffer<float> & outBuffer)>(&Binaural::CSingleSourceDSP::ProcessAnechoic))
+    .function("ProcessAnechoic", select_overload<void(const Binaural::CListener &, const CMonoBuffer<float> &, CStereoBuffer<float> &)>(&Binaural::CSingleSourceDSP::ProcessAnechoic))
     ;
 
   class_<CTransform>("CTransform")
