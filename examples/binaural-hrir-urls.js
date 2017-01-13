@@ -1,4 +1,4 @@
-const assetsUrl = '/assets'
+const assetsUrl = '/assets/audio'
 
 export default [
   'IRC_1032_C_R0195_T000_P000.wav',

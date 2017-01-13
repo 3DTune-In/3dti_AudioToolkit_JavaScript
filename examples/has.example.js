@@ -60,7 +60,7 @@ updateFilters()
 const ctx = new AudioContext()
 
 // Go
-fetchAudio('/assets/stranger-things.wav', ctx).then(audioBuffer => {
+fetchAudio('/assets/audio/stranger-things.wav', ctx).then(audioBuffer => {
   const sourceNode = ctx.createBufferSource()
   sourceNode.buffer = audioBuffer
   sourceNode.loop = true

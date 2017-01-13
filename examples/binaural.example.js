@@ -22,7 +22,7 @@ $start.addEventListener('click', function() {
 function start() {
   Promise.all([
     fetchHrirsVector(hrirUrls, ctx),
-    fetchAudio('/assets/hermans-jultal.wav', ctx),
+    fetchAudio('/assets/audio/hermans-jultal.wav', ctx),
   ]).then(([hrirs, audioBuffer]) => {
     const proxiedCtx = withBinauralListener(ctx, hrirs)
 

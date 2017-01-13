@@ -59,7 +59,7 @@ updateCompressors()
 
 const ctx = new AudioContext()
 
-fetchAudio('/assets/ElectronicMusic.wav', ctx).then(audioBuffer => {
+fetchAudio('/assets/audio/ElectronicMusic.wav', ctx).then(audioBuffer => {
   const sourceNode = ctx.createBufferSource()
   sourceNode.buffer = audioBuffer
   sourceNode.loop = true

@@ -4,11 +4,13 @@
   "description": "",
   "main": "binaural-hrir-urls.js",
   "scripts": {
-    "start": "http-server ."
+    "start": "node index.js"
   },
   "author": "Alexander Wallin <office@alexanderwallin.com> (http://alexanderwallin.com)",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^2.5.5",
+    "express": "^4.14.0",
     "http-server": "^0.9.0"
   }
 }
