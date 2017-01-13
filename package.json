@@ -3,19 +3,16 @@
   "version": "0.1.0",
   "description": "JavaScript port of the 3D Tune-In Toolkit",
   "main": "build/3dti-toolkit.min.js",
-  "directories": {
-    "example": "examples"
-  },
   "scripts": {
-    "lint": "eslint src examples",
-    "clean": "rimraf \"examples/*.bundle.js\" \"build/*\" \"!build/.gitkeep\"",
+    "lint": "eslint app",
+    "clean": "rimraf \"build/*\" \"!build/.gitkeep\"",
     "prebuild": "npm run clean",
     "build:toolkit:nix": "sh ./compile-binaural-debug.sh && sh ./compile-has-debug.sh && sh ./compile-hls-debug.sh",
     "build:toolkit:win": "compile-binaural-debug.bat && compile-has-debug.bat && compile-hls-debug.bat",
     "serve:builds": "http-server -p 8342 build",
     "open": "opn http://127.0.0.1:8283/",
     "examples": "npm-run-all --parallel serve:builds examples:app",
-    "examples:app": "cd examples && npm run bundle && npm run start",
+    "examples:app": "cd app && npm run bundle && npm run start",
     "postexamples": "npm run open",
     "start:nix": "npm run build:toolkit:nix && npm run examples",
     "start:win": "npm run build:toolkit:win && npm run examples"
