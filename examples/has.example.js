@@ -21,7 +21,8 @@ const $start = document.querySelector('.start')
 const has = new CHearingAidSim()
 
 has.Setup(
-  7,
+  44100,
+  1, // TODO: Implement multiple levels
   125,
   7,
   1,
@@ -33,21 +34,21 @@ has.Setup(
 )
 
 function updateFilters() {
-  has.SetBandGain_dB(0, parseFloat(configs['filter.left.125']), true)
-  has.SetBandGain_dB(1, parseFloat(configs['filter.left.250']), true)
-  has.SetBandGain_dB(2, parseFloat(configs['filter.left.500']), true)
-  has.SetBandGain_dB(3, parseFloat(configs['filter.left.1000']), true)
-  has.SetBandGain_dB(4, parseFloat(configs['filter.left.2000']), true)
-  has.SetBandGain_dB(5, parseFloat(configs['filter.left.4000']), true)
-  has.SetBandGain_dB(6, parseFloat(configs['filter.left.8000']), true)
+  has.SetLevelBandGain_dB(0, 0, parseFloat(configs['filter.left.125']), true)
+  has.SetLevelBandGain_dB(0, 1, parseFloat(configs['filter.left.250']), true)
+  has.SetLevelBandGain_dB(0, 2, parseFloat(configs['filter.left.500']), true)
+  has.SetLevelBandGain_dB(0, 3, parseFloat(configs['filter.left.1000']), true)
+  has.SetLevelBandGain_dB(0, 4, parseFloat(configs['filter.left.2000']), true)
+  has.SetLevelBandGain_dB(0, 5, parseFloat(configs['filter.left.4000']), true)
+  has.SetLevelBandGain_dB(0, 6, parseFloat(configs['filter.left.8000']), true)
 
-  has.SetBandGain_dB(0, parseFloat(configs['filter.right.125']), false)
-  has.SetBandGain_dB(1, parseFloat(configs['filter.right.250']), false)
-  has.SetBandGain_dB(2, parseFloat(configs['filter.right.500']), false)
-  has.SetBandGain_dB(3, parseFloat(configs['filter.right.1000']), false)
-  has.SetBandGain_dB(4, parseFloat(configs['filter.right.2000']), false)
-  has.SetBandGain_dB(5, parseFloat(configs['filter.right.4000']), false)
-  has.SetBandGain_dB(6, parseFloat(configs['filter.right.8000']), false)
+  has.SetLevelBandGain_dB(0, 0, parseFloat(configs['filter.right.125']), false)
+  has.SetLevelBandGain_dB(0, 1, parseFloat(configs['filter.right.250']), false)
+  has.SetLevelBandGain_dB(0, 2, parseFloat(configs['filter.right.500']), false)
+  has.SetLevelBandGain_dB(0, 3, parseFloat(configs['filter.right.1000']), false)
+  has.SetLevelBandGain_dB(0, 4, parseFloat(configs['filter.right.2000']), false)
+  has.SetLevelBandGain_dB(0, 5, parseFloat(configs['filter.right.4000']), false)
+  has.SetLevelBandGain_dB(0, 6, parseFloat(configs['filter.right.8000']), false)
 
   has.ConfigLPF(parseFloat(configs['filter.lpf.freq']), parseFloat(configs['filter.lpf.q']))
   has.ConfigHPF(parseFloat(configs['filter.hpf.freq']), parseFloat(configs['filter.hpf.q']))

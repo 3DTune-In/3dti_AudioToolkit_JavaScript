@@ -21,10 +21,6 @@
     <fieldset>
       <legend>Filter (Left)</legend>
 
-      <label>
-        Enabled <input type="checkbox" checked name="filter.left.enabled" class="config" />
-      </label>
-
       <div class="panel filter-bands">
         <label>125 <input type="range" orient="vertical" name="filter.left.125" class="config" min="-20" max="20" value="0" /></label>
         <label>250 <input type="range" orient="vertical" name="filter.left.250" class="config" min="-20" max="20" value="0" /></label>
@@ -38,10 +34,6 @@
 
     <fieldset>
       <legend>Filter (Right)</legend>
-
-      <label>
-        Enabled <input type="checkbox" checked name="filter.right.enabled" class="config" />
-      </label>
 
       <div class="panel filter-bands">
         <label>125 <input type="range" orient="vertical" name="filter.right.125" class="config" min="-20" max="20" value="0" /></label>
@@ -76,7 +68,7 @@
       <legend>Directionality</legend>
 
       <label>Enabled <input type="checkbox" name="directionality.enabled" class="config" />
-      <label>Angle <input type="range" name="directionality.angle" class="config" min="0" max="3.14" step="0.01" value="3.14" /></label>
+      <label>Angle <input type="range" name="directionality.angle" class="config" min="-3.14" max="3.14" step="0.01" value="0" /></label>
     </fieldset>
   </div>
 
