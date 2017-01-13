@@ -1,5 +1,5 @@
-import { fetchHrirsVector } from '../src/binaural/hrir.js'
-import withBinauralListener from '../src/binaural/proxy.js'
+import { fetchHrirsVector } from './src/binaural/hrir.js'
+import withBinauralListener from './src/binaural/proxy.js'
 import { fetchAudio } from './common/fetch.js'
 import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
 
