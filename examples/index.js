@@ -1,6 +1,6 @@
 const express = require('express')
 
-const TOOLKIT_JS_PATH = process.env.TOOLKIT_JS_PATH
+const TOOLKIT_JS_PATH = process.env.TOOLKIT_JS_PATH || 'http://localhost:8342'
 
 const app = new express()
 app.set('port', (process.env.PORT || 8283))
