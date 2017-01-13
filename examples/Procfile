@@ -1,1 +1,1 @@
-web: npm run examples
+web: npm start
