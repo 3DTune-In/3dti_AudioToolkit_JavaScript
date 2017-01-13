@@ -10,10 +10,12 @@
   "author": "Alexander Wallin <office@alexanderwallin.com> (http://alexanderwallin.com)",
   "license": "ISC",
   "dependencies": {
+    "audio-param-shim": "^1.0.4",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
     "babel-preset-latest": "^6.16.0",
     "babelify": "^7.3.0",
+    "custom-audio-node-connect": "^1.0.1",
     "ejs": "^2.5.5",
     "express": "^4.14.0",
     "globify": "^1.2.2",
