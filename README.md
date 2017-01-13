@@ -10,21 +10,25 @@ JavaScript wrapper(s) for the 3DTI Toolkit. The wrapper is built using [Emscript
 
 ## Feature status
 
+* 🦄 - Works
+* 🤖 - Kinda works
+* 💔 - Doesn't work
+
 **Hearing loss simulator**
 
 * 🦄 Working demo
 * 💔 Convenience helpers for easy drop-in replacement
-* 💔 Glitch-free playback
+* 🤖 Glitch-free playback
 
 **Hearing aid simulator**
 
-* 💔 Working demo
+* 🦄 Working demo
 * 💔 Convenience helpers for easy drop-in replacement
-* 💔 Glitch-free playback
+* 🤖 Glitch-free playback
 
 **Binaural spatialization**
 
-* 🦄 Working demo
+* 🤖 Working demo
 * 🦄 Convenience helpers for easy drop-in replacement
 * 💔 Glitch-free playback
 
