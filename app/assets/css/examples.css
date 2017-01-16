@@ -100,3 +100,10 @@ button[disabled] {
   align-items: center;
   text-align: center;
 }
+
+.warning {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #f47586;
+  color: #f47586;
+}
