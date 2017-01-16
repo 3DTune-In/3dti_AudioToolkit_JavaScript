@@ -15,7 +15,8 @@
     "examples:app": "cd app && npm run bundle && npm run start",
     "postexamples": "npm run open",
     "start:nix": "npm run build:toolkit:nix && npm run examples",
-    "start:win": "npm run build:toolkit:win && npm run examples"
+    "start:win": "npm run build:toolkit:win && npm run examples",
+    "deploy": "git push heroku `git subtree split --prefix app master`:master --force"
   },
   "repository": {
     "type": "git",
