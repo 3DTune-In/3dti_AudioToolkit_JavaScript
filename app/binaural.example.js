@@ -16,6 +16,18 @@ $start.addEventListener('click', function() {
   $start.innerHTML = 'Loading...'
 })
 
+function ensureDistance(position, minDistance = 1) {
+  if (position > 0 && position < minDistance) {
+    return minDistance
+  }
+  else if (position < 0 && position > minDistance) {
+    return -minDistance
+  }
+  else {
+    return position
+  }
+}
+
 function start() {
   Promise.all([
     fetchHrirsVector(hrirUrls, ctx),
@@ -52,9 +64,9 @@ function start() {
     subscribeToConfigChanges((configName, newValue, newConfigs) => {
       configs = newConfigs
 
-      panner.positionX.value = parseFloat(configs.x)
-      panner.positionY.value = parseFloat(configs.y)
-      panner.positionZ.value = parseFloat(configs.z)
+      panner.positionX.value = ensureDistance(parseFloat(configs.x))
+      panner.positionY.value = ensureDistance(parseFloat(configs.y))
+      panner.positionZ.value = ensureDistance(parseFloat(configs.z))
     })
   })
   .catch(err => {
