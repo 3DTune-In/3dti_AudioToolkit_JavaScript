@@ -41,7 +41,12 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("Setup", &CHearingLossSim::Setup)
   	.function("SetGains_dB", &CHearingLossSim::SetGains_dB)
   	.function("SetBandGain_dB", &CHearingLossSim::SetBandGain_dB)
-  	.function("Process", &CHearingLossSim::Process)
+  	.function("Process", select_overload<void(
+  		CStereoBuffer<float> &inputBuffer, CStereoBuffer<float> &outputBuffer,
+			bool fbProcessLeft, bool fbProcessRight,
+			bool compressorFirst,
+			bool compressL, bool compressR
+		)>(&CHearingLossSim::Process))
   	.property("Compr_L", &CHearingLossSim::Compr_L)
   	.property("Compr_R", &CHearingLossSim::Compr_R)
   	;

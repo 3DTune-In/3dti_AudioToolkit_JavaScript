@@ -46,8 +46,6 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("Process", &CHearingAidSim::Process)
   	.function("ProcessDirectionality", &CHearingAidSim::ProcessDirectionality)
   	.function("GetDirectionalityAtt", &CHearingAidSim::GetDirectionalityAtt)
-  	.function("GetChangesCounter_DirectionalityExtendL", &CHearingAidSim::GetChangesCounter_DirectionalityExtendL)
-  	.function("GetChangesCounter_DirectionalityExtendR", &CHearingAidSim::GetChangesCounter_DirectionalityExtendR)
   	.function("SetDirectionalityExtendL_dB", &CHearingAidSim::SetDirectionalityExtendL_dB)
   	.function("SetDirectionalityExtendR_dB", &CHearingAidSim::SetDirectionalityExtendR_dB)
   	;
