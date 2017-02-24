@@ -6,9 +6,6 @@ import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
 import hrirUrls from './binaural-hrir-urls.js'
 
 let configs = getConfigs()
-subscribeToConfigChanges((configName, newValue, newConfigs) => {
-  configs = newConfigs
-})
 
 const ctx = new AudioContext()
 
@@ -41,13 +38,24 @@ function start() {
     const volume = proxiedCtx.createGain()
     volume.gain.gain = 0.3
 
-    oscillator.connect(panner)
+    // oscillator.connect(panner)
+    sourceNode.connect(panner)
     panner.connect(volume)
     volume.connect(proxiedCtx.destination)
 
-    oscillator.start()
+    // oscillator.start()
+    sourceNode.start()
 
     $start.innerHTML = 'Playing...'
+
+    // Update position params when the user changes them
+    subscribeToConfigChanges((configName, newValue, newConfigs) => {
+      configs = newConfigs
+
+      panner.positionX.value = parseFloat(configs.x)
+      panner.positionY.value = parseFloat(configs.y)
+      panner.positionZ.value = parseFloat(configs.z)
+    })
   })
   .catch(err => {
     console.error(err)

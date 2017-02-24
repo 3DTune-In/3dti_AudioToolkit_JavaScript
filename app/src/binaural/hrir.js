@@ -61,8 +61,12 @@ export const fetchHrirsVector = (urls, audioCtx) => {
     const hrirs = results.map(({ buffer, azimuth, elevation }) => {
       const leftBuffer = new CMonoBuffer()
       const rightBuffer = new CMonoBuffer()
+
       const leftAudio = buffer.getChannelData(0)
       const rightAudio = buffer.getChannelData(1)
+
+      leftBuffer.resize(leftAudio.length, 0)
+      rightBuffer.resize(rightAudio.length, 0)
 
       for (let i = 0; i < leftAudio.length; i++) {
         leftBuffer.set(i, leftAudio[i])
