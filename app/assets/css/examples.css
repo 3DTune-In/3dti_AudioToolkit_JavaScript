@@ -11,9 +11,6 @@ html {
 }
 
 body {
-  width: 90%;
-  max-width: 400px;
-  margin: 40px auto;
   color: #393F44;
   font-family: "Space Mono", monospace;
 }
@@ -41,6 +38,12 @@ a {
 
 a:hover {
   color: #0074E2;
+}
+
+.content {
+  width: 90%;
+  max-width: 400px;
+  margin: 40px auto;
 }
 
 .panel {

@@ -5,73 +5,75 @@
   <link rel="stylesheet" type="text/css" href="/assets/css/examples.css">
 </head>
 <body class="wide">
-  <h1>Hearing loss simulator example</h1>
+  <div class="content">
+    <h1>Hearing loss simulator example</h1>
 
-  <div class="panel">
-    <fieldset>
-      <legend>Compressor (Left)</legend>
+    <div class="panel">
+      <fieldset>
+        <legend>Compressor (Left)</legend>
 
-      <label>Enabled <input type="checkbox" name="compress.left.enabled" class="config" /></label>
-      <label>Threshold <input type="range" name="compress.left.threshold" class="config" min="-40" max="0" value="0" /></label>
-      <label>Ratio <input type="range" name="compress.left.ratio" class="config" min="1" max="20" value="1" /></label>
-    </fieldset>
+        <label>Enabled <input type="checkbox" name="compress.left.enabled" class="config" /></label>
+        <label>Threshold <input type="range" name="compress.left.threshold" class="config" min="-40" max="0" value="0" /></label>
+        <label>Ratio <input type="range" name="compress.left.ratio" class="config" min="1" max="20" value="1" /></label>
+      </fieldset>
 
-    <fieldset>
-      <legend>Compressor (Right)</legend>
+      <fieldset>
+        <legend>Compressor (Right)</legend>
 
-      <label>Enabled <input type="checkbox" name="compress.right.enabled" class="config" /></label>
-      <label>Threshold <input type="range" name="compress.right.threshold" class="config" min="-40" max="0" value="0" /></label>
-      <label>Ratio <input type="range" name="compress.right.ratio" class="config" min="1" max="20" value="1" /></label>
-    </fieldset>
+        <label>Enabled <input type="checkbox" name="compress.right.enabled" class="config" /></label>
+        <label>Threshold <input type="range" name="compress.right.threshold" class="config" min="-40" max="0" value="0" /></label>
+        <label>Ratio <input type="range" name="compress.right.ratio" class="config" min="1" max="20" value="1" /></label>
+      </fieldset>
+    </div>
+
+    <label>
+      Compress where
+      <select class="config" name="compress.entry">
+        <option value="before">Before filter</option>
+        <option value="after">After filter</option>
+      </select>
+    </label>
+
+    <div class="panel">
+      <fieldset>
+        <legend>Filter (Left)</legend>
+
+        <label>
+          Enabled <input type="checkbox" checked name="filter.left.enabled" class="config" />
+        </label>
+
+        <div class="panel filter-bands">
+          <label>125 <input type="range" orient="vertical" name="filter.left.125" class="config" min="-20" max="20" value="-15" /></label>
+          <label>250 <input type="range" orient="vertical" name="filter.left.250" class="config" min="-20" max="20" value="-10" /></label>
+          <label>500 <input type="range" orient="vertical" name="filter.left.500" class="config" min="-20" max="20" value="-5" /></label>
+          <label>1000 <input type="range" orient="vertical" name="filter.left.1000" class="config" min="-20" max="20" value="0" /></label>
+          <label>2000 <input type="range" orient="vertical" name="filter.left.2000" class="config" min="-20" max="20" value="5" /></label>
+          <label>4000 <input type="range" orient="vertical" name="filter.left.4000" class="config" min="-20" max="20" value="10" /></label>
+          <label>8000 <input type="range" orient="vertical" name="filter.left.8000" class="config" min="-20" max="20" value="15" /></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Filter (Right)</legend>
+
+        <label>
+          Enabled <input type="checkbox" checked name="filter.right.enabled" class="config" />
+        </label>
+
+        <div class="panel filter-bands">
+          <label>125 <input type="range" orient="vertical" name="filter.right.125" class="config" min="-20" max="20" value="15" /></label>
+          <label>250 <input type="range" orient="vertical" name="filter.right.250" class="config" min="-20" max="20" value="10" /></label>
+          <label>500 <input type="range" orient="vertical" name="filter.right.500" class="config" min="-20" max="20" value="5" /></label>
+          <label>1000 <input type="range" orient="vertical" name="filter.right.1000" class="config" min="-20" max="20" value="0" /></label>
+          <label>2000 <input type="range" orient="vertical" name="filter.right.2000" class="config" min="-20" max="20" value="-5" /></label>
+          <label>4000 <input type="range" orient="vertical" name="filter.right.4000" class="config" min="-20" max="20" value="-10" /></label>
+          <label>8000 <input type="range" orient="vertical" name="filter.right.8000" class="config" min="-20" max="20" value="-15" /></label>
+        </div>
+      </fieldset>
+    </div>
+
+    <button class="start">Start</button>
   </div>
-
-  <label>
-    Compress where
-    <select class="config" name="compress.entry">
-      <option value="before">Before filter</option>
-      <option value="after">After filter</option>
-    </select>
-  </label>
-
-  <div class="panel">
-    <fieldset>
-      <legend>Filter (Left)</legend>
-
-      <label>
-        Enabled <input type="checkbox" checked name="filter.left.enabled" class="config" />
-      </label>
-
-      <div class="panel filter-bands">
-        <label>125 <input type="range" orient="vertical" name="filter.left.125" class="config" min="-20" max="20" value="-15" /></label>
-        <label>250 <input type="range" orient="vertical" name="filter.left.250" class="config" min="-20" max="20" value="-10" /></label>
-        <label>500 <input type="range" orient="vertical" name="filter.left.500" class="config" min="-20" max="20" value="-5" /></label>
-        <label>1000 <input type="range" orient="vertical" name="filter.left.1000" class="config" min="-20" max="20" value="0" /></label>
-        <label>2000 <input type="range" orient="vertical" name="filter.left.2000" class="config" min="-20" max="20" value="5" /></label>
-        <label>4000 <input type="range" orient="vertical" name="filter.left.4000" class="config" min="-20" max="20" value="10" /></label>
-        <label>8000 <input type="range" orient="vertical" name="filter.left.8000" class="config" min="-20" max="20" value="15" /></label>
-      </div>
-    </fieldset>
-
-    <fieldset>
-      <legend>Filter (Right)</legend>
-
-      <label>
-        Enabled <input type="checkbox" checked name="filter.right.enabled" class="config" />
-      </label>
-
-      <div class="panel filter-bands">
-        <label>125 <input type="range" orient="vertical" name="filter.right.125" class="config" min="-20" max="20" value="15" /></label>
-        <label>250 <input type="range" orient="vertical" name="filter.right.250" class="config" min="-20" max="20" value="10" /></label>
-        <label>500 <input type="range" orient="vertical" name="filter.right.500" class="config" min="-20" max="20" value="5" /></label>
-        <label>1000 <input type="range" orient="vertical" name="filter.right.1000" class="config" min="-20" max="20" value="0" /></label>
-        <label>2000 <input type="range" orient="vertical" name="filter.right.2000" class="config" min="-20" max="20" value="-5" /></label>
-        <label>4000 <input type="range" orient="vertical" name="filter.right.4000" class="config" min="-20" max="20" value="-10" /></label>
-        <label>8000 <input type="range" orient="vertical" name="filter.right.8000" class="config" min="-20" max="20" value="-15" /></label>
-      </div>
-    </fieldset>
-  </div>
-
-  <button class="start">Start</button>
 
   <script src="<%= TOOLKIT_JS_PATH %>/3dti-toolkit-hls.js"></script>
   <script src="hls.example.bundle.js"></script>
