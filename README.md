@@ -8,11 +8,10 @@ JavaScript wrapper(s) for the 3DTI Toolkit. The wrapper is built using [Emscript
 * [Usage](#usage)
 * [Running examples in the browser](#running-examples-in-the-browser)
 
+
 ## Feature status
 
-* 🦄 - Works
-* 🤖 - Kinda works
-* 💔 - Doesn't work
+🦄 = Works, 🤖 = Kinda works, 💔 = Doesn't work
 
 **Hearing loss simulator**
 
@@ -30,7 +29,8 @@ JavaScript wrapper(s) for the 3DTI Toolkit. The wrapper is built using [Emscript
 
 * 🤖 Working demo
 * 🦄 Convenience helpers for easy drop-in replacement
-* 💔 Glitch-free playback
+* 🤖 Glitch-free playback
+
 
 ## Setup
 
@@ -59,6 +59,7 @@ git submodule update
 npm install
 ```
 
+
 ## Compiling the wrappers
 
 To build the three wrappers separately:
@@ -85,11 +86,13 @@ npm run build:toolkit:nix
 npm run build:toolkit:win
 ```
 
+
 ## Usage
 
 Ideas, new and old, on how this API should look and be consumed by developers are found inside [.idea](.idea).
 
 For example implementations, look in the examples' JavaScript files.
+
 
 ## Running examples in the browser
 
