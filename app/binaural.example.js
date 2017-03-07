@@ -110,19 +110,16 @@ function start() {
 }
 
 function updateListenerFromLookControls(listener, { x, y, z }) {
-  console.log('updateListenerFromLookControls', x, y, z)
   const rotation = new Vector3(
     x * Math.PI / 180,
     y * Math.PI / 180,
     z * Math.PI / 180,
   )
-  // console.log(rotation)
 
   const forward = new Vector3(0, 0, -1)
   forward.applyAxisAngle(X, rotation.x)
   forward.applyAxisAngle(Y, rotation.y)
   forward.applyAxisAngle(Z, rotation.z)
-  console.log(forward.x, forward.y, forward.z)
 
   const up = new Vector3(0, 1, 0)
   up.applyAxisAngle(X, rotation.x)
@@ -138,7 +135,6 @@ function setupLookControlsUpdates(listener) {
     const { name, newData } = evt.detail
 
     if (name === 'rotation') {
-      console.log(evt.detail)
       updateListenerFromLookControls(listener, newData)
     }
   })
