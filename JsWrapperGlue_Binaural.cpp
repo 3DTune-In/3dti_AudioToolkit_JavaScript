@@ -158,6 +158,7 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
    */
   class_<Binaural::CListener>("CListener")
     .smart_ptr<std::shared_ptr<Binaural::CListener>>("CListener_ptr")
+    .function("GetListenerTransform", &Binaural::CListener::GetListenerTransform)
     .function("SetListenerTransform", &Binaural::CListener::SetListenerTransform);
 
   class_<Binaural::CSingleSourceDSP>("CSingleSourceDSP")
@@ -168,10 +169,28 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 
   class_<CTransform>("CTransform")
     .constructor<>()
-    .function("SetPosition", &CTransform::SetPosition);
+    .function("GetPosition", &CTransform::GetPosition)
+    .function("SetPosition", &CTransform::SetPosition)
+    .function("GetOrientation", &CTransform::GetOrientation)
+    .function("SetOrientation", &CTransform::SetOrientation)
+    ;
 
   class_<CVector3>("CVector3")
-    .constructor<float, float, float>();
+    .constructor<float, float, float>()
+  	.property("x", &CVector3::x)
+  	.property("y", &CVector3::y)
+  	.property("z", &CVector3::z)
+    .function("CrossProduct", &CVector3::CrossProduct)
+    ;
+
+  class_<CQuaternion>("CQuaternion")
+  	.class_function("FromAxisAngle", &CQuaternion::FromAxisAngle)
+  	.constructor<float, CVector3>()
+  	.property("x", &CQuaternion::x)
+  	.property("y", &CQuaternion::y)
+  	.property("z", &CQuaternion::z)
+  	.property("w", &CQuaternion::w)
+  	;
 
   /**
    * BinauralAPI bindings

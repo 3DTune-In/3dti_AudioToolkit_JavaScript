@@ -4,6 +4,8 @@
   "description": "",
   "main": "binaural-hrir-urls.js",
   "scripts": {
+    "prebuild:src": "rimraf dist",
+    "build:src": "babel --out-dir dist src",
     "bundle": "globify \"*.example.js\" -t babelify -o \"*.bundle.js\" --debug",
     "start": "node index.js"
   },

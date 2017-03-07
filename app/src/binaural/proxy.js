@@ -4,13 +4,14 @@ import enableCustomConnects from 'custom-audio-node-connect'
 // TODO: Don't depend on window.Module, use import instead
 const {
   CVector3,
+  CQuaternion,
   CTransform,
   CMonoBuffer,
   CStereoBuffer,
   BinauralAPI,
 } = window.Module
 
-const AxisPositionParam = createAudioParam('axisPosition', 0, -1000, 1000)
+const MAX_SAFE_INTEGER = Math.pow(2, 53) - 1
 
 /**
  * Returns a property descriptor that will throw an error when trying
@@ -47,9 +48,10 @@ function unimplementedPropertyDescriptor(name) {
  * Adds position{X,Y,Z} audio param (shims) to an object.
  */
 function addPositionParams(audioCtx, target) {
-  const positionX = new AxisPositionParam(audioCtx)
-  const positionY = new AxisPositionParam(audioCtx)
-  const positionZ = new AxisPositionParam(audioCtx)
+  const AxisPosition = createAudioParam('AxisPosition', 0, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER)
+  const positionX = new AxisPosition(audioCtx)
+  const positionY = new AxisPosition(audioCtx)
+  const positionZ = new AxisPosition(audioCtx)
 
   Object.defineProperty(target, 'positionX', readOnlyPropertyDescriptor('positionX', positionX))
   Object.defineProperty(target, 'positionY', readOnlyPropertyDescriptor('positionY', positionY))
@@ -60,6 +62,36 @@ function addPositionParams(audioCtx, target) {
       target.positionX.value = x
       target.positionY.value = y
       target.positionZ.value = z
+    },
+  })
+}
+
+/**
+ * Adds orientation params to an object
+ */
+function addOrientationParams(audioCtx, target) {
+  const forwardX = new (createAudioParam('OrientationComponent', 0, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER))(audioCtx)
+  const forwardY = new (createAudioParam('OrientationComponent', 0, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER))(audioCtx)
+  const forwardZ = new (createAudioParam('OrientationComponent', -1, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER))(audioCtx)
+  const upX = new (createAudioParam('OrientationComponent', 0, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER))(audioCtx)
+  const upY = new (createAudioParam('OrientationComponent', 1, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER))(audioCtx)
+  const upZ = new (createAudioParam('OrientationComponent', 0, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER))(audioCtx)
+
+  Object.defineProperty(target, 'forwardX', readOnlyPropertyDescriptor('forwardX', forwardX))
+  Object.defineProperty(target, 'forwardY', readOnlyPropertyDescriptor('forwardY', forwardY))
+  Object.defineProperty(target, 'forwardZ', readOnlyPropertyDescriptor('forwardZ', forwardZ))
+  Object.defineProperty(target, 'upX', readOnlyPropertyDescriptor('upX', upX))
+  Object.defineProperty(target, 'upY', readOnlyPropertyDescriptor('upY', upY))
+  Object.defineProperty(target, 'upZ', readOnlyPropertyDescriptor('upZ', upZ))
+
+  Object.defineProperty(target, 'setOrientation', {
+    value: function(fX, fY, fZ, uX, uY, uZ) {
+      target.forwardX.value = fX
+      target.forwardY.value = fY
+      target.forwardZ.value = fZ
+      target.upX.value = uX
+      target.upY.value = uY
+      target.upZ.value = uZ
     },
   })
 }
@@ -76,6 +108,40 @@ function updateListenerPosition(listener) {
 
   position.delete()
   sourceTransform.delete()
+}
+
+/**
+ * Returns a CQuaternion given an forward and up vector for a listener
+ */
+function getQuaternionFromOrientationVectors(forward, up) {
+  const yaw = Math.atan2(forward.x, forward.z) - Math.atan2(0, -1)
+  const quaternion = CQuaternion.FromAxisAngle(new CVector3(0, 1, 0), yaw)
+  // const pitch = Math.atan2(forward.y, forward.z) - Math.atan2(0, -1)
+  // const roll = Math.atan2(forward.x, forward.y) - Math.atan2(0, -1)
+  // const quaternion = CQuaternion.FromYawPitchRoll(yaw, pitch, roll)
+  return quaternion
+}
+
+/**
+ * Updates a CListener's orientation by converting its forward*
+ * and up* params into a quaternion rotation and applying that
+ * as a CTransform.
+ */
+function updateListenerOrientation(listener) {
+  const transform = new CTransform()
+  transform.SetPosition(listener.GetListenerTransform().GetPosition())
+
+  const forward = new CVector3(listener.forwardX.value, listener.forwardY.value, listener.forwardZ.value)
+  const up = new CVector3(listener.upX.value, listener.upY.value, listener.upZ.value)
+  const quaternion = getQuaternionFromOrientationVectors(forward, up)
+  transform.SetOrientation(quaternion)
+
+  listener.SetListenerTransform(transform)
+
+  forward.delete()
+  up.delete()
+  transform.delete()
+  quaternion.delete()
 }
 
 /**
@@ -98,28 +164,38 @@ function updateSourcePosition(source, panner) {
 function createListener(audioCtx, hrirs) {
   const listener = api.CreateListener(hrirs, 0.0875)
 
+  const updateListener = () => {
+    updateListenerPosition(listener)
+    updateListenerOrientation(listener)
+  }
+
   // Listener position params
   addPositionParams(audioCtx, listener)
 
-  // TODO: This will effectively cause `setPosition(x, y, z)` to trigger
-  // three updates to the listener's position. Ideally, we should commit
-  // everything in one single update.
-  listener.positionX.subscribe(() => updateListenerPosition(listener))
-  listener.positionY.subscribe(() => updateListenerPosition(listener))
-  listener.positionZ.subscribe(() => updateListenerPosition(listener))
+  listener.positionX.subscribe(updateListener)
+  listener.positionY.subscribe(updateListener)
+  listener.positionZ.subscribe(updateListener)
 
   listener.positionX.value = listener.positionX.defaultValue
   listener.positionY.value = listener.positionY.defaultValue
   listener.positionZ.value = listener.positionZ.defaultValue
 
-  // Add properties that are not yet implemented
-  Object.defineProperty(listener, 'forwardX', unimplementedPropertyDescriptor('forwardX'))
-  Object.defineProperty(listener, 'forwardY', unimplementedPropertyDescriptor('forwardY'))
-  Object.defineProperty(listener, 'forwardZ', unimplementedPropertyDescriptor('forwardZ'))
-  Object.defineProperty(listener, 'upX', unimplementedPropertyDescriptor('upX'))
-  Object.defineProperty(listener, 'upY', unimplementedPropertyDescriptor('upY'))
-  Object.defineProperty(listener, 'upZ', unimplementedPropertyDescriptor('upZ'))
-  Object.defineProperty(listener, 'setOrientation', unimplementedPropertyDescriptor('setOrientation'))
+  // Listener orientation params
+  addOrientationParams(audioCtx, listener)
+
+  listener.forwardX.value = listener.forwardX.defaultValue
+  listener.forwardY.value = listener.forwardY.defaultValue
+  listener.forwardZ.value = listener.forwardZ.defaultValue
+  listener.upX.value = listener.upX.defaultValue
+  listener.upY.value = listener.upY.defaultValue
+  listener.upZ.value = listener.upZ.defaultValue
+
+  listener.forwardX.subscribe(updateListener)
+  listener.forwardY.subscribe(updateListener)
+  listener.forwardZ.subscribe(updateListener)
+  listener.upX.subscribe(updateListener)
+  listener.upY.subscribe(updateListener)
+  listener.upZ.subscribe(updateListener)
 
   return listener
 }
