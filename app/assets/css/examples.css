@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-html {
+html, body {
   margin: 0;
   padding: 0;
   background: #fafafa;
@@ -13,10 +13,6 @@ html {
 body {
   color: #393F44;
   font-family: "Space Mono", monospace;
-}
-
-body.wide {
-  max-width: 800px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -44,6 +40,10 @@ a:hover {
   width: 90%;
   max-width: 400px;
   margin: 40px auto;
+}
+
+.content.wide {
+  max-width: 800px;
 }
 
 .panel {

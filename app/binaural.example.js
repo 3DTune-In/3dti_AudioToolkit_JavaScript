@@ -7,12 +7,19 @@ import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
 
 import hrirUrls from './binaural-hrir-urls.js'
 
+const { Vector3 } = window.AFRAME.THREE
+
+const X = new Vector3(1, 0, 0)
+const Y = new Vector3(0, 1, 0)
+const Z = new Vector3(0, 0, 1)
+
 let configs = getConfigs()
 
 const ctx = new AudioContext()
 
 const $start = document.querySelector('.start')
 const $box = document.querySelector('.box')
+const $look = document.querySelector('.look')
 
 $start.removeAttribute('disabled')
 $start.addEventListener('click', function() {
@@ -28,9 +35,8 @@ function ensureDistance(position, minDistance = 1) {
   else if (position < 0 && position > minDistance) {
     return -minDistance
   }
-  else {
-    return position
-  }
+
+  return position
 }
 
 function start() {
@@ -94,9 +100,46 @@ function start() {
 
     updateX()
     update3d()
+
+    setupLookControlsUpdates(proxiedCtx.listener)
   })
   .catch(err => {
     console.error(err)
     console.log(err.stack)
+  })
+}
+
+function updateListenerFromLookControls(listener, { x, y, z }) {
+  console.log('updateListenerFromLookControls', x, y, z)
+  const rotation = new Vector3(
+    x * Math.PI / 180,
+    y * Math.PI / 180,
+    z * Math.PI / 180,
+  )
+  // console.log(rotation)
+
+  const forward = new Vector3(0, 0, -1)
+  forward.applyAxisAngle(X, rotation.x)
+  forward.applyAxisAngle(Y, rotation.y)
+  forward.applyAxisAngle(Z, rotation.z)
+  console.log(forward.x, forward.y, forward.z)
+
+  const up = new Vector3(0, 1, 0)
+  up.applyAxisAngle(X, rotation.x)
+  up.applyAxisAngle(Y, rotation.y)
+  up.applyAxisAngle(Z, rotation.z)
+  // console.log(up.x, up.y, up.z)
+
+  listener.setOrientation(forward.x, forward.y, forward.z, up.x, up.y, up.z)
+}
+
+function setupLookControlsUpdates(listener) {
+  $look.addEventListener('componentchanged', evt => {
+    const { name, newData } = evt.detail
+
+    if (name === 'rotation') {
+      console.log(evt.detail)
+      updateListenerFromLookControls(listener, newData)
+    }
   })
 }

@@ -12,6 +12,7 @@
   "author": "Alexander Wallin <office@alexanderwallin.com> (http://alexanderwallin.com)",
   "license": "ISC",
   "dependencies": {
+    "aframe": "^0.5.0",
     "audio-param-shim": "^1.0.4",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
