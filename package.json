@@ -3,6 +3,9 @@
   "version": "0.2.0",
   "description": "JavaScript port of the 3D Tune-In Toolkit",
   "main": "build/3dti-toolkit.min.js",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "lint": "eslint app",
     "clean": "rimraf \"build/*\" \"!build/.gitkeep\"",
