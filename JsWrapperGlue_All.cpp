@@ -206,6 +206,9 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("SetDirectionalityExtendL_dB", &CHearingAidSim::SetDirectionalityExtendL_dB)
   	.function("SetDirectionalityExtendR_dB", &CHearingAidSim::SetDirectionalityExtendR_dB)
   	.function("ApplyFig6Alg", &CHearingAidSim::ApplyFig6Alg)
+  	.property("addNoiseBefore", &CHearingAidSim::addNoiseBefore)
+  	.property("addNoiseAfter", &CHearingAidSim::addNoiseAfter)
+  	.property("noiseNumBits", &CHearingAidSim::noiseNumBits)
   	;
 
   /**

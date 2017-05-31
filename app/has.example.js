@@ -33,6 +33,10 @@ has.Setup(
   parseFloat(configs['filter.hpf.q'])
 )
 
+has.addNoiseBefore = true
+has.addNoiseAfter = true
+has.noiseNumBits = 8
+
 function updateFilters() {
   has.SetLevelBandGain_dB(0, 0, parseFloat(configs['filter.left.125']), true)
   has.SetLevelBandGain_dB(0, 1, parseFloat(configs['filter.left.250']), true)
