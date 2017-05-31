@@ -48,5 +48,6 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("GetDirectionalityAtt", &CHearingAidSim::GetDirectionalityAtt)
   	.function("SetDirectionalityExtendL_dB", &CHearingAidSim::SetDirectionalityExtendL_dB)
   	.function("SetDirectionalityExtendR_dB", &CHearingAidSim::SetDirectionalityExtendR_dB)
+  	.function("ApplyFig6Alg", &CHearingAidSim::ApplyFig6Alg)
   	;
 }
