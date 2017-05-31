@@ -28,6 +28,6 @@ emcc ^
   3DTI_Toolkit_Core/Common/Vector3.cpp ^
   3DTI_Toolkit_Core/Common/fftsg.cpp ^
   3DTI_Toolkit_Core/HAHLSimulation/DynamicEqualizer.cpp ^
-  3DTI_Toolkit_Core/HAHLSimulation/EnvelopeDetector.cpp ^
+  3DTI_Toolkit_Core/Common/EnvelopeDetector.cpp ^
   3DTI_Toolkit_Core/HAHLSimulation/FiltersBank.cpp ^
   3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.cpp

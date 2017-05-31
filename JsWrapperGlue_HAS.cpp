@@ -4,7 +4,6 @@
 #include "glue/Logger.hpp"
 #include "3DTI_Toolkit_Core/Common/Buffer.h"
 #include "3DTI_Toolkit_Core/Common/Debugger.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/Compressor.h"
 // #include "3DTI_Toolkit_Core/HAHLSimulation/DynamicEqualizer.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.h"
 

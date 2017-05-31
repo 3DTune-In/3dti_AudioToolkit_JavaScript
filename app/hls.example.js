@@ -2,7 +2,7 @@ import logCppErrors from './common/logger.js'
 import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
 import { fetchAudio } from './common/fetch.js'
 
-const { CHearingLossSim, CStereoBuffer, CCompressor } = window.Module
+const { CHearingLossSim, CStereoBuffer, CDynamicCompressorMono } = window.Module
 
 // Setup logger
 logCppErrors()
@@ -40,14 +40,24 @@ function updateFilters() {
 }
 
 function updateCompressors() {
-  const compL = new CCompressor()
-  compL.threshold = parseFloat(configs['compress.left.threshold'])
-  compL.ratio = parseFloat(configs['compress.left.ratio'])
+  const compL = new CDynamicCompressorMono()
+  compL.Setup(
+    44100,
+    parseFloat(configs['compress.left.ratio']),
+    parseFloat(configs['compress.left.threshold']),
+    100, // Attack
+    100 // Release
+  )
   hls.Compr_L = compL
 
-  const compR = new CCompressor()
-  compR.threshold = parseFloat(configs['compress.right.threshold'])
-  compR.ratio = parseFloat(configs['compress.right.ratio'])
+  const compR = new CDynamicCompressorMono()
+  compR.Setup(
+    44100,
+    parseFloat(configs['compress.right.ratio']),
+    parseFloat(configs['compress.right.threshold']),
+    100, // Attack
+    100 // Release
+  )
   hls.Compr_R = compR
 
   compL.delete()

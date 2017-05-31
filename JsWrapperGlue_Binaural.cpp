@@ -53,14 +53,14 @@ public:
    * Returns a CHRTF instance populated with all the data from
    * the provided HRIR instances.
    */
-  CHRTF CreateHRTF(std::vector<HRIR> hrirs)
+  void CreateHRTF(shared_ptr<Binaural::CListener> listener, std::vector<HRIR> hrirs)
   {
     const int length = 512;
 
-    CHRTF hrtf;
+    Binaural::CHRTF hrtf;
 
     // TODO: Make frame rate into a parameter/variable
-    hrtf.BeginSetup(hrirs.size(), length, 44100);
+    listener->GetHRTF()->BeginSetup(hrirs.size());
 
     for (int i = 0; i < hrirs.size(); ++i)
     {
@@ -81,12 +81,10 @@ public:
         hrir_value.rightHRIR[j] = h.rightBuffer[j];
       }
 
-      hrtf.AddHRIR(h.azimuth, h.elevation, std::move(hrir_value));
+      listener->GetHRTF()->AddHRIR(h.azimuth, h.elevation, std::move(hrir_value));
     }
 
-    hrtf.EndSetup();
-
-    return hrtf;
+    listener->GetHRTF()->EndSetup();
   }
 
   /**
@@ -99,8 +97,7 @@ public:
   {
     shared_ptr<Binaural::CListener> listener = core.CreateListener(listenerHeadRadius);
 
-    CHRTF myHead = CreateHRTF(hrirs);
-    listener->LoadHRTF(std::move(myHead));
+    CreateHRTF(listener, hrirs);
 
     return listener;
   }

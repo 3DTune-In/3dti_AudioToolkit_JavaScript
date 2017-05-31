@@ -12,7 +12,5 @@ emcc \
   -s ABORTING_MALLOC=0 \
   JsWrapperGlue_HLS.cpp \
   3DTI_Toolkit_Core/Common/*.cpp \
-  3DTI_Toolkit_Core/HAHLSimulation/Compressor.cpp \
-  3DTI_Toolkit_Core/HAHLSimulation/EnvelopeDetector.cpp \
   3DTI_Toolkit_Core/HAHLSimulation/FiltersBank.cpp \
   3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.cpp

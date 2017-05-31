@@ -4,9 +4,9 @@
 #include "glue/Logger.hpp"
 #include "3DTI_Toolkit_Core/Common/Buffer.h"
 #include "3DTI_Toolkit_Core/Common/Debugger.h"
+#include "3DTI_Toolkit_Core/Common/DynamicCompressorMono.h"
 // #include "3DTI_Toolkit_Core/Common/Quaternion.h"
 // #include "3DTI_Toolkit_Core/Common/Transform.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/Compressor.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.h"
 
 using namespace emscripten;
@@ -52,12 +52,12 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	;
 
   /**
-   * Compressor
+   * Dynamic Compressor
    */
-  class_<CCompressor>("CCompressor")
+  class_<CDynamicCompressorMono>("CDynamicCompressorMono")
   	.constructor<>()
-  	.property("knee", &CCompressor::knee)
-  	.property("ratio", &CCompressor::ratio)
-  	.property("threshold", &CCompressor::threshold)
+  	.function("Setup", &CDynamicCompressorMono::Setup)
+  	.function("GetAttack", &CDynamicCompressorMono::GetAttack)
+  	.function("GetRelease", &CDynamicCompressorMono::GetRelease)
   	;
 }

@@ -4,9 +4,9 @@
 #include "glue/Logger.hpp"
 #include "3DTI_Toolkit_Core/Common/Buffer.h"
 #include "3DTI_Toolkit_Core/Common/Debugger.h"
+#include "3DTI_Toolkit_Core/Common/DynamicCompressorMono.h"
 #include "3DTI_Toolkit_Core/Common/Quaternion.h"
 #include "3DTI_Toolkit_Core/Common/Transform.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/Compressor.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.h"
 #include "3DTI_Toolkit_Core/BinauralSpatializer/HRTF.h"
@@ -56,14 +56,14 @@ public:
    * Returns a CHRTF instance populated with all the data from
    * the provided HRIR instances.
    */
-  CHRTF CreateHRTF(std::vector<HRIR> hrirs)
+  void CreateHRTF(shared_ptr<Binaural::CListener> listener, std::vector<HRIR> hrirs)
   {
     const int length = 512;
 
-    CHRTF hrtf;
+    Binaural::CHRTF hrtf;
 
     // TODO: Make frame rate into a parameter/variable
-    hrtf.BeginSetup(hrirs.size(), length, 44100);
+    listener->GetHRTF()->BeginSetup(hrirs.size());
 
     for (int i = 0; i < hrirs.size(); ++i)
     {
@@ -84,12 +84,10 @@ public:
         hrir_value.rightHRIR[j] = h.rightBuffer[j];
       }
 
-      hrtf.AddHRIR(h.azimuth, h.elevation, std::move(hrir_value));
+      listener->GetHRTF()->AddHRIR(h.azimuth, h.elevation, std::move(hrir_value));
     }
 
-    hrtf.EndSetup();
-
-    return hrtf;
+    listener->GetHRTF()->EndSetup();
   }
 
   /**
@@ -102,8 +100,7 @@ public:
   {
     shared_ptr<Binaural::CListener> listener = core.CreateListener(listenerHeadRadius);
 
-    CHRTF myHead = CreateHRTF(hrirs);
-    listener->LoadHRTF(std::move(myHead));
+    CreateHRTF(listener, hrirs);
 
     return listener;
   }
@@ -165,15 +162,13 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 		;
 
 	/**
-   * Compressor
+   * Dynamic Compressor
    */
-  class_<CCompressor>("CCompressor")
+  class_<CDynamicCompressorMono>("CDynamicCompressorMono")
   	.constructor<>()
-  	.property("knee", &CCompressor::knee)
-  	.property("ratio", &CCompressor::ratio)
-  	.property("threshold", &CCompressor::threshold)
-  	.function("Setup", &CCompressor::Setup)
-  	.function("Process", &CCompressor::Process)
+  	.function("Setup", &CDynamicCompressorMono::Setup)
+  	.function("GetAttack", &CDynamicCompressorMono::GetAttack)
+  	.function("GetRelease", &CDynamicCompressorMono::GetRelease)
   	;
 
 	/**

@@ -36,6 +36,6 @@ emcc ^
   3DTI_Toolkit_Core/BinauralSpatializer/SingleSourceDSP.cpp ^
   3DTI_Toolkit_Core/BinauralSpatializer/UPCBinaural.cpp ^
   3DTI_Toolkit_Core/HAHLSimulation/DynamicEqualizer.cpp ^
-  3DTI_Toolkit_Core/HAHLSimulation/EnvelopeDetector.cpp ^
+  3DTI_Toolkit_Core/Common/EnvelopeDetector.cpp ^
   3DTI_Toolkit_Core/HAHLSimulation/FiltersBank.cpp ^
   3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.cpp

@@ -17,6 +17,8 @@ emcc ^
   3DTI_Toolkit_Core/Common/Buffer.cpp ^
   3DTI_Toolkit_Core/Common/Debugger.cpp ^
   3DTI_Toolkit_Core/Common/DistanceAttenuator.cpp ^
+  3DTI_Toolkit_Core/Common/DynamicCompressor.cpp ^
+  3DTI_Toolkit_Core/Common/EnvelopeDetector.cpp ^
   3DTI_Toolkit_Core/Common/FarDistanceEffects.cpp ^
   3DTI_Toolkit_Core/Common/Fconvolver.cpp ^
   3DTI_Toolkit_Core/Common/Fig6Algorithm.cpp ^
@@ -27,7 +29,5 @@ emcc ^
   3DTI_Toolkit_Core/Common/Transform.cpp ^
   3DTI_Toolkit_Core/Common/Vector3.cpp ^
   3DTI_Toolkit_Core/Common/fftsg.cpp ^
-  3DTI_Toolkit_Core/HAHLSimulation/Compressor.cpp ^
-  3DTI_Toolkit_Core/HAHLSimulation/EnvelopeDetector.cpp ^
   3DTI_Toolkit_Core/HAHLSimulation/FiltersBank.cpp ^
   3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.cpp
