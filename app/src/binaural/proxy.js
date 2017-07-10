@@ -29,18 +29,23 @@ function readOnlyPropertyDescriptor(name, value) {
 }
 
 /**
- * Adds a property that throws a TypeError when invoked.
+ * Adds a property that merely stores and returns a value, and
+ * logs an unimplemented warning to the console.
  */
 function unimplementedPropertyDescriptor(name) {
-  const accessor = () => {
-    throw new TypeError(`${name} is not yet implemented.`)
-  }
+  let value
 
   return {
     configurable: false,
     enumerable: true,
-    get: accessor,
-    set: accessor,
+    get: () => {
+      console.warn(`${name} is not yet implemented.`)
+      return value
+    },
+    set: (newValue) => {
+      console.warn(`${name} is not yet implemented.`)
+      value = newValue
+    },
   }
 }
 
@@ -303,7 +308,6 @@ export default function withBinauralListener(audioCtx, hrirs) {
     Object.defineProperty(panner, 'panningModel', unimplementedPropertyDescriptor('panningModel'))
     Object.defineProperty(panner, 'refDistance', unimplementedPropertyDescriptor('refDistance'))
     Object.defineProperty(panner, 'rolloffFactor', unimplementedPropertyDescriptor('rolloffFactor'))
-    Object.defineProperty(panner, 'setOrientation', unimplementedPropertyDescriptor('setOrientation'))
 
     addPositionParams(this, panner)
     panner.positionX.subscribe(() => updateSourcePosition(source, panner))
@@ -313,6 +317,9 @@ export default function withBinauralListener(audioCtx, hrirs) {
     panner.positionX.value = panner.positionX.defaultValue
     panner.positionY.value = panner.positionY.defaultValue
     panner.positionZ.value = panner.positionZ.defaultValue
+
+    // Adds useless setOrientation() method, for compatibility
+    addOrientationParams(this, panner)
 
     return panner
   }.bind(audioCtxProxy)
