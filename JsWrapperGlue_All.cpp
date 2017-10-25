@@ -162,6 +162,14 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 		;
 
 	/**
+	 * T_ear
+	 */
+	enum_<T_ear>("T_ear")
+		.value("LEFT", T_ear::LEFT)
+		.value("RIGHT", T_ear::RIGHT)
+		;
+
+	/**
    * Dynamic Compressor
    */
   class_<CDynamicCompressorMono>("CDynamicCompressorMono")
@@ -177,16 +185,17 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   class_<CHearingLossSim>("CHearingLossSim")
   	.constructor<>()
   	.function("Setup", &CHearingLossSim::Setup)
-  	.function("SetGains_dB", &CHearingLossSim::SetGains_dB)
-  	.function("SetBandGain_dB", &CHearingLossSim::SetBandGain_dB)
-  	.function("Process", select_overload<void(
-  		CStereoBuffer<float> &inputBuffer, CStereoBuffer<float> &outputBuffer,
-			bool fbProcessLeft, bool fbProcessRight,
-			bool compressorFirst,
-			bool compressL, bool compressR
+  	.function("SetHearingLevel_dBHL", &CHearingLossSim::SetHearingLevel_dBHL)
+  	.function("ProcessMono", select_overload<void(
+  		T_ear ear,
+  		CMonoBuffer<float> &inputBuffer,
+  		CMonoBuffer<float> &outputBuffer
 		)>(&CHearingLossSim::Process))
-  	.property("Compr_L", &CHearingLossSim::Compr_L)
-  	.property("Compr_R", &CHearingLossSim::Compr_R)
+		.function("ProcessStereo", select_overload<void(
+  		T_ear ear,
+  		CStereoBuffer<float> &inputBuffer,
+  		CStereoBuffer<float> &outputBuffer
+		)>(&CHearingLossSim::Process))
   	;
 
 	/**
@@ -201,10 +210,10 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("ConfigLPF", &CHearingAidSim::ConfigLPF)
   	.function("ConfigHPF", &CHearingAidSim::ConfigHPF)
   	.function("Process", &CHearingAidSim::Process)
-  	.function("ProcessDirectionality", &CHearingAidSim::ProcessDirectionality)
-  	.function("GetDirectionalityAtt", &CHearingAidSim::GetDirectionalityAtt)
-  	.function("SetDirectionalityExtendL_dB", &CHearingAidSim::SetDirectionalityExtendL_dB)
-  	.function("SetDirectionalityExtendR_dB", &CHearingAidSim::SetDirectionalityExtendR_dB)
+  	// .function("ProcessDirectionality", &CHearingAidSim::ProcessDirectionality)
+  	// .function("GetDirectionalityAtt", &CHearingAidSim::GetDirectionalityAtt)
+  	// .function("SetDirectionalityExtendL_dB", &CHearingAidSim::SetDirectionalityExtendL_dB)
+  	// .function("SetDirectionalityExtendR_dB", &CHearingAidSim::SetDirectionalityExtendR_dB)
   	.function("ApplyFig6Alg", &CHearingAidSim::ApplyFig6Alg)
   	.property("addNoiseBefore", &CHearingAidSim::addNoiseBefore)
   	.property("addNoiseAfter", &CHearingAidSim::addNoiseAfter)
@@ -221,8 +230,33 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 
   class_<Binaural::CSingleSourceDSP>("CSingleSourceDSP")
     .smart_ptr<std::shared_ptr<Binaural::CSingleSourceDSP>>("CSingleSourceDSP_ptr")
+		.function("EnableInterpolation", &Binaural::CSingleSourceDSP::EnableInterpolation)
+		.function("DisableInterpolation", &Binaural::CSingleSourceDSP::DisableInterpolation)
+		.function("IsInterpolationEnabled", &Binaural::CSingleSourceDSP::IsInterpolationEnabled)
+		.function("EnableAnechoicProcess", &Binaural::CSingleSourceDSP::EnableAnechoicProcess)
+		.function("DisableAnechoicProcess", &Binaural::CSingleSourceDSP::DisableAnechoicProcess)
+		.function("IsAnechoicProcessEnabled", &Binaural::CSingleSourceDSP::IsAnechoicProcessEnabled)
+		.function("EnableReverbProcess", &Binaural::CSingleSourceDSP::EnableReverbProcess)
+		.function("DisableReverbProcess", &Binaural::CSingleSourceDSP::DisableReverbProcess)
+		.function("IsReverbProcessEnabled", &Binaural::CSingleSourceDSP::IsReverbProcessEnabled)
+		.function("EnableFarDistanceEffect", &Binaural::CSingleSourceDSP::EnableFarDistanceEffect)
+		.function("DisableFarDistanceEffect", &Binaural::CSingleSourceDSP::DisableFarDistanceEffect)
+		.function("IsFarDistanceEffectEnabled", &Binaural::CSingleSourceDSP::IsFarDistanceEffectEnabled)
+		.function("EnableDistanceAttenuationAnechoic", &Binaural::CSingleSourceDSP::EnableDistanceAttenuationAnechoic)
+		.function("DisableDistanceAttenuationAnechoic", &Binaural::CSingleSourceDSP::DisableDistanceAttenuationAnechoic)
+		.function("IsDistanceAttenuationEnabledAnechoic", &Binaural::CSingleSourceDSP::IsDistanceAttenuationEnabledAnechoic)
+		.function("EnableDistanceAttenuationReverb", &Binaural::CSingleSourceDSP::EnableDistanceAttenuationReverb)
+		.function("DisableDistanceAttenuationReverb", &Binaural::CSingleSourceDSP::DisableDistanceAttenuationReverb)
+		.function("IsDistanceAttenuationEnabledReverb", &Binaural::CSingleSourceDSP::IsDistanceAttenuationEnabledReverb)
+		.function("EnableNearFieldEffect", &Binaural::CSingleSourceDSP::EnableNearFieldEffect)
+		.function("DisableNearFieldEffect", &Binaural::CSingleSourceDSP::DisableNearFieldEffect)
+		.function("IsNearFieldEffectEnabled", &Binaural::CSingleSourceDSP::IsNearFieldEffectEnabled)
+		.function("ResetSourceBuffers", &Binaural::CSingleSourceDSP::ResetSourceBuffers)
     .function("SetSourceTransform", &Binaural::CSingleSourceDSP::SetSourceTransform)
-    .function("ProcessAnechoic", select_overload<void(const Binaural::CListener &, const CMonoBuffer<float> &, CStereoBuffer<float> &)>(&Binaural::CSingleSourceDSP::ProcessAnechoic))
+    .function("ProcessAnechoic", select_overload<void(
+    	const CMonoBuffer<float> &, 
+    	CStereoBuffer<float> &
+    )>(&Binaural::CSingleSourceDSP::ProcessAnechoic))
     ;
 
   class_<CTransform>("CTransform")

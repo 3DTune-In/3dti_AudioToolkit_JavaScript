@@ -272,7 +272,7 @@ export default function withBinauralListener(audioCtx, hrirs) {
         inputMonoBuffer.set(i, inputData[i])
       }
 
-      source.ProcessAnechoic(this.listener, inputMonoBuffer, outputStereoBuffer)
+      source.ProcessAnechoic(inputMonoBuffer, outputStereoBuffer)
 
       const outputDataLeft = outputBuffer.getChannelData(0)
       const outputDataRight = outputBuffer.getChannelData(1)
