@@ -226,10 +226,19 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   class_<Binaural::CListener>("CListener")
     .smart_ptr<std::shared_ptr<Binaural::CListener>>("CListener_ptr")
     .function("GetListenerTransform", &Binaural::CListener::GetListenerTransform)
-    .function("SetListenerTransform", &Binaural::CListener::SetListenerTransform);
+    .function("SetListenerTransform", &Binaural::CListener::SetListenerTransform)
+    .function("EnableCustomizedITD", &Binaural::CListener::EnableCustomizedITD)
+    ;
+
+  enum_<Binaural::TSpatializationMode>("TSpatializationMode")
+  	.value("None", Binaural::TSpatializationMode::None)
+  	.value("HighPerformance", Binaural::TSpatializationMode::HighPerformance)
+  	.value("HighQuality", Binaural::TSpatializationMode::HighQuality)
+  	;
 
   class_<Binaural::CSingleSourceDSP>("CSingleSourceDSP")
     .smart_ptr<std::shared_ptr<Binaural::CSingleSourceDSP>>("CSingleSourceDSP_ptr")
+    .function("SetSourceTransform", &Binaural::CSingleSourceDSP::SetSourceTransform)
 		.function("EnableInterpolation", &Binaural::CSingleSourceDSP::EnableInterpolation)
 		.function("DisableInterpolation", &Binaural::CSingleSourceDSP::DisableInterpolation)
 		.function("IsInterpolationEnabled", &Binaural::CSingleSourceDSP::IsInterpolationEnabled)
@@ -252,7 +261,8 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 		.function("DisableNearFieldEffect", &Binaural::CSingleSourceDSP::DisableNearFieldEffect)
 		.function("IsNearFieldEffectEnabled", &Binaural::CSingleSourceDSP::IsNearFieldEffectEnabled)
 		.function("ResetSourceBuffers", &Binaural::CSingleSourceDSP::ResetSourceBuffers)
-    .function("SetSourceTransform", &Binaural::CSingleSourceDSP::SetSourceTransform)
+		.function("SetSpatializationMode", &Binaural::CSingleSourceDSP::SetSpatializationMode)
+		.function("GetSpatializationMode", &Binaural::CSingleSourceDSP::GetSpatializationMode)
     .function("ProcessAnechoic", select_overload<void(
     	const CMonoBuffer<float> &, 
     	CStereoBuffer<float> &

@@ -8,6 +8,7 @@ const {
   CTransform,
   CMonoBuffer,
   CStereoBuffer,
+  TSpatializationMode,
   BinauralAPI,
 } = window.Module
 
@@ -221,6 +222,9 @@ export default function withBinauralListener(audioCtx, hrirs) {
    */
   let listener = createListener(audioCtx, hrirs)
 
+  // Customized ITD is required for the HighPerformance mode to work
+  listener.EnableCustomizedITD()
+
   // Override the `AudioContext`'s connect method, allowing arbitrary nodes,
   // in our case a custom panner, to be added to chains.
   enableCustomConnects(audioCtx, node => node.input || node)
@@ -255,6 +259,7 @@ export default function withBinauralListener(audioCtx, hrirs) {
     }
 
     const source = api.CreateSource()
+    source.SetSpatializationMode(TSpatializationMode.HighPerformance)
     const scriptNode = this.createScriptProcessor(512, 2, 2)
 
     const inputMonoBuffer = new CMonoBuffer()
