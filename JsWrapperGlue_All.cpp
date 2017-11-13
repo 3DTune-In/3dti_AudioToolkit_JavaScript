@@ -227,6 +227,8 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
     .smart_ptr<std::shared_ptr<Binaural::CListener>>("CListener_ptr")
     .function("GetListenerTransform", &Binaural::CListener::GetListenerTransform)
     .function("SetListenerTransform", &Binaural::CListener::SetListenerTransform)
+    .function("SetHeadRadius", &Binaural::CListener::SetHeadRadius)
+    .function("GetHeadRadius", &Binaural::CListener::SetHeadRadius)
     .function("EnableCustomizedITD", &Binaural::CListener::EnableCustomizedITD)
     ;
 
