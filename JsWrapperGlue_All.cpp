@@ -164,60 +164,52 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 	/**
 	 * T_ear
 	 */
-	enum_<T_ear>("T_ear")
-		.value("LEFT", T_ear::LEFT)
-		.value("RIGHT", T_ear::RIGHT)
+	enum_<Common::T_ear>("T_ear")
+		.value("LEFT", Common::T_ear::LEFT)
+		.value("RIGHT", Common::T_ear::RIGHT)
 		;
 
 	/**
    * Dynamic Compressor
    */
-  class_<CDynamicCompressorMono>("CDynamicCompressorMono")
+  class_<Common::CDynamicCompressorMono>("CDynamicCompressorMono")
   	.constructor<>()
-  	.function("Setup", &CDynamicCompressorMono::Setup)
-  	.function("GetAttack", &CDynamicCompressorMono::GetAttack)
-  	.function("GetRelease", &CDynamicCompressorMono::GetRelease)
+  	.function("Setup", &Common::CDynamicCompressorMono::Setup)
+  	.function("GetAttack", &Common::CDynamicCompressorMono::GetAttack)
+  	.function("GetRelease", &Common::CDynamicCompressorMono::GetRelease)
   	;
 
 	/**
    * Hearing loss simulator
    */
-  class_<CHearingLossSim>("CHearingLossSim")
+  class_<HAHLSimulation::CHearingLossSim>("CHearingLossSim")
   	.constructor<>()
-  	.function("Setup", &CHearingLossSim::Setup)
-  	.function("SetHearingLevel_dBHL", &CHearingLossSim::SetHearingLevel_dBHL)
-  	.function("ProcessMono", select_overload<void(
-  		T_ear ear,
-  		CMonoBuffer<float> &inputBuffer,
-  		CMonoBuffer<float> &outputBuffer
-		)>(&CHearingLossSim::Process))
-		.function("ProcessStereo", select_overload<void(
-  		T_ear ear,
-  		CStereoBuffer<float> &inputBuffer,
-  		CStereoBuffer<float> &outputBuffer
-		)>(&CHearingLossSim::Process))
+  	.function("Setup", &HAHLSimulation::CHearingLossSim::Setup)
+  	.function("SetFromAudiometry_dBHL", &HAHLSimulation::CHearingLossSim::SetFromAudiometry_dBHL)
+  	.function("SetHearingLevel_dBHL", &HAHLSimulation::CHearingLossSim::SetHearingLevel_dBHL)
+  	.function("GetHearingLevel_dBHL", &HAHLSimulation::CHearingLossSim::GetHearingLevel_dBHL)
+  	.function("GetNumberOfBands", &HAHLSimulation::CHearingLossSim::GetNumberOfBands)
+  	.function("GetBandFrequency", &HAHLSimulation::CHearingLossSim::GetBandFrequency)
+  	.function("Process", &HAHLSimulation::CHearingLossSim::Process)
   	;
 
 	/**
 	 * Hearing Aid Simulator
 	 */
-	class_<CHearingAidSim>("CHearingAidSim")
+	class_<HAHLSimulation::CHearingAidSim>("CHearingAidSim")
   	.constructor<>()
-  	.function("Setup", &CHearingAidSim::Setup)
-  	.function("SetGains_dB", &CHearingAidSim::SetGains_dB)
-  	.function("SetLevelBandGain_dB", &CHearingAidSim::SetLevelBandGain_dB)
-  	.function("SetLevelThreshold", &CHearingAidSim::SetLevelThreshold)
-  	.function("ConfigLPF", &CHearingAidSim::ConfigLPF)
-  	.function("ConfigHPF", &CHearingAidSim::ConfigHPF)
-  	.function("Process", &CHearingAidSim::Process)
-  	// .function("ProcessDirectionality", &CHearingAidSim::ProcessDirectionality)
-  	// .function("GetDirectionalityAtt", &CHearingAidSim::GetDirectionalityAtt)
-  	// .function("SetDirectionalityExtendL_dB", &CHearingAidSim::SetDirectionalityExtendL_dB)
-  	// .function("SetDirectionalityExtendR_dB", &CHearingAidSim::SetDirectionalityExtendR_dB)
-  	.function("ApplyFig6Alg", &CHearingAidSim::ApplyFig6Alg)
-  	.property("addNoiseBefore", &CHearingAidSim::addNoiseBefore)
-  	.property("addNoiseAfter", &CHearingAidSim::addNoiseAfter)
-  	.property("noiseNumBits", &CHearingAidSim::noiseNumBits)
+  	.function("Setup", &HAHLSimulation::CHearingAidSim::Setup)
+  	.function("SetDynamicEqualizerBandGain_dB", &HAHLSimulation::CHearingAidSim::SetDynamicEqualizerBandGain_dB)
+  	.function("SetDynamicEqualizerLevelThreshold", &HAHLSimulation::CHearingAidSim::SetDynamicEqualizerLevelThreshold)
+  	.function("SetLowPassFilter", &HAHLSimulation::CHearingAidSim::SetLowPassFilter)
+  	.function("SetHighPassFilter", &HAHLSimulation::CHearingAidSim::SetHighPassFilter)
+  	.function("Process", &HAHLSimulation::CHearingAidSim::Process)
+  	.function("SetDynamicEqualizerUsingFig6", &HAHLSimulation::CHearingAidSim::SetDynamicEqualizerUsingFig6)
+  	.function("EnableQuantizationBeforeEqualizer", &HAHLSimulation::CHearingAidSim::EnableQuantizationBeforeEqualizer)
+		.function("DisableQuantizationBeforeEqualizer", &HAHLSimulation::CHearingAidSim::DisableQuantizationBeforeEqualizer)
+		.function("EnableQuantizationAfterEqualizer", &HAHLSimulation::CHearingAidSim::EnableQuantizationAfterEqualizer)
+		.function("DisableQuantizationAfterEqualizer", &HAHLSimulation::CHearingAidSim::DisableQuantizationAfterEqualizer)
+  	.function("SetQuantizationBits", &HAHLSimulation::CHearingAidSim::SetQuantizationBits)
   	;
 
   /**
@@ -227,17 +219,13 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
     .smart_ptr<std::shared_ptr<Binaural::CListener>>("CListener_ptr")
     .function("GetListenerTransform", &Binaural::CListener::GetListenerTransform)
     .function("SetListenerTransform", &Binaural::CListener::SetListenerTransform)
-    .function("EnableLeftDirectionality", &Binaural::CListener::EnableLeftDirectionality)
-    .function("DisableLeftDirectionality", &Binaural::CListener::DisableLeftDirectionality)
-    .function("IsLeftDirectionalityEnabled", &Binaural::CListener::IsLeftDirectionalityEnabled)
-    .function("EnableRightDirectionality", &Binaural::CListener::EnableRightDirectionality)
-    .function("DisableRightDirectionality", &Binaural::CListener::DisableRightDirectionality)
-    .function("IsRightDirectionalityEnabled", &Binaural::CListener::IsRightDirectionalityEnabled)
-    .function("SetLeftDirectionalityAttenuation", &Binaural::CListener::SetLeftDirectionalityAttenuation)
-    .function("SetRightDirectionalityAttenuation", &Binaural::CListener::SetRightDirectionalityAttenuation)
+    .function("EnableCustomizedITD", &Binaural::CListener::EnableCustomizedITD)
+    .function("EnableDirectionality", &Binaural::CListener::EnableDirectionality)
+    .function("DisableDirectionality", &Binaural::CListener::DisableDirectionality)
+    .function("GetDirectionalityEnabled", &Binaural::CListener::GetDirectionalityEnabled)
+    .function("SetDirectionality_dB", &Binaural::CListener::SetDirectionality_dB)
     .function("SetHeadRadius", &Binaural::CListener::SetHeadRadius)
     .function("GetHeadRadius", &Binaural::CListener::SetHeadRadius)
-    .function("EnableCustomizedITD", &Binaural::CListener::EnableCustomizedITD)
     ;
 
   enum_<Binaural::TSpatializationMode>("TSpatializationMode")
@@ -279,30 +267,30 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
     )>(&Binaural::CSingleSourceDSP::ProcessAnechoic))
     ;
 
-  class_<CTransform>("CTransform")
+  class_<Common::CTransform>("CTransform")
     .constructor<>()
-    .function("GetPosition", &CTransform::GetPosition)
-    .function("SetPosition", &CTransform::SetPosition)
-    .function("GetOrientation", &CTransform::GetOrientation)
-    .function("SetOrientation", &CTransform::SetOrientation)
-    .function("Rotate", &CTransform::Rotate)
+    .function("GetPosition", &Common::CTransform::GetPosition)
+    .function("SetPosition", &Common::CTransform::SetPosition)
+    .function("GetOrientation", &Common::CTransform::GetOrientation)
+    .function("SetOrientation", &Common::CTransform::SetOrientation)
+    .function("Rotate", &Common::CTransform::Rotate)
     ;
 
-  class_<CVector3>("CVector3")
+  class_<Common::CVector3>("CVector3")
     .constructor<float, float, float>()
-  	.property("x", &CVector3::x)
-  	.property("y", &CVector3::y)
-  	.property("z", &CVector3::z)
-    .function("CrossProduct", &CVector3::CrossProduct)
+  	.property("x", &Common::CVector3::x)
+  	.property("y", &Common::CVector3::y)
+  	.property("z", &Common::CVector3::z)
+    .function("CrossProduct", &Common::CVector3::CrossProduct)
     ;
 
-  class_<CQuaternion>("CQuaternion")
-  	.class_function("FromAxisAngle", &CQuaternion::FromAxisAngle)
-  	.constructor<float, CVector3>()
-  	.property("x", &CQuaternion::x)
-  	.property("y", &CQuaternion::y)
-  	.property("z", &CQuaternion::z)
-  	.property("w", &CQuaternion::w)
+  class_<Common::CQuaternion>("CQuaternion")
+  	.class_function("FromAxisAngle", &Common::CQuaternion::FromAxisAngle)
+  	.constructor<float, Common::CVector3>()
+  	.property("x", &Common::CQuaternion::x)
+  	.property("y", &Common::CQuaternion::y)
+  	.property("z", &Common::CQuaternion::z)
+  	.property("w", &Common::CQuaternion::w)
   	;
 
   /**
