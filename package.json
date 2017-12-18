@@ -1,6 +1,6 @@
 {
   "name": "3dti-toolkit",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "JavaScript port of the 3D Tune-In Toolkit",
   "main": "build/3dti-toolkit.min.js",
   "files": [
