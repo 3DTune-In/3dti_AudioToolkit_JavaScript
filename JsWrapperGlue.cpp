@@ -7,6 +7,7 @@
 #include "3DTI_Toolkit_Core/Common/DynamicCompressorMono.h"
 #include "3DTI_Toolkit_Core/Common/Quaternion.h"
 #include "3DTI_Toolkit_Core/Common/Transform.h"
+#include "3DTI_Toolkit_Core/HAHLSimulation/ClassificationScaleHL.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.h"
 #include "3DTI_Toolkit_Core/BinauralSpatializer/HRTF.h"
@@ -211,6 +212,11 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 		.function("DisableQuantizationAfterEqualizer", &HAHLSimulation::CHearingAidSim::DisableQuantizationAfterEqualizer)
   	.function("SetQuantizationBits", &HAHLSimulation::CHearingAidSim::SetQuantizationBits)
   	;
+
+  /**
+   * Classification scale
+   */
+	emscripten::function("GetClassificationScaleHL", &HAHLSimulation::GetClassificationScaleHL);
 
   /**
    * Binaural lib
