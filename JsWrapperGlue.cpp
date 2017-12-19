@@ -143,9 +143,11 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
    */
 	using MonoBufferVecType = CMonoBuffer<float>;
 	void (MonoBufferVecType::*resizeMono)(const size_t, const float&) = &MonoBufferVecType::resize;
+	size_t (MonoBufferVecType::*sizeMono)() const = &MonoBufferVecType::size;
 	class_<MonoBufferVecType>("CMonoBuffer")
 		.template constructor<>()
 		.function("resize", resizeMono)
+		.function("size", sizeMono)
 		.function("get", &internal::VectorAccess<MonoBufferVecType>::get)
 		.function("set", &internal::VectorAccess<MonoBufferVecType>::set)
 		;
@@ -155,9 +157,11 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
    */
 	using StereoBufferVecType = CStereoBuffer<float>;
 	void (StereoBufferVecType::*resizeStereo)(const size_t, const float&) = &StereoBufferVecType::resize;
+	size_t (StereoBufferVecType::*sizeStereo)() const = &StereoBufferVecType::size;
 	class_<StereoBufferVecType>("CStereoBuffer")
 		.template constructor<>()
 		.function("resize", resizeStereo)
+		.function("size", sizeStereo)
 		.function("get", &internal::VectorAccess<StereoBufferVecType>::get)
 		.function("set", &internal::VectorAccess<StereoBufferVecType>::set)
 		;
