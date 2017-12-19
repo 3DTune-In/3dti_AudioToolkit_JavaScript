@@ -40,7 +40,7 @@ let args = [
   '-s', 'DEMANGLE_SUPPORT=1',
   '-s', 'ASSERTIONS=0',
   '-s', 'ABORTING_MALLOC=0',
-  '-s', 'NO_FILESYSTEM=1',
+  // '-s', 'NO_FILESYSTEM=1',
 ]
 
 if (inputArgs.debug === true) {
