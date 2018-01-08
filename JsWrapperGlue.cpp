@@ -3,6 +3,7 @@
 #include <emscripten/bind.h>
 #include "glue/Logger.hpp"
 #include "3DTI_Toolkit_Core/Common/Buffer.h"
+#include "3DTI_Toolkit_Core/Common/CommonDefinitions.h"
 #include "3DTI_Toolkit_Core/Common/Debugger.h"
 #include "3DTI_Toolkit_Core/Common/DynamicCompressorMono.h"
 #include "3DTI_Toolkit_Core/Common/Quaternion.h"
@@ -110,6 +111,57 @@ private:
   Binaural::CCore core;
 };
 
+/**
+ * This wrapper class is used to get around the issue of pointers
+ * for class properties are not passed properly through embind,
+ * i.e.:
+ * 
+ * 	earPair.left.resize(512, 0)
+ * 	earPair.left.size() === 0
+ */
+using EarPair_Mono = Common::CEarPair<CMonoBuffer<float>>;
+
+class EarPairBuffers : public EarPair_Mono {
+public:
+	CMonoBuffer<float> GetLeft() {
+		return left;
+	}
+
+	CMonoBuffer<float> GetRight() {
+		return right;
+	}
+
+	void Set(Common::T_ear ear, size_t n, const float& val) {
+		if (ear == Common::T_ear::LEFT) {
+			left[n] = val;
+		}
+		else if (ear == Common::T_ear::RIGHT) {
+			right[n] = val;
+		}
+	}
+
+	void Resize(size_t n, const float& val) {
+		left.resize(n, val);
+		right.resize(n, val);
+	}
+
+	EarPair_Mono GetAsParent() {
+		return (EarPair_Mono) *this;
+	}
+};
+
+/**
+ * Non of these seem to help the problem described below.
+ */
+// CMonoBuffer<float> getLeftEarBuffer(const Common::CEarPair<CMonoBuffer<float>> &earPair) {
+// 	printf("ear left size: %d\n", earPair.left.size());
+// 	return earPair.left;
+// }
+
+// void setLeftEarBuffer(const Common::CEarPair<CMonoBuffer<float>> &earPair, const CMonoBuffer<float> &buffer) {
+// 	earPair.left = buffer;
+// }
+
 // Bindings
 EMSCRIPTEN_BINDINGS(Toolkit) {
 
@@ -172,6 +224,32 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 	enum_<Common::T_ear>("T_ear")
 		.value("LEFT", Common::T_ear::LEFT)
 		.value("RIGHT", Common::T_ear::RIGHT)
+		;
+
+	/**
+	 * I have not figured out how to keep references/pointers to member
+	 * variables. I.e., this happens:
+	 *
+	 *   earPair.left.resize(512, 0);
+	 *   earPair.left.size() === 0;
+	 *
+	 * Using the EarPairBuffers proxy class instead.
+	 */
+	class_<EarPair_Mono>("CEarPair_Mono")
+	// 	.constructor<>()
+	// 	.smart_ptr<std::shared_ptr<EarPair_Mono>>("EarPair_Mono_ptr")
+	// 	.property("left", &getLeftEarBuffer)
+	// 	.property("right", &EarPair_Mono::right)
+	// 	.function("getLeft", &getLeftEarBuffer, allow_raw_pointers())
+		;
+
+	class_<EarPairBuffers>("EarPairBuffers")
+		.constructor<>()
+		.function("GetLeft", &EarPairBuffers::GetLeft)
+		.function("GetRight", &EarPairBuffers::GetRight)
+		.function("Resize", &EarPairBuffers::Resize)
+		.function("Set", &EarPairBuffers::Set)
+		.function("GetAsParent", &EarPairBuffers::GetAsParent)
 		;
 
 	/**
