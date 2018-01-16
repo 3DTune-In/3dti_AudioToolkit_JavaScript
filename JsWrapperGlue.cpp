@@ -123,12 +123,21 @@ using EarPair_Mono = Common::CEarPair<CMonoBuffer<float>>;
 
 class EarPairBuffers : public EarPair_Mono {
 public:
-	CMonoBuffer<float> GetLeft() {
+	CMonoBuffer<float>& GetLeft() {
 		return left;
 	}
 
-	CMonoBuffer<float> GetRight() {
+	CMonoBuffer<float>& GetRight() {
 		return right;
+	}
+
+	float Get(Common::T_ear ear, size_t n) {
+		if (ear == Common::T_ear::LEFT) {
+			return left[n];
+		}
+		else if (ear == Common::T_ear::RIGHT) {
+			return right[n];
+		}
 	}
 
 	void Set(Common::T_ear ear, size_t n, const float& val) {
@@ -145,17 +154,25 @@ public:
 		right.resize(n, val);
 	}
 
-	EarPair_Mono GetAsParent() {
-		return (EarPair_Mono) *this;
+	EarPair_Mono& GetAsParent() {
+		return *this;
 	}
 };
 
+void ProcessHLS(HAHLSimulation::CHearingLossSim &simulator, EarPairBuffers &inputBuffers, EarPairBuffers &outputBuffers) {
+	simulator.Process(inputBuffers, outputBuffers);
+}
+
+void ProcessHAS(HAHLSimulation::CHearingAidSim &simulator, EarPairBuffers &inputBuffers, EarPairBuffers &outputBuffers) {
+	simulator.Process(inputBuffers, outputBuffers);
+}
+
 /**
- * Non of these seem to help the problem described below.
+ * None of these seem to help the problem described below.
  */
-// CMonoBuffer<float> getLeftEarBuffer(const Common::CEarPair<CMonoBuffer<float>> &earPair) {
-// 	printf("ear left size: %d\n", earPair.left.size());
-// 	return earPair.left;
+// CMonoBuffer<float>& getLeftEarBuffer(Common::CEarPair<CMonoBuffer<float>> &earPair) {
+//   printf("ear left size: %d\n", earPair.left.size());
+//   return earPair.left;
 // }
 
 // void setLeftEarBuffer(const Common::CEarPair<CMonoBuffer<float>> &earPair, const CMonoBuffer<float> &buffer) {
@@ -236,18 +253,21 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 	 * Using the EarPairBuffers proxy class instead.
 	 */
 	class_<EarPair_Mono>("CEarPair_Mono")
-	// 	.constructor<>()
-	// 	.smart_ptr<std::shared_ptr<EarPair_Mono>>("EarPair_Mono_ptr")
-	// 	.property("left", &getLeftEarBuffer)
-	// 	.property("right", &EarPair_Mono::right)
-	// 	.function("getLeft", &getLeftEarBuffer, allow_raw_pointers())
+		.constructor<>()
+		// .smart_ptr<std::shared_ptr<EarPair_Mono>>("EarPair_Mono_ptr")
+		// .property("left", &getLeftEarBuffer)
+		// .property("right", &EarPair_Mono::right)
 		;
+
+	emscripten::function("ProcessHLS", &ProcessHLS);
+	emscripten::function("ProcessHAS", &ProcessHAS);
 
 	class_<EarPairBuffers>("EarPairBuffers")
 		.constructor<>()
 		.function("GetLeft", &EarPairBuffers::GetLeft)
 		.function("GetRight", &EarPairBuffers::GetRight)
 		.function("Resize", &EarPairBuffers::Resize)
+		.function("Get", &EarPairBuffers::Get)
 		.function("Set", &EarPairBuffers::Set)
 		.function("GetAsParent", &EarPairBuffers::GetAsParent)
 		;
