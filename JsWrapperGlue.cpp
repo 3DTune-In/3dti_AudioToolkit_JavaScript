@@ -9,6 +9,7 @@
 #include "3DTI_Toolkit_Core/Common/Quaternion.h"
 #include "3DTI_Toolkit_Core/Common/Transform.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/ClassificationScaleHL.h"
+#include "3DTI_Toolkit_Core/HAHLSimulation/DynamicEqualizer.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/FrequencySmearing.h"
@@ -341,6 +342,7 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("SetHighPassFilter", &HAHLSimulation::CHearingAidSim::SetHighPassFilter)
   	.function("Process", &HAHLSimulation::CHearingAidSim::Process)
   	.function("SetDynamicEqualizerUsingFig6", &HAHLSimulation::CHearingAidSim::SetDynamicEqualizerUsingFig6)
+  	.function("GetDynamicEqualizer", &HAHLSimulation::CHearingAidSim::GetDynamicEqualizer, allow_raw_pointers())
   	.function("EnableQuantizationBeforeEqualizer", &HAHLSimulation::CHearingAidSim::EnableQuantizationBeforeEqualizer)
 		.function("DisableQuantizationBeforeEqualizer", &HAHLSimulation::CHearingAidSim::DisableQuantizationBeforeEqualizer)
 		.function("EnableQuantizationAfterEqualizer", &HAHLSimulation::CHearingAidSim::EnableQuantizationAfterEqualizer)
@@ -348,6 +350,14 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("SetQuantizationBits", &HAHLSimulation::CHearingAidSim::SetQuantizationBits)
   	.function("EnableHearingAidSimulation", &HAHLSimulation::CHearingAidSim::EnableHearingAidSimulation)
   	.function("DisableHearingAidSimulation", &HAHLSimulation::CHearingAidSim::DisableHearingAidSimulation)
+  	;
+
+  /**
+   * Dynamic equalizer
+   */
+  class_<HAHLSimulation::CDynamicEqualizer>("CDynamicEqualizer")
+  	.function("EnableLevelsInterpolation", &HAHLSimulation::CDynamicEqualizer::EnableLevelsInterpolation)
+		.function("DisableLevelsInterpolation", &HAHLSimulation::CDynamicEqualizer::DisableLevelsInterpolation)
   	;
 
   /**
