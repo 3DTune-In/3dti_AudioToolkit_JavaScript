@@ -11,6 +11,8 @@
 #include "3DTI_Toolkit_Core/HAHLSimulation/ClassificationScaleHL.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.h"
+#include "3DTI_Toolkit_Core/HAHLSimulation/FrequencySmearing.h"
+#include "3DTI_Toolkit_Core/HAHLSimulation/TemporalDistortionSimulator.h"
 #include "3DTI_Toolkit_Core/BinauralSpatializer/HRTF.h"
 #include "3DTI_Toolkit_Core/BinauralSpatializer/Listener.h"
 #include "3DTI_Toolkit_Core/BinauralSpatializer/SingleSourceDSP.h"
@@ -295,6 +297,8 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("GetNumberOfBands", &HAHLSimulation::CHearingLossSim::GetNumberOfBands)
   	.function("GetBandFrequency", &HAHLSimulation::CHearingLossSim::GetBandFrequency)
   	.function("Process", &HAHLSimulation::CHearingLossSim::Process)
+  	.function("GetTemporalDistortionSimulator", &HAHLSimulation::CHearingLossSim::GetTemporalDistortionSimulator, allow_raw_pointers())
+  	.function("GetFrequencySmearingSimulator", &HAHLSimulation::CHearingLossSim::GetFrequencySmearingSimulator, allow_raw_pointers())
   	.function("EnableHearingLossSimulation", &HAHLSimulation::CHearingLossSim::EnableHearingLossSimulation)
   	.function("DisableHearingLossSimulation", &HAHLSimulation::CHearingLossSim::DisableHearingLossSimulation)
   	.function("EnableMultibandExpander", &HAHLSimulation::CHearingLossSim::EnableMultibandExpander)
@@ -303,6 +307,26 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("DisableTemporalDistortion", &HAHLSimulation::CHearingLossSim::DisableTemporalDistortion)
   	.function("EnableFrequencySmearing", &HAHLSimulation::CHearingLossSim::EnableFrequencySmearing)
   	.function("DisableFrequencySmearing", &HAHLSimulation::CHearingLossSim::DisableFrequencySmearing)
+  	;
+
+  /**
+   * Frequency smearing
+   */
+  class_<HAHLSimulation::CFrequencySmearing>("CFrequencySmearing")
+  	.function("SetDownwardSmearingBufferSize", &HAHLSimulation::CFrequencySmearing::SetDownwardSmearingBufferSize)
+		.function("SetUpwardSmearingBufferSize", &HAHLSimulation::CFrequencySmearing::SetUpwardSmearingBufferSize)
+		.function("SetDownwardSmearing_Hz", &HAHLSimulation::CFrequencySmearing::SetDownwardSmearing_Hz)
+		.function("SetUpwardSmearing_Hz", &HAHLSimulation::CFrequencySmearing::SetUpwardSmearing_Hz)
+  	;
+
+  /**
+   * Temporal distortion
+   */
+  class_<HAHLSimulation::CTemporalDistortionSimulator>("CTemporalDistortionSimulator")
+  	.function("SetLeftRightNoiseSynchronicity", &HAHLSimulation::CTemporalDistortionSimulator::SetLeftRightNoiseSynchronicity)
+		.function("SetWhiteNoisePower", &HAHLSimulation::CTemporalDistortionSimulator::SetWhiteNoisePower)
+		.function("SetNoiseAutocorrelationFilterCutoffFrequency", &HAHLSimulation::CTemporalDistortionSimulator::SetNoiseAutocorrelationFilterCutoffFrequency)
+		.function("SetBandUpperLimit", &HAHLSimulation::CTemporalDistortionSimulator::SetBandUpperLimit)
   	;
 
 	/**
