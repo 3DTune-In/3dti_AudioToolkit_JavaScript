@@ -295,6 +295,14 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("GetNumberOfBands", &HAHLSimulation::CHearingLossSim::GetNumberOfBands)
   	.function("GetBandFrequency", &HAHLSimulation::CHearingLossSim::GetBandFrequency)
   	.function("Process", &HAHLSimulation::CHearingLossSim::Process)
+  	.function("EnableHearingLossSimulation", &HAHLSimulation::CHearingLossSim::EnableHearingLossSimulation)
+  	.function("DisableHearingLossSimulation", &HAHLSimulation::CHearingLossSim::DisableHearingLossSimulation)
+  	.function("EnableMultibandExpander", &HAHLSimulation::CHearingLossSim::EnableMultibandExpander)
+  	.function("DisableMultibandExpander", &HAHLSimulation::CHearingLossSim::DisableMultibandExpander)
+  	.function("EnableTemporalDistortion", &HAHLSimulation::CHearingLossSim::EnableTemporalDistortion)
+  	.function("DisableTemporalDistortion", &HAHLSimulation::CHearingLossSim::DisableTemporalDistortion)
+  	.function("EnableFrequencySmearing", &HAHLSimulation::CHearingLossSim::EnableFrequencySmearing)
+  	.function("DisableFrequencySmearing", &HAHLSimulation::CHearingLossSim::DisableFrequencySmearing)
   	;
 
 	/**
@@ -314,6 +322,8 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 		.function("EnableQuantizationAfterEqualizer", &HAHLSimulation::CHearingAidSim::EnableQuantizationAfterEqualizer)
 		.function("DisableQuantizationAfterEqualizer", &HAHLSimulation::CHearingAidSim::DisableQuantizationAfterEqualizer)
   	.function("SetQuantizationBits", &HAHLSimulation::CHearingAidSim::SetQuantizationBits)
+  	.function("EnableHearingAidSimulation", &HAHLSimulation::CHearingAidSim::EnableHearingAidSimulation)
+  	.function("DisableHearingAidSimulation", &HAHLSimulation::CHearingAidSim::DisableHearingAidSimulation)
   	;
 
   /**
