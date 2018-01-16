@@ -241,6 +241,7 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 	enum_<Common::T_ear>("T_ear")
 		.value("LEFT", Common::T_ear::LEFT)
 		.value("RIGHT", Common::T_ear::RIGHT)
+		.value("BOTH", Common::T_ear::BOTH)
 		;
 
 	/**
