@@ -41,12 +41,12 @@ let args = [
   '-s', 'ASSERTIONS=0',
   '-s', 'ABORTING_MALLOC=0',
   // '-s', 'NO_FILESYSTEM=1',
+  '-s', 'ALLOW_MEMORY_GROWTH=1',
 ]
 
 if (inputArgs.debug === true) {
   args = [
     ...args,
-    '-s', 'ALLOW_MEMORY_GROWTH=1',
     '-g4',
     '-O2',
   ]
