@@ -6,6 +6,7 @@
 #include "3DTI_Toolkit_Core/Common/CommonDefinitions.h"
 #include "3DTI_Toolkit_Core/Common/Debugger.h"
 #include "3DTI_Toolkit_Core/Common/DynamicCompressorMono.h"
+#include "3DTI_Toolkit_Core/Common/DynamicExpanderMono.h"
 #include "3DTI_Toolkit_Core/Common/Quaternion.h"
 #include "3DTI_Toolkit_Core/Common/Transform.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/ClassificationScaleHL.h"
@@ -13,6 +14,7 @@
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/FrequencySmearing.h"
+#include "3DTI_Toolkit_Core/HAHLSimulation/MultibandExpander.h"
 #include "3DTI_Toolkit_Core/HAHLSimulation/TemporalDistortionSimulator.h"
 #include "3DTI_Toolkit_Core/BinauralSpatializer/HRTF.h"
 #include "3DTI_Toolkit_Core/BinauralSpatializer/Listener.h"
@@ -298,6 +300,7 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   	.function("GetNumberOfBands", &HAHLSimulation::CHearingLossSim::GetNumberOfBands)
   	.function("GetBandFrequency", &HAHLSimulation::CHearingLossSim::GetBandFrequency)
   	.function("Process", &HAHLSimulation::CHearingLossSim::Process)
+  	.function("GetBandExpander", &HAHLSimulation::CHearingLossSim::GetBandExpander, allow_raw_pointers())
   	.function("GetTemporalDistortionSimulator", &HAHLSimulation::CHearingLossSim::GetTemporalDistortionSimulator, allow_raw_pointers())
   	.function("GetFrequencySmearingSimulator", &HAHLSimulation::CHearingLossSim::GetFrequencySmearingSimulator, allow_raw_pointers())
   	.function("EnableHearingLossSimulation", &HAHLSimulation::CHearingLossSim::EnableHearingLossSimulation)
@@ -360,9 +363,27 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
    * Dynamic equalizer
    */
   class_<HAHLSimulation::CDynamicEqualizer>("CDynamicEqualizer")
+  	.function("GetCompressionPercentage", &HAHLSimulation::CDynamicEqualizer::GetCompressionPercentage)
   	.function("EnableLevelsInterpolation", &HAHLSimulation::CDynamicEqualizer::EnableLevelsInterpolation)
 		.function("DisableLevelsInterpolation", &HAHLSimulation::CDynamicEqualizer::DisableLevelsInterpolation)
   	;
+
+  /**
+   * Multiband expander
+   */
+ 	class_<HAHLSimulation::CMultibandExpander>("CMultibandExpander")
+ 		.function("GetBandExpander", &HAHLSimulation::CMultibandExpander::GetBandExpander, allow_raw_pointers())
+ 		.function("GetAttenuationForBand", &HAHLSimulation::CMultibandExpander::GetAttenuationForBand)
+ 		;
+
+  /**
+   * Dynamic expander
+   */
+ 	class_<Common::CDynamicExpanderMono>("CDynamicExpanderMono")
+ 		.function("GetAttack", &Common::CDynamicExpanderMono::GetAttack)
+		.function("GetRelease", &Common::CDynamicExpanderMono::GetRelease)
+		.function("GetSlope", &Common::CDynamicExpanderMono::GetSlope)
+ 		;
 
   /**
    * Classification scale
