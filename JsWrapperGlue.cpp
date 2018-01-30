@@ -363,9 +363,11 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
    * Dynamic equalizer
    */
   class_<HAHLSimulation::CDynamicEqualizer>("CDynamicEqualizer")
+  	.function("GetLevelThreshold", &HAHLSimulation::CDynamicEqualizer::GetLevelThreshold)
   	.function("GetCompressionPercentage", &HAHLSimulation::CDynamicEqualizer::GetCompressionPercentage)
   	.function("EnableLevelsInterpolation", &HAHLSimulation::CDynamicEqualizer::EnableLevelsInterpolation)
 		.function("DisableLevelsInterpolation", &HAHLSimulation::CDynamicEqualizer::DisableLevelsInterpolation)
+		.function("GetLevel_db", &HAHLSimulation::CDynamicEqualizer::GetLevel_db)
   	;
 
   /**
