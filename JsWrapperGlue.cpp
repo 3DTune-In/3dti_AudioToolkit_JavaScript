@@ -1,24 +1,22 @@
 #include <stdio.h>
 #include <vector>
 #include <emscripten/bind.h>
-#include "glue/Logger.hpp"
-#include "3DTI_Toolkit_Core/Common/Buffer.h"
-#include "3DTI_Toolkit_Core/Common/CommonDefinitions.h"
-#include "3DTI_Toolkit_Core/Common/Debugger.h"
-#include "3DTI_Toolkit_Core/Common/DynamicCompressorMono.h"
-#include "3DTI_Toolkit_Core/Common/DynamicExpanderMono.h"
-#include "3DTI_Toolkit_Core/Common/Quaternion.h"
-#include "3DTI_Toolkit_Core/Common/Transform.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/ClassificationScaleHL.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/DynamicEqualizer.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/HearingAidSim.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/HearingLossSim.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/FrequencySmearing.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/MultibandExpander.h"
-#include "3DTI_Toolkit_Core/HAHLSimulation/TemporalDistortionSimulator.h"
-#include "3DTI_Toolkit_Core/BinauralSpatializer/HRTF.h"
-#include "3DTI_Toolkit_Core/BinauralSpatializer/Listener.h"
-#include "3DTI_Toolkit_Core/BinauralSpatializer/SingleSourceDSP.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/Common/Buffer.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/Common/CommonDefinitions.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/Common/DynamicCompressorMono.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/Common/DynamicExpanderMono.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/Common/Quaternion.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/Common/Transform.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/HAHLSimulation/ClassificationScaleHL.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/HAHLSimulation/DynamicEqualizer.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/HAHLSimulation/HearingAidSim.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/HAHLSimulation/HearingLossSim.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/HAHLSimulation/FrequencySmearing.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/HAHLSimulation/MultibandExpander.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/HAHLSimulation/TemporalDistortionSimulator.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/BinauralSpatializer/HRTF.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/BinauralSpatializer/Listener.h"
+#include "3dti_AudioToolkit/3dti_Toolkit/BinauralSpatializer/SingleSourceDSP.h"
 
 using namespace emscripten;
 
@@ -70,14 +68,14 @@ public:
     Binaural::CHRTF hrtf;
 
     // TODO: Make frame rate into a parameter/variable
-    listener->GetHRTF()->BeginSetup(hrirs.size());
+    listener->GetHRTF()->BeginSetup(hrirs.size(), DEFAULT_HRTF_MEASURED_DISTANCE);
 
     for (int i = 0; i < hrirs.size(); ++i)
     {
       HRIR &h = hrirs[i];
 
       // Create a HRIR struct
-      HRIR_struct hrir_value;
+      THRIRStruct hrir_value;
       hrir_value.leftHRIR.resize(length);
       hrir_value.rightHRIR.resize(length);
 
@@ -186,15 +184,6 @@ void ProcessHAS(HAHLSimulation::CHearingAidSim &simulator, EarPairBuffers &input
 
 // Bindings
 EMSCRIPTEN_BINDINGS(Toolkit) {
-
-	/* Custom glue/binding interface */
-
-  /**
-   * Logger
-   */
-  class_<Logger>("Logger")
-    .class_function("GetLastLogMessage", &Logger::GetLastLogMessage)
-    .class_function("GetLastErrorMessage", &Logger::GetLastErrorMessage);
 
   /**
    * HRIR wrapper bindings
@@ -402,14 +391,14 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
     .function("EnableCustomizedITD", &Binaural::CListener::EnableCustomizedITD)
     .function("EnableDirectionality", &Binaural::CListener::EnableDirectionality)
     .function("DisableDirectionality", &Binaural::CListener::DisableDirectionality)
-    .function("GetDirectionalityEnabled", &Binaural::CListener::GetDirectionalityEnabled)
+    .function("IsDirectionalityEnabled", &Binaural::CListener::IsDirectionalityEnabled)
     .function("SetDirectionality_dB", &Binaural::CListener::SetDirectionality_dB)
     .function("SetHeadRadius", &Binaural::CListener::SetHeadRadius)
     .function("GetHeadRadius", &Binaural::CListener::SetHeadRadius)
     ;
 
   enum_<Binaural::TSpatializationMode>("TSpatializationMode")
-  	.value("None", Binaural::TSpatializationMode::None)
+  	.value("None", Binaural::TSpatializationMode::NoSpatialization)
   	.value("HighPerformance", Binaural::TSpatializationMode::HighPerformance)
   	.value("HighQuality", Binaural::TSpatializationMode::HighQuality)
   	;

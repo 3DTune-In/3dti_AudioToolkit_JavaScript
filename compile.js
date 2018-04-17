@@ -32,8 +32,9 @@ const outputFilename = inputArgs.debug === true
 let args = [
   '-std=c++11',
   '--bind',
-  '-I', './3DTI_Toolkit_Core',
+  '-I', './3dti_AudioToolkit/3dti_Toolkit',
   '-o', `./build/${outputFilename}`,
+  '-D', '_3DTI_AXIS_CONVENTION_BINAURAL_TEST_APP',
   '-D', '_3DTI_AXIS_CONVENTION_WEBAUDIOAPI',
   '-D', 'SWITCH_ON_3DTI_DEBUGGER',
   '--memory-init-file', '0',
@@ -61,7 +62,7 @@ else {
 }
 
 const globPatterns = ['Common', 'BinauralSpatializer', 'HAHLSimulation']
-  .map(x => `./3DTI_Toolkit_Core/${x}/*.cpp`)
+  .map(x => `./3dti_AudioToolkit/3dti_Toolkit/${x}/*.cpp`)
 
 console.log(`\nBuilding ./build/${outputFilename}...\n`)
 
