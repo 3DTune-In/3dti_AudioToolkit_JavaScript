@@ -1,16 +1,21 @@
-import logCppErrors from './common/logger.js'
 import { getConfigs, subscribeToConfigChanges } from './common/configs.js'
 import { fetchAudio } from './common/fetch.js'
 
-const { CHearingAidSim, CStereoBuffer } = window.Module
+const {
+  CHearingAidSim,
+  EarPairBuffers,
+  FloatVector,
+  HearingAidSim_Process,
+  T_ear,
+} = window.Module
 
-// Setup logger
-logCppErrors()
+const dBs_SPL_for_0_dBs_fs = 100
 
 // Configs
 let configs = getConfigs()
 subscribeToConfigChanges((name, value, newConfigs) => {
   configs = newConfigs
+  console.log({ configs })
   updateFilters()
 })
 
@@ -21,41 +26,54 @@ const $start = document.querySelector('.start')
 const has = new CHearingAidSim()
 
 has.Setup(
-  44100,
-  1, // TODO: Implement multiple levels
-  125,
-  7,
-  1,
+  44100, // Sample rate
+  3, // Number of levels
+  125, // Start frequency
+  9, // Number of bands
+  1, // Octave band step
   parseFloat(configs['filter.lpf.freq']),
   parseFloat(configs['filter.hpf.freq']),
   parseFloat(configs['filter.lpf.q']),
-  0.7,
+  0.7, // BPF Q
   parseFloat(configs['filter.hpf.q'])
 )
 
-has.addNoiseBefore = true
-has.addNoiseAfter = true
-has.noiseNumBits = 8
-
 function updateFilters() {
-  has.SetLevelBandGain_dB(0, 0, parseFloat(configs['filter.left.125']), true)
-  has.SetLevelBandGain_dB(0, 1, parseFloat(configs['filter.left.250']), true)
-  has.SetLevelBandGain_dB(0, 2, parseFloat(configs['filter.left.500']), true)
-  has.SetLevelBandGain_dB(0, 3, parseFloat(configs['filter.left.1000']), true)
-  has.SetLevelBandGain_dB(0, 4, parseFloat(configs['filter.left.2000']), true)
-  has.SetLevelBandGain_dB(0, 5, parseFloat(configs['filter.left.4000']), true)
-  has.SetLevelBandGain_dB(0, 6, parseFloat(configs['filter.left.8000']), true)
+  // Enable/disable
+  if (configs.processLeft) {
+    has.EnableHearingAidSimulation(T_ear.LEFT)
+  } else {
+    has.DisableHearingAidSimulation(T_ear.LEFT)
+  }
+  if (configs.processRight) {
+    has.EnableHearingAidSimulation(T_ear.RIGHT)
+  } else {
+    has.DisableHearingAidSimulation(T_ear.RIGHT)
+  }
 
-  has.SetLevelBandGain_dB(0, 0, parseFloat(configs['filter.right.125']), false)
-  has.SetLevelBandGain_dB(0, 1, parseFloat(configs['filter.right.250']), false)
-  has.SetLevelBandGain_dB(0, 2, parseFloat(configs['filter.right.500']), false)
-  has.SetLevelBandGain_dB(0, 3, parseFloat(configs['filter.right.1000']), false)
-  has.SetLevelBandGain_dB(0, 4, parseFloat(configs['filter.right.2000']), false)
-  has.SetLevelBandGain_dB(0, 5, parseFloat(configs['filter.right.4000']), false)
-  has.SetLevelBandGain_dB(0, 6, parseFloat(configs['filter.right.8000']), false)
+  // Audiogram
+  const audiogram = [
+    'audiogram.62',
+    'audiogram.125',
+    'audiogram.250',
+    'audiogram.500',
+    'audiogram.1000',
+    'audiogram.2000',
+    'audiogram.4000',
+    'audiogram.8000',
+    'audiogram.16000',
+  ]
+    .map(configKey => configs[configKey])
+    .map(loss => parseFloat(loss))
+  const audiogramVector = new FloatVector()
+  audiogramVector.resize(audiogram.length, 0)
+  audiogram.forEach((loss, i) => audiogramVector.set(i, loss))
 
-  has.ConfigLPF(parseFloat(configs['filter.lpf.freq']), parseFloat(configs['filter.lpf.q']))
-  has.ConfigHPF(parseFloat(configs['filter.hpf.freq']), parseFloat(configs['filter.hpf.q']))
+  has.SetDynamicEqualizerUsingFig6(T_ear.BOTH, audiogramVector, dBs_SPL_for_0_dBs_fs)
+
+  // LPF and HPF
+  has.SetLowPassFilter(parseFloat(configs['filter.lpf.freq']), parseFloat(configs['filter.lpf.q']))
+  has.SetHighPassFilter(parseFloat(configs['filter.hpf.freq']), parseFloat(configs['filter.hpf.q']))
 }
 
 updateFilters()
@@ -69,35 +87,25 @@ fetchAudio('/assets/audio/stranger-things.wav', ctx).then(audioBuffer => {
   sourceNode.buffer = audioBuffer
   sourceNode.loop = true
 
-  const inputStereoBuffer = new CStereoBuffer()
-  const outputStereoBuffer = new CStereoBuffer()
-  inputStereoBuffer.resize(1024, 0)
-  outputStereoBuffer.resize(1024, 0)
+  const inputBuffers = new EarPairBuffers()
+  inputBuffers.Resize(512, 0)
+  const outputBuffers = new EarPairBuffers()
+  outputBuffers.Resize(512, 0)
 
   const scriptNode = ctx.createScriptProcessor(512, 2, 2)
   scriptNode.onaudioprocess = (audioProcessingEvent) => {
     const { inputBuffer, outputBuffer } = audioProcessingEvent
 
-    const inputDataL = inputBuffer.getChannelData(0)
-    const inputDataR = inputBuffer.getChannelData(1)
-
-    for (let i = 0; i < inputDataL.length; i++) {
-      inputStereoBuffer.set((i * 2), inputDataL[i])
-      inputStereoBuffer.set((i * 2) + 1, inputDataR[i])
+    for (let i = 0; i < inputBuffer.getChannelData(0).length; i++) {
+      inputBuffers.Set(T_ear.LEFT, i, inputBuffer.getChannelData(0)[i])
+      inputBuffers.Set(T_ear.RIGHT, i, inputBuffer.getChannelData(1)[i])
     }
 
-    has.Process(inputStereoBuffer, outputStereoBuffer, configs.processLeft, configs.processRight)
+    HearingAidSim_Process(has, inputBuffers, outputBuffers)
 
-    if (configs['directionality.enabled']) {
-      has.ProcessDirectionality(outputStereoBuffer, parseFloat(configs['directionality.angle']))
-    }
-
-    const outputDataLeft = outputBuffer.getChannelData(0)
-    const outputDataRight = outputBuffer.getChannelData(1)
-
-    for (let i = 0; i < outputDataLeft.length; i++) {
-      outputDataLeft[i] = outputStereoBuffer.get((i * 2))
-      outputDataRight[i] = outputStereoBuffer.get((i * 2) + 1)
+    for (let i = 0; i < outputBuffer.getChannelData(0).length; i++) {
+      outputBuffer.getChannelData(0)[i] = outputBuffers.Get(T_ear.LEFT, i)
+      outputBuffer.getChannelData(1)[i] = outputBuffers.Get(T_ear.RIGHT, i)
     }
   }
 

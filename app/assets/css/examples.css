@@ -97,7 +97,7 @@ button[disabled] {
   opacity: 0.25;
 }
 
-.filter-bands label {
+.audiogram label {
   display: flex;
   flex-direction: column;
   align-items: center;

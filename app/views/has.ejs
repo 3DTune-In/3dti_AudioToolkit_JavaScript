@@ -12,40 +12,44 @@
 
     <label>
       <input type="checkbox" checked name="processLeft" class="config" />
-      Process left
+      Left ear
     </label>
 
     <label>
       <input type="checkbox" checked name="processRight" class="config" />
-      Process right
+      Right ear
     </label>
 
     <div class="panel">
       <fieldset>
-        <legend>Filter (Left)</legend>
+        <legend>Audiogram</legend>
 
-        <div class="panel filter-bands">
-          <label>125 <input type="range" orient="vertical" name="filter.left.125" class="config" min="-20" max="20" value="0" /></label>
-          <label>250 <input type="range" orient="vertical" name="filter.left.250" class="config" min="-20" max="20" value="0" /></label>
-          <label>500 <input type="range" orient="vertical" name="filter.left.500" class="config" min="-20" max="20" value="0" /></label>
-          <label>1000 <input type="range" orient="vertical" name="filter.left.1000" class="config" min="-20" max="20" value="0" /></label>
-          <label>2000 <input type="range" orient="vertical" name="filter.left.2000" class="config" min="-20" max="20" value="0" /></label>
-          <label>4000 <input type="range" orient="vertical" name="filter.left.4000" class="config" min="-20" max="20" value="0" /></label>
-          <label>8000 <input type="range" orient="vertical" name="filter.left.8000" class="config" min="-20" max="20" value="0" /></label>
-        </div>
-      </fieldset>
+        <div class="panel audiogram">
+          <label>62.5 <input type="range" orient="vertical" name="audiogram.62" class="config" min="0" max="120" value="0" step="10" list="tickmarks" /></label>
+          <label>125 <input type="range" orient="vertical" name="audiogram.125" class="config" min="0" max="120" value="0" step="10" list="tickmarks" /></label>
+          <label>250 <input type="range" orient="vertical" name="audiogram.250" class="config" min="0" max="120" value="0" step="10" list="tickmarks" /></label>
+          <label>500 <input type="range" orient="vertical" name="audiogram.500" class="config" min="0" max="120" value="0" step="10" list="tickmarks" /></label>
+          <label>1000 <input type="range" orient="vertical" name="audiogram.1000" class="config" min="0" max="120" value="0" step="10" list="tickmarks" /></label>
+          <label>2000 <input type="range" orient="vertical" name="audiogram.2000" class="config" min="0" max="120" value="0" step="10" list="tickmarks" /></label>
+          <label>4000 <input type="range" orient="vertical" name="audiogram.4000" class="config" min="0" max="120" value="0" step="10" list="tickmarks" /></label>
+          <label>8000 <input type="range" orient="vertical" name="audiogram.8000" class="config" min="0" max="120" value="0" step="10" list="tickmarks" /></label>
+          <label>16000 <input type="range" orient="vertical" name="audiogram.16000" class="config" min="0" max="120" value="0" step="10" list="tickmarks" /></label>
 
-      <fieldset>
-        <legend>Filter (Right)</legend>
-
-        <div class="panel filter-bands">
-          <label>125 <input type="range" orient="vertical" name="filter.right.125" class="config" min="-20" max="20" value="0" /></label>
-          <label>250 <input type="range" orient="vertical" name="filter.right.250" class="config" min="-20" max="20" value="0" /></label>
-          <label>500 <input type="range" orient="vertical" name="filter.right.500" class="config" min="-20" max="20" value="0" /></label>
-          <label>1000 <input type="range" orient="vertical" name="filter.right.1000" class="config" min="-20" max="20" value="0" /></label>
-          <label>2000 <input type="range" orient="vertical" name="filter.right.2000" class="config" min="-20" max="20" value="0" /></label>
-          <label>4000 <input type="range" orient="vertical" name="filter.right.4000" class="config" min="-20" max="20" value="0" /></label>
-          <label>8000 <input type="range" orient="vertical" name="filter.right.8000" class="config" min="-20" max="20" value="0" /></label>
+          <datalist id="tickmarks">
+            <option value="0" />
+            <option value="10" />
+            <option value="20" />
+            <option value="30" />
+            <option value="40" />
+            <option value="50" />
+            <option value="60" />
+            <option value="70" />
+            <option value="80" />
+            <option value="90" />
+            <option value="100" />
+            <option value="110" />
+            <option value="120" />
+          </datalist>
         </div>
       </fieldset>
     </div>
@@ -66,19 +70,10 @@
       </fieldset>
     </div>
 
-    <div class="panel">
-      <fieldset>
-        <legend>Directionality</legend>
-
-        <label>Enabled <input type="checkbox" name="directionality.enabled" class="config" /></label>
-        <label>Angle <input type="range" name="directionality.angle" class="config" min="-3.14" max="3.14" step="0.01" value="0" /></label>
-      </fieldset>
-    </div>
-
     <button class="start">Start</button>
   </div>
 
-  <script src="<%= TOOLKIT_JS_PATH %>/3dti-toolkit-has.js"></script>
+  <script src="<%= TOOLKIT_JS_PATH %>/3dti-toolkit.js"></script>
   <script src="has.example.bundle.js"></script>
 </body>
 </html>
