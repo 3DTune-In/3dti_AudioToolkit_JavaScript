@@ -162,11 +162,11 @@ public:
 	}
 };
 
-void ProcessHLS(HAHLSimulation::CHearingLossSim &simulator, EarPairBuffers &inputBuffers, EarPairBuffers &outputBuffers) {
+void HearingLossSim_Process(HAHLSimulation::CHearingLossSim &simulator, EarPairBuffers &inputBuffers, EarPairBuffers &outputBuffers) {
 	simulator.Process(inputBuffers, outputBuffers);
 }
 
-void ProcessHAS(HAHLSimulation::CHearingAidSim &simulator, EarPairBuffers &inputBuffers, EarPairBuffers &outputBuffers) {
+void HearingAidSim_Process(HAHLSimulation::CHearingAidSim &simulator, EarPairBuffers &inputBuffers, EarPairBuffers &outputBuffers) {
 	simulator.Process(inputBuffers, outputBuffers);
 }
 
@@ -254,8 +254,8 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
 		// .property("right", &EarPair_Mono::right)
 		;
 
-	emscripten::function("ProcessHLS", &ProcessHLS);
-	emscripten::function("ProcessHAS", &ProcessHAS);
+	emscripten::function("HearingLossSim_Process", &HearingLossSim_Process);
+	emscripten::function("HearingAidSim_Process", &HearingAidSim_Process);
 
 	class_<EarPairBuffers>("EarPairBuffers")
 		.constructor<>()
