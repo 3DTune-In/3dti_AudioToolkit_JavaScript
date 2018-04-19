@@ -1,0 +1,3 @@
+};
+
+window.AudioToolkit = AudioToolkit;

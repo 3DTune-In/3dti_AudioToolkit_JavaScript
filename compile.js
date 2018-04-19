@@ -16,6 +16,11 @@ function exec(command, args, options) {
 }
 
 const inputArgs = yargs
+  .option('module', {
+    alias: 'm',
+    type: 'boolean',
+    description: 'Exports library as a CommonJS module',
+  })
   .option('debug', {
     type: 'boolean',
     description:
@@ -25,16 +30,20 @@ const inputArgs = yargs
   .alias('help', 'h')
   .argv
 
-const outputFilename = inputArgs.debug === true
-  ? '3dti-toolkit.js'
-  : '3dti-toolkit.min.js'
+// Filename
+let outputFilename = inputArgs.module === true
+  ? '3dti-toolkit.module.js'
+  : '3dti-toolkit.js'
 
+if (inputArgs.debug === true) {
+  outputFilename = outputFilename.replace(/\.js$/, '.debug.js')
+}
+
+// Common args
 let args = [
   '-std=c++11',
   '--bind',
   '-I', './3dti_AudioToolkit/3dti_Toolkit',
-  '-s', 'EXPORT_NAME=\'AudioToolkit\'',
-  '-s', 'MODULARIZE=1',
   '-o', `./build/${outputFilename}`,
   '-D', '_3DTI_AXIS_CONVENTION_BINAURAL_TEST_APP',
   '-D', '_3DTI_AXIS_CONVENTION_WEBAUDIOAPI',
@@ -45,8 +54,11 @@ let args = [
   '-s', 'ABORTING_MALLOC=0',
   // '-s', 'NO_FILESYSTEM=1',
   '-s', 'ALLOW_MEMORY_GROWTH=1',
+  '--pre-js', './emscripten/pre.js',
+  '--post-js', `./emscripten/post-${inputArgs.module ? 'module' : 'browser'}.js`,
 ]
 
+// Code optimisation args
 if (inputArgs.debug === true) {
   args = [
     ...args,
@@ -63,6 +75,7 @@ else {
   ]
 }
 
+// All source files are eventually added to the list of args
 const globPatterns = ['Common', 'BinauralSpatializer', 'HAHLSimulation']
   .map(x => `./3dti_AudioToolkit/3dti_Toolkit/${x}/*.cpp`)
 

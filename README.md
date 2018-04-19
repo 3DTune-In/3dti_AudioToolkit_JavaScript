@@ -26,25 +26,21 @@ To see the port in action, go visit the [3D Tune-In Online Toolkit](online-toolk
 
 ## Installation
 
-For use directly in the browser, download the appropriate version from the [Releases page](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases).
+For use directly in the browser, download the appropriate version of `3dti-toolkis.js` (or `3dti-toolkit.debug.js`) from the [Releases page](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases).
 
-For bundling as a node module:
-
-```sh
-npm i https://github.com/3DTune-In/3DTI_JavaScript_Wrapper
-```
+For use as a node module, copy `3dti-toolkit.module.js` (or `3dti-toolkit.module.debug.js`) from [one of the releases](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases) into your project. *No, there's sadly no package on npm. 😥*
 
 
 ## Usage
 
 ### Via the `script` tag
 
-`3dti-toolkit.min.js` and `3dti-toolkit.js` (debug version) exposes an `AudioToolkit` function that instantiates the toolkit.
+`3dti-toolkit.js` and `3dti-toolkit.debug.js` (debug version, duh) exposes an `AudioToolkit` function that instantiates the toolkit.
 
 ```html
 <html>
   <body>
-    <script src="3dti-toolkit.min.js"></script>
+    <script src="3dti-toolkit.js"></script>
     <script>
     const toolkit = AudioToolkit()
     </script>
@@ -55,7 +51,7 @@ npm i https://github.com/3DTune-In/3DTI_JavaScript_Wrapper
 ### As a node module
 
 ```js
-import AudioToolkit from '3dti-toolkit'
+import AudioToolkit from './3dti-toolkit.module.js'
 
 const toolkit = AudioToolkit()
 ```
@@ -75,7 +71,7 @@ The way you generally consume the toolkit is to:
 3. process audio inside a [`ScriptProcessorNode`](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) and copy the audio data from your toolkit buffers to the browser's buffers.
 
 ```js
-import AudioToolkit from '3dti-toolkit'
+import AudioToolkit from './3dti-toolkit.module.js'
 
 const toolkit = AudioToolkit()
 const audioContext = new AudioContext()
@@ -130,7 +126,7 @@ masterVolume.connect(audioContext.destination)
 `CHearingLossSim` and `CHearingAidSim` both provide a `Process(...)` method that you would normally use to process your audio. However, due to issues with porting the toolkit's `CEairPair` class, these are not available in this port. Instead, you are provided with `HearingLossSim_Process(...)` and `HearingAidSim_Process(...)`:
 
 ```js
-import AudioToolkit from '3dti-toolkit'
+import AudioToolkit from './3dti-toolkit.module.js'
 
 const toolkit = AudioToolkit()
 const hearingLossSimulator = new toolkit.CHearingLossSim()
@@ -174,7 +170,7 @@ const source = binauralApi.CreateSource()
 The original toolkit accepts `.sofa` or `.3dti-hrtf` files as HRTF inputs. Parsers of these files have not been ported. Instead there is a helper function that gives you a vector that you then use to instantiate your listener:
 
 ```js
-import AudioToolkit from '3dti-toolkit'
+import AudioToolkit from './3dti-toolkit.module.js'
 import { fetchHrirsVector } from '3dti-toolkit/lib/binaural/hrir.js'
 
 const toolkit = AudioToolkit()
