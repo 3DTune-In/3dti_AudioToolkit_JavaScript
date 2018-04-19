@@ -12,7 +12,7 @@ At the moment, there is no [reverberation](https://github.com/3DTune-In/3dti_Aud
 
 The library is ported using [Emscripten](https://kripken.github.io/emscripten-site/index.html) sorcery.
 
-To see the port in action, go visit the [3D Tune-In Online Toolkit](online-toolkit.3d-tune-in.eu) website.
+To see the port in action, go visit the [3D Tune-In Online Toolkit](http://online-toolkit.3d-tune-in.eu) website.
 
 
 #### Table of contents
@@ -26,9 +26,9 @@ To see the port in action, go visit the [3D Tune-In Online Toolkit](online-toolk
 
 ## Installation
 
-For use directly in the browser, download the appropriate version of `3dti-toolkis.js` (or `3dti-toolkit.debug.js`) from the [Releases page](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases).
+For use directly in the browser, download the appropriate version of `3dti-toolkit.js` (or `3dti-toolkit.debug.js`) from the [Releases page](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases).
 
-For use as a node module, copy `3dti-toolkit.module.js` (or `3dti-toolkit.module.debug.js`) from [one of the releases](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases) into your project. *No, there's sadly no package on npm. 😥*
+For use as a node module, copy `3dti-toolkit.module.js` (or `3dti-toolkit.module.debug.js`) from [one of the releases](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases) into your project. *No, there's sadly no package on npm.* 😥
 
 
 ## Usage
