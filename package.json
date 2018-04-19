@@ -11,8 +11,6 @@
     "lint": "eslint app",
     "clean": "rimraf \"build/*\" \"!build/.gitkeep\"",
     "prebuild": "npm run clean",
-    "build:toolkit:nix": "sh ./compile-binaural-debug.sh && sh ./compile-has-debug.sh && sh ./compile-hls-debug.sh",
-    "build:toolkit:win": "compile-binaural-debug.bat && compile-has-debug.bat && compile-hls-debug.bat",
     "transpile": "rollup -c rollup.config.js -i src/binaural/hrir.js -o lib/binaural/hrir.js && rollup  -c rollup.config.js -i src/binaural/proxy.js -o lib/binaural/proxy.js"
   },
   "repository": {
