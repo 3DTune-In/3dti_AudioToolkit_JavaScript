@@ -8,9 +8,8 @@
     "lib"
   ],
   "scripts": {
-    "lint": "eslint app",
-    "clean": "rimraf \"build/*\" \"!build/.gitkeep\"",
-    "prebuild": "npm run clean",
+    "lint": "eslint src",
+    "clean": "rimraf \"build/*\" \"lib/*\" \"!**/*/.gitkeep\"",
     "transpile": "rollup -c rollup.config.js -i src/binaural/hrir.js -o lib/binaural/hrir.js && rollup  -c rollup.config.js -i src/binaural/proxy.js -o lib/binaural/proxy.js"
   },
   "repository": {
