@@ -1,6 +1,3 @@
-// TODO: Don't depend on window.Module, use import instead
-const { HRIR, CMonoBuffer, HRIRVector } = window.Module
-
 /**
  * Returns an object with azimuth and elevation angles extracted
  * from a URL.
@@ -56,7 +53,9 @@ const fetchHrirFiles = (urls, audioCtx) => {
 /**
  *
  */
-export const fetchHrirsVector = (urls, audioCtx) => {
+export const fetchHrirsVector = (urls, toolkit, audioCtx) => {
+  const { CMonoBuffer, HRIR, HRIRVector } = toolkit
+
   return fetchHrirFiles(urls, audioCtx).then(results => {
     const hrirs = results.map(({ buffer, azimuth, elevation }) => {
       const leftBuffer = new CMonoBuffer()

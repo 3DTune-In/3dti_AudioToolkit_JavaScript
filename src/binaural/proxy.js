@@ -10,7 +10,7 @@ const {
   CStereoBuffer,
   TSpatializationMode,
   BinauralAPI,
-} = window.Module
+} = window.AudioToolkit()
 
 const MAX_SAFE_INTEGER = Math.pow(2, 53) - 1
 

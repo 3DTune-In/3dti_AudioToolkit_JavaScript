@@ -33,6 +33,8 @@ let args = [
   '-std=c++11',
   '--bind',
   '-I', './3dti_AudioToolkit/3dti_Toolkit',
+  '-s', 'EXPORT_NAME=\'AudioToolkit\'',
+  '-s', 'MODULARIZE=1',
   '-o', `./build/${outputFilename}`,
   '-D', '_3DTI_AXIS_CONVENTION_BINAURAL_TEST_APP',
   '-D', '_3DTI_AXIS_CONVENTION_WEBAUDIOAPI',
