@@ -393,8 +393,8 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
     .function("DisableDirectionality", &Binaural::CListener::DisableDirectionality)
     .function("IsDirectionalityEnabled", &Binaural::CListener::IsDirectionalityEnabled)
     .function("SetDirectionality_dB", &Binaural::CListener::SetDirectionality_dB)
+    .function("GetHeadRadius", &Binaural::CListener::GetHeadRadius)
     .function("SetHeadRadius", &Binaural::CListener::SetHeadRadius)
-    .function("GetHeadRadius", &Binaural::CListener::SetHeadRadius)
     ;
 
   enum_<Binaural::TSpatializationMode>("TSpatializationMode")
