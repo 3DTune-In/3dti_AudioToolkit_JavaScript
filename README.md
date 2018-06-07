@@ -225,3 +225,10 @@ npm install
 node ./compile.js -h
 ```
 
+### License and acknowledgements
+
+This library is released under the GNU General Public License v3.0 license. See [LICENSE](https://github.com/3DTune-In/3dti_AudioToolkit_JavaScript/blob/master/LICENSE.md) for details.
+
+This is a partial JavaScript port of the [3D Tune-In Toolkit](https://github.com/3DTune-In/3dti_AudioToolkit). The 3D Tune-In Toolkit and the 3D Tune-In Resource Management Package are both Copyright (c) University of Malaga and Imperial College London – 2018.
+
+![European Union](https://github.com/3DTune-In/3dti_AudioToolkit/blob/master/docs/images/EU_flag.png "European Union")This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 644051.
