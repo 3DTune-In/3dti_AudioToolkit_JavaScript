@@ -18,14 +18,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/3DTune-In/3DTI_JavaScript_Wrapper.git"
+    "url": "git+https://github.com/3DTune-In/3dti_AudioToolkit_JavaScript.git"
   },
   "author": "Alexander Wallin <office@alexanderwallin.com> (http://alexanderwallin.com)",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/issues"
+    "url": "https://github.com/3DTune-In/3dti_AudioToolkit_JavaScript/issues"
   },
-  "homepage": "https://github.com/3DTune-In/3DTI_JavaScript_Wrapper#readme",
+  "homepage": "https://github.com/3DTune-In/3dti_AudioToolkit_JavaScript#readme",
   "dependencies": {
     "audio-param-shim": "^1.0.4",
     "custom-audio-node-connect": "^1.0.1"
