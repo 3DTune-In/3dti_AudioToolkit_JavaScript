@@ -10,6 +10,7 @@
   "scripts": {
     "lint": "eslint src",
     "clean": "rimraf \"build/*\" \"lib/*\" \"!**/*/.gitkeep\"",
+    "build": "concurrently -n browser,browser-debug,module,module-debug -c yellow,black.bgYellow,magenta,white.bgMagenta \"node compile.js\" \"node compile.js --debug\" \"node compile.js --module\" \"node compile.js --module --debug\"",
     "transpile": "rollup -c rollup.config.js -i src/binaural/hrir.js -o lib/binaural/hrir.js && rollup  -c rollup.config.js -i src/binaural/proxy.js -o lib/binaural/proxy.js"
   },
   "repository": {
@@ -27,6 +28,7 @@
     "custom-audio-node-connect": "^1.0.1"
   },
   "devDependencies": {
+    "concurrently": "^3.6.0",
     "cross-spawn": "^5.1.0",
     "eslint": "^3.12.0",
     "eslint-config-alexander": "^1.2.0",
