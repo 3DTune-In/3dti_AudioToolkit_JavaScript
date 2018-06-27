@@ -4,8 +4,10 @@
   "description": "JavaScript port of the 3D Tune-In Toolkit",
   "main": "build/3dti-toolkit.module.js",
   "files": [
+    "assets",
     "build",
-    "lib"
+    "lib",
+    "src"
   ],
   "scripts": {
     "lint": "eslint src",
