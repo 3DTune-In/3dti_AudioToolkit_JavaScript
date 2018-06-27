@@ -225,7 +225,8 @@ npm install
 node ./compile.js -h
 ```
 
-### License and acknowledgements
+
+## License and acknowledgements
 
 This library is released under the GNU General Public License v3.0 license. See [LICENSE](https://github.com/3DTune-In/3dti_AudioToolkit_JavaScript/blob/master/LICENSE.md) for details.
 
