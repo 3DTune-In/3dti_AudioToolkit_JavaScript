@@ -225,6 +225,24 @@ npm install
 node ./compile.js -h
 ```
 
+### Release to npm
+
+1. Bump version, build and publish to npm:
+
+```sh
+npm version patch|minor|major
+npm run prep-release
+npm publish
+```
+
+2. Push the version commit and tag created by `npm version`:
+
+```sh
+git push && git push --tags
+```
+
+3. Go to the releases page on the repo GitHub page and draft a new release from the pushed tag. Give it a title, description and upload all files in `build/`. Publish!
+
 
 ## License and acknowledgements
 
