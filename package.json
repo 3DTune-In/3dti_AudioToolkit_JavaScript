@@ -21,7 +21,7 @@
     "url": "git+https://github.com/3DTune-In/3DTI_JavaScript_Wrapper.git"
   },
   "author": "Alexander Wallin <office@alexanderwallin.com> (http://alexanderwallin.com)",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/issues"
   },
