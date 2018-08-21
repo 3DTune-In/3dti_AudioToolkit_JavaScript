@@ -21,6 +21,11 @@ const inputArgs = yargs
     type: 'boolean',
     description: 'Exports library as a CommonJS module',
   })
+  .option('worklet', {
+    alias: 'w',
+    type: 'boolean',
+    description: 'Exports library as an AudioWorkletProcessor',
+  })
   .option('debug', {
     type: 'boolean',
     description:
@@ -30,10 +35,19 @@ const inputArgs = yargs
   .alias('help', 'h')
   .argv
 
-// Filename
-let outputFilename = inputArgs.module === true
-  ? '3dti-toolkit.module.js'
-  : '3dti-toolkit.js'
+// Filenames
+let outputFilename = '3dti-toolkit.js'
+let preJsFilename = 'pre.js'
+let postJsFilename = 'post-browser.js'
+
+if (inputArgs.module === true) {
+  outputFilename = '3dti-toolkit.module.js'
+  postJsFilename = 'post-module.js'
+} else if (inputArgs.worklet === true) {
+  outputFilename = '3dti-toolkit.worklet.js'
+  preJsFilename = 'pre-worklet.js'
+  postJsFilename = 'post-worklet.js'
+}
 
 if (inputArgs.debug === true) {
   outputFilename = outputFilename.replace(/\.js$/, '.debug.js')
@@ -53,10 +67,21 @@ let args = [
   '-s', 'ASSERTIONS=0',
   '-s', 'ABORTING_MALLOC=0',
   // '-s', 'NO_FILESYSTEM=1',
-  '-s', 'ALLOW_MEMORY_GROWTH=1',
+  '-s', `ALLOW_MEMORY_GROWTH=${inputArgs.worklet === true ? '0' : '1'}`,
   '--pre-js', './emscripten/pre.js',
-  '--post-js', `./emscripten/post-${inputArgs.module ? 'module' : 'browser'}.js`,
+  '--post-js', `./emscripten/${postJsFilename}`,
 ]
+
+// Worklet options
+if (inputArgs.worklet === true) {
+  args = [
+    ...args,
+    '-s', 'WASM=1',
+    // '-s', 'ENVIRONMENT="worker"',
+    '-s', 'SINGLE_FILE=1',
+    '-s', 'BINARYEN_ASYNC_COMPILATION=0',
+  ]
+}
 
 // Code optimisation args
 if (inputArgs.debug === true) {
@@ -88,6 +113,8 @@ globby(globPatterns)
     ...filePaths,
   ]))
   .then(finalArgs => {
+    console.log(finalArgs)
+    // return false
     return exec('emcc', finalArgs, {})
   })
   .then(() => console.log('Done!'))
