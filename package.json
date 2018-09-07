@@ -1,5 +1,5 @@
 {
-  "name": "3dti-toolkit",
+  "name": "@reactify/3dti-toolkit",
   "version": "0.6.2",
   "description": "JavaScript port of the 3D Tune-In Toolkit",
   "main": "build/3dti-toolkit.module.js",
