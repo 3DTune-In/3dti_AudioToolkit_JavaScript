@@ -20,7 +20,10 @@
     "type": "git",
     "url": "git+https://github.com/3DTune-In/3dti_AudioToolkit_JavaScript.git"
   },
-  "author": "Alexander Wallin <office@alexanderwallin.com> (http://alexanderwallin.com)",
+  "author": "Reactify <developer@reactifymusic.com> (http://reactifymusic.com)",
+  "contributors": [
+    "Alexander Wallin <office@alexanderwallin.com> (http://alexanderwallin.com)"
+  ],
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/3DTune-In/3dti_AudioToolkit_JavaScript/issues"
