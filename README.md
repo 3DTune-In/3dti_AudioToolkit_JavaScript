@@ -25,10 +25,13 @@ To see the port in action, go visit the [3D Tune-In Online Toolkit](http://onlin
 
 
 ## Installation
+```sh
+npm i react-player-controls
+```
 
 For use directly in the browser, download the appropriate version of `3dti-toolkit.js` (or `3dti-toolkit.debug.js`) from the [Releases page](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases).
 
-For use as a node module, copy `3dti-toolkit.module.js` (or `3dti-toolkit.module.debug.js`) from [one of the releases](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases) into your project. *No, there's sadly no package on npm.* 😥
+For use as a node module, copy `3dti-toolkit.module.js` (or `3dti-toolkit.module.debug.js`) from [one of the releases](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases) into your project.
 
 
 ## Usage
