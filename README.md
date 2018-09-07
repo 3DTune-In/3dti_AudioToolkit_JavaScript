@@ -26,7 +26,7 @@ To see the port in action, go visit the [3D Tune-In Online Toolkit](http://onlin
 
 ## Installation
 ```sh
-npm i react-player-controls
+npm i @reactify/3dti-toolkit
 ```
 
 For use directly in the browser, download the appropriate version of `3dti-toolkit.js` (or `3dti-toolkit.debug.js`) from the [Releases page](https://github.com/3DTune-In/3DTI_JavaScript_Wrapper/releases).
