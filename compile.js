@@ -16,11 +16,6 @@ function exec(command, args, options) {
 }
 
 const inputArgs = yargs
-  .option('module', {
-    alias: 'm',
-    type: 'boolean',
-    description: 'Exports library as a CommonJS module',
-  })
   .option('debug', {
     type: 'boolean',
     description:
@@ -31,13 +26,9 @@ const inputArgs = yargs
   .argv
 
 // Filename
-let outputFilename = inputArgs.module === true
-  ? '3dti-toolkit.module.js'
+let outputFilename = inputArgs.debug === true
+  ? '3dti-toolkit.debug.js'
   : '3dti-toolkit.js'
-
-if (inputArgs.debug === true) {
-  outputFilename = outputFilename.replace(/\.js$/, '.debug.js')
-}
 
 // Common args
 let args = [
@@ -54,8 +45,9 @@ let args = [
   '-s', 'ABORTING_MALLOC=0',
   // '-s', 'NO_FILESYSTEM=1',
   '-s', 'ALLOW_MEMORY_GROWTH=1',
-  '--pre-js', './emscripten/pre.js',
-  '--post-js', `./emscripten/post-${inputArgs.module ? 'module' : 'browser'}.js`,
+  '-s', 'WASM=0',
+  '-s', 'EXPORT_NAME="AudioToolkit"',
+  '-s', 'MODULARIZE=1',
 ]
 
 // Code optimisation args
