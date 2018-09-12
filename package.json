@@ -31,7 +31,8 @@
   "homepage": "https://github.com/3DTune-In/3dti_AudioToolkit_JavaScript#readme",
   "dependencies": {
     "audio-param-shim": "^1.0.4",
-    "custom-audio-node-connect": "^1.0.1"
+    "custom-audio-node-connect": "^1.0.1",
+    "lodash": "^4.17.10"
   },
   "devDependencies": {
     "concurrently": "^3.6.0",
