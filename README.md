@@ -82,9 +82,9 @@ const audioContext = new AudioContext()
 const instance = new toolkit.FicticiousFeature()
 
 // Create buffers to temporarly hold your audio data
-const inputBuffers = new CStereoBuffer()
+const inputBuffers = new toolkit.CStereoBuffer()
 inputBuffers.resize(1024, 0)
-const outputBuffers = new CStereoBuffer()
+const outputBuffers = new toolkit.CStereoBuffer()
 outputBuffers.resize(1024, 0)
 
 // Create a ScriptProcessorNode
