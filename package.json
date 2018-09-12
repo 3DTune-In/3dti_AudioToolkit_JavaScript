@@ -12,7 +12,7 @@
   "scripts": {
     "lint": "eslint src",
     "clean": "rimraf \"build/*\" \"lib/**/*.js\" \"!**/.gitkeep\"",
-    "build": "concurrently -n browser,browser-debug,module,module-debug -c yellow,black.bgYellow,magenta,white.bgMagenta \"node compile.js\" \"node compile.js --debug\" \"node compile.js --module\" \"node compile.js --module --debug\"",
+    "build": "concurrently -n production,debug -c yellow,magenta \"node compile.js\" \"node compile.js --debug\"",
     "transpile": "rollup -c rollup.config.js -i src/binaural/hrir.js -o lib/binaural/hrir.js && rollup  -c rollup.config.js -i src/binaural/proxy.js -o lib/binaural/proxy.js",
     "prep-release": "npm run clean && npm run build && npm run transpile"
   },
