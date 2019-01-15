@@ -35,25 +35,27 @@ let args = [
   '-std=c++11',
   '--bind',
   '-I', './3dti_AudioToolkit/3dti_Toolkit',
+  '-I', './3dti_AudioToolkit/3dti_ResourceManager/third_party_libraries/cereal/include',
   '-o', `./build/${outputFilename}`,
   '-D', '_3DTI_AXIS_CONVENTION_BINAURAL_TEST_APP',
   '-D', '_3DTI_AXIS_CONVENTION_WEBAUDIOAPI',
   '-D', 'SWITCH_ON_3DTI_DEBUGGER',
   '--memory-init-file', '0',
   '-s', 'DEMANGLE_SUPPORT=1',
-  '-s', 'ASSERTIONS=0',
   '-s', 'ABORTING_MALLOC=0',
   // '-s', 'NO_FILESYSTEM=1',
   '-s', 'ALLOW_MEMORY_GROWTH=1',
   '-s', 'WASM=0',
   '-s', 'EXPORT_NAME="AudioToolkit"',
   '-s', 'MODULARIZE=1',
+  '-s', 'FORCE_FILESYSTEM=1',
 ]
 
 // Code optimisation args
 if (inputArgs.debug === true) {
   args = [
     ...args,
+    '-s', 'ASSERTIONS=1',
     '-g4',
     '-O2',
   ]
@@ -62,6 +64,7 @@ else {
   args = [
     ...args,
     '-s', 'TOTAL_MEMORY=33554432',
+    '-s', 'ASSERTIONS=0',
     '-g0',
     '-Oz',
   ]
@@ -70,6 +73,8 @@ else {
 // All source files are eventually added to the list of args
 const globPatterns = ['Common', 'BinauralSpatializer', 'HAHLSimulation']
   .map(x => `./3dti_AudioToolkit/3dti_Toolkit/${x}/*.cpp`)
+  // Plus cereal HRTF stuff
+  .concat('./3dti_AudioToolkit/3dti_ResourceManager/HRTF/HRTFCereal.cpp')
 
 console.log(`\nBuilding ./build/${outputFilename}...\n`)
 

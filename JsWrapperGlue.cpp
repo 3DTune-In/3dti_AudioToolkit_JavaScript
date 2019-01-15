@@ -17,6 +17,7 @@
 #include "3dti_AudioToolkit/3dti_Toolkit/BinauralSpatializer/HRTF.h"
 #include "3dti_AudioToolkit/3dti_Toolkit/BinauralSpatializer/Listener.h"
 #include "3dti_AudioToolkit/3dti_Toolkit/BinauralSpatializer/SingleSourceDSP.h"
+#include "3dti_AudioToolkit/3dti_ResourceManager/HRTF/HRTFCereal.h"
 
 using namespace emscripten;
 
@@ -470,4 +471,11 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
     .function("CreateSource", &BinauralAPI::CreateSource)
     .function("CreateListener", &BinauralAPI::CreateListener)
     ;
+
+  /**
+   * ----------------------------------------------------------------
+   * HRTF loading (using cereal)
+   * ----------------------------------------------------------------
+   */
+  emscripten::function("HRTF_CreateFrom3dti", &HRTF::CreateFrom3dti);
 }
