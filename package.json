@@ -13,7 +13,10 @@
     "lint": "eslint src",
     "clean": "rimraf \"build/*\" \"lib/**/*.js\" \"!**/.gitkeep\"",
     "build": "concurrently -n production,debug -c yellow,magenta \"node compile.js\" \"node compile.js --debug\"",
-    "transpile": "rollup -c rollup.config.js -i src/binaural/hrir.js -o lib/binaural/hrir.js && rollup  -c rollup.config.js -i src/binaural/proxy.js -o lib/binaural/proxy.js",
+    "transpile": "concurrently -n hrir,hrtf,proxy -c yellow,magenta,blue \"npm:transpile:hrir\" \"npm:transpile:hrtf\" \"npm:transpile:proxy\"",
+    "transpile:hrir": "rollup -c rollup.config.js -i src/binaural/hrir.js -o lib/binaural/hrir.js",
+    "transpile:hrtf": "rollup -c rollup.config.js -i src/binaural/hrtf.js -o lib/binaural/hrtf.js",
+    "transpile:proxy": "rollup -c rollup.config.js -i src/binaural/proxy.js -o lib/binaural/proxy.js",
     "prep-release": "npm run clean && npm run build && npm run transpile"
   },
   "repository": {
