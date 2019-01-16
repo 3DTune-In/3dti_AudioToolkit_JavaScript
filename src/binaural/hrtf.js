@@ -31,6 +31,15 @@ export const fetchHrtfFile = url => {
  * @return {String}                A (virtual) file path
  */
 export const registerHrtf = (toolkit, filename, data) => {
-  toolkit.FS_createDataFile('/', filename, data, true, true, true)
+  try {
+    toolkit.FS_createDataFile('/', filename, data, true, true, true)
+  } catch (err) {
+    // `EEXISTS` means we've mounted the same HRTF again,
+    // which is fine. But the rest needs to be thrown!
+    if (err.code !== 'EEXISTS') {
+      throw err
+    }
+  }
+
   return `/${filename}`
 }
