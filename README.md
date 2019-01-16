@@ -167,9 +167,36 @@ const listener = binauralApi.CreateListener(hrirsVector, 0.0875)
 const source = binauralApi.CreateSource()
 ```
 
-#### Setting up the HRTF
+#### Setting HRTFs
 
-The original toolkit accepts `.sofa` or `.3dti-hrtf` files as HRTF inputs. Parsers of these files have not been ported. Instead there is a helper function that gives you a vector that you then use to instantiate your listener:
+The original toolkit accepts `.sofa` or `.3dti-hrtf` files as HRTF inputs. The latter has been ported and is most easily used through a few helper functions:
+
+```js
+import AudioToolkit from '@reactify/3dti-toolkit'
+import {
+  fetchHrtfFile,
+  registerHrtf,
+} from '@reactify/3dti-toolkit/lib/binaural/hrtf.js'
+
+const toolkit = AudioToolkit()
+
+const binauralApi = new toolkit.BinauralAPI()
+const listener = binauralApi.createListener(0.0875)
+
+// Fetch an HRTF file
+fetchHrtfFile('/url/to/file.3dti-hrtf').then(hrtfData => {
+  // Register the HRTF file with
+  const virtualHrtfFilePath = registerHrtf(toolkit, 'file.3dti-hrtf', hrtfData)
+
+  // Set the HRTF using the toolkit API.
+  //
+  // (The toolkit will read data from a virtual file system,
+  // which is why we register it in the command above.)
+  toolkit.HRTF_CreateFrom3dti(virtualHrtfFilePath, listener)
+})
+```
+
+You can also use the legacy solution, namely to fetch an array of HRIR wav files and create the listener using those HRIRs. The only supported set of HRIRs at the moment is [IRC_1032_C_R0195](assets/IRC_1032_C_R0195).
 
 ```js
 import AudioToolkit from '@reactify/3dti-toolkit'
@@ -185,11 +212,9 @@ const hrirUrls = [/* ... */]
 fetchHrirsVector(hrirUrls, toolkit, audioContext).then(hrirsVector => {
 
   // Now create the listener using the loaded HRIRs
-  const listener = binauralApi.CreateListener(hrirsVector, 0.0875)
+  const listener = binauralApi.CreateListenerWithHRIRs(hrirsVector, 0.0875)
 })
 ```
-
-The only supported HRTF at the moment is [IRC_1032_C_R0195](assets/IRC_1032_C_R0195).
 
 
 ## Development setup
