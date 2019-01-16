@@ -482,13 +482,15 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   class_<BinauralAPI>("BinauralAPI")
     .constructor<>()
     .function("CreateSource", &BinauralAPI::CreateSource)
-    .function("CreateListener", select_overload<void(
-    	float listenerHeadRadius
-	  )>(&BinauralAPI::CreateListener))
-	  .function("CreateListenerWithHRIRs", select_overload<void(
-    	std::vector<HRIR> hrirs, 
-    	float listenerHeadRadius,
-	  )>(&BinauralAPI::CreateListener))
+    .function("CreateListener", select_overload<
+    	shared_ptr<Binaural::CListener>(float listenerHeadRadius)
+    >(&BinauralAPI::CreateListener))
+	  .function("CreateListenerWithHRIRs", select_overload<
+	  	shared_ptr<Binaural::CListener>(
+	  		std::vector<HRIR> hrirs, 
+	  		float listenerHeadRadius
+	  	)
+	  >(&BinauralAPI::CreateListener))
     ;
 
   /**
