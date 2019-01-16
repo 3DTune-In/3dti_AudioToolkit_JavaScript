@@ -99,8 +99,21 @@ public:
   /**
    * Returns a binaural listener
    *
-   * @param  listenerHeadRadius [description]
-   * @return                    [description]
+   * @param  listenerHeadRadius  The listener's head radius in meters
+   * @return                     A listener
+   */
+  shared_ptr<Binaural::CListener> CreateListener(float listenerHeadRadius = 0.0875f)
+  {
+    shared_ptr<Binaural::CListener> listener = core.CreateListener(listenerHeadRadius);
+    return listener;
+  }
+
+  /**
+   * Returns a binaural listener
+   *
+   * @param  hrirs               A vector of HRIRs
+   * @param  listenerHeadRadius  The listener's head radius in meters
+   * @return                     A listener
    */
   shared_ptr<Binaural::CListener> CreateListener(std::vector<HRIR> hrirs, float listenerHeadRadius = 0.0875f)
   {
@@ -469,7 +482,13 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
   class_<BinauralAPI>("BinauralAPI")
     .constructor<>()
     .function("CreateSource", &BinauralAPI::CreateSource)
-    .function("CreateListener", &BinauralAPI::CreateListener)
+    .function("CreateListener", select_overload<void(
+    	float listenerHeadRadius
+	  )>(&BinauralAPI::CreateListener))
+	  .function("CreateListenerWithHRIRs", select_overload<void(
+    	std::vector<HRIR> hrirs, 
+    	float listenerHeadRadius,
+	  )>(&BinauralAPI::CreateListener))
     ;
 
   /**
