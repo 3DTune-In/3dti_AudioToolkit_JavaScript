@@ -39,7 +39,6 @@ let args = [
   '-o', `./build/${outputFilename}`,
   '-D', '_3DTI_AXIS_CONVENTION_BINAURAL_TEST_APP',
   '-D', '_3DTI_AXIS_CONVENTION_WEBAUDIOAPI',
-  '-D', 'SWITCH_ON_3DTI_DEBUGGER',
   '--memory-init-file', '0',
   '-s', 'DEMANGLE_SUPPORT=1',
   '-s', 'ABORTING_MALLOC=0',
