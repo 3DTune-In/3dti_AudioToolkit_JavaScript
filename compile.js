@@ -55,6 +55,7 @@ if (inputArgs.debug === true) {
   args = [
     ...args,
     '-s', 'ASSERTIONS=1',
+    '-s', 'DISABLE_EXCEPTION_CATCHING=0',
     '-g4',
     '-O2',
   ]
