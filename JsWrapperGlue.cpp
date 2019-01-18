@@ -19,6 +19,10 @@
 #include "3dti_AudioToolkit/3dti_Toolkit/BinauralSpatializer/SingleSourceDSP.h"
 #include "3dti_AudioToolkit/3dti_ResourceManager/HRTF/HRTFCereal.h"
 
+// No need to import this since virtually every other class
+// imports it already.
+// #include "3dti_AudioToolkit/3dti_Toolkit/Common/ErrorHandler.h"
+
 using namespace emscripten;
 
 /**
@@ -195,6 +199,51 @@ void HearingAidSim_Process(HAHLSimulation::CHearingAidSim &simulator, EarPairBuf
 // void setLeftEarBuffer(const Common::CEarPair<CMonoBuffer<float>> &earPair, const CMonoBuffer<float> &buffer) {
 // 	earPair.left = buffer;
 // }
+
+/**
+ * Debugger interface
+ *
+ * NOTE(alexanderwallin): Couldn't find to port Common::ErrorHandler directly
+ * 												due to its protected constructor.
+ */
+class Debugger 
+{
+public:
+	Debugger() {}
+
+	~Debugger() {}
+
+	TResultID GetLastResult() {
+		Common::CErrorHandler &errorHandler = Common::CErrorHandler::Instance();
+		return errorHandler.GetLastResult();
+	}
+
+	TResultStruct GetLastResultStruct() {
+		Common::CErrorHandler &errorHandler = Common::CErrorHandler::Instance();
+		return errorHandler.GetLastResultStruct();
+	}
+
+	TResultID GetFirstError() {
+		Common::CErrorHandler &errorHandler = Common::CErrorHandler::Instance();
+		return errorHandler.GetFirstError();
+	}
+
+	TResultStruct GetFirstErrorStruct() {
+		Common::CErrorHandler &errorHandler = Common::CErrorHandler::Instance();
+		return errorHandler.GetFirstErrorStruct();
+	}
+
+	void SetVerbosityMode(TVerbosityMode verbosityMode) {
+		Common::CErrorHandler &errorHandler = Common::CErrorHandler::Instance();
+		return errorHandler.SetVerbosityMode(verbosityMode);
+	}
+
+	void SetAssertMode(TAssertMode assertMode) {
+		Common::CErrorHandler &errorHandler = Common::CErrorHandler::Instance();
+		return errorHandler.SetAssertMode(assertMode);
+	}
+
+};
 
 // Bindings
 EMSCRIPTEN_BINDINGS(Toolkit) {
@@ -499,4 +548,66 @@ EMSCRIPTEN_BINDINGS(Toolkit) {
    * ----------------------------------------------------------------
    */
   emscripten::function("HRTF_CreateFrom3dti", &HRTF::CreateFrom3dti);
+
+  /**
+   * ----------------------------------------------------------------
+   * Debugging
+   * ----------------------------------------------------------------
+   */
+  value_object<TVerbosityMode>("TVerbosityMode")
+  	.field("showErrors", &TVerbosityMode::showErrors)
+		.field("showWarnings", &TVerbosityMode::showWarnings)
+		.field("showOk", &TVerbosityMode::showOk)
+		.field("showID", &TVerbosityMode::showID)
+		.field("showDescription", &TVerbosityMode::showDescription)
+		.field("showSuggestion", &TVerbosityMode::showSuggestion)
+		.field("showFilename", &TVerbosityMode::showFilename)
+		.field("showLinenumber", &TVerbosityMode::showLinenumber)
+  	;
+
+  enum_<TAssertMode>("TAssertMode")
+  	.value("ASSERT_MODE_EMPTY", TAssertMode::ASSERT_MODE_EMPTY)
+		.value("ASSERT_MODE_CONTINUE", TAssertMode::ASSERT_MODE_CONTINUE)
+		.value("ASSERT_MODE_ABORT", TAssertMode::ASSERT_MODE_ABORT)
+		.value("ASSERT_MODE_PARANOID", TAssertMode::ASSERT_MODE_PARANOID)
+  	;
+
+  enum_<TResultID>("TResultID")
+  	.value("RESULT_OK", TResultID::RESULT_OK)
+		.value("RESULT_ERROR_UNKNOWN", TResultID::RESULT_ERROR_UNKNOWN)
+		.value("RESULT_ERROR_NOTSET", TResultID::RESULT_ERROR_NOTSET)
+		.value("RESULT_ERROR_BADALLOC", TResultID::RESULT_ERROR_BADALLOC)
+		.value("RESULT_ERROR_NULLPOINTER", TResultID::RESULT_ERROR_NULLPOINTER)
+		.value("RESULT_ERROR_DIVBYZERO", TResultID::RESULT_ERROR_DIVBYZERO)
+		.value("RESULT_ERROR_CASENOTDEFINED", TResultID::RESULT_ERROR_CASENOTDEFINED)
+		.value("RESULT_ERROR_PHYSICS", TResultID::RESULT_ERROR_PHYSICS)
+		.value("RESULT_ERROR_INVALID_PARAM", TResultID::RESULT_ERROR_INVALID_PARAM)
+		.value("RESULT_ERROR_OUTOFRANGE", TResultID::RESULT_ERROR_OUTOFRANGE)
+		.value("RESULT_ERROR_BADSIZE", TResultID::RESULT_ERROR_BADSIZE)
+		.value("RESULT_ERROR_NOTINITIALIZED", TResultID::RESULT_ERROR_NOTINITIALIZED)
+		.value("RESULT_ERROR_SYSTEMCALL", TResultID::RESULT_ERROR_SYSTEMCALL)
+		.value("RESULT_ERROR_NOTALLOWED", TResultID::RESULT_ERROR_NOTALLOWED)
+		.value("RESULT_ERROR_NOTIMPLEMENTED", TResultID::RESULT_ERROR_NOTIMPLEMENTED)
+		.value("RESULT_ERROR_FILE", TResultID::RESULT_ERROR_FILE)
+		.value("RESULT_ERROR_EXCEPTION", TResultID::RESULT_ERROR_EXCEPTION)
+		.value("RESULT_WARNING", TResultID::RESULT_WARNING)
+  	;
+
+  value_object<TResultStruct>("TResultStruct")
+  	.field("id", &TResultStruct::id)
+		.field("description", &TResultStruct::description)
+		.field("suggestion", &TResultStruct::suggestion)
+		.field("filename", &TResultStruct::filename)
+		.field("linenumber", &TResultStruct::linenumber)
+		;
+	
+	class_<Debugger>("Debugger")
+		.constructor<>()
+		.function("GetLastResult", &Debugger::GetLastResult)
+		.function("GetLastResultStruct", &Debugger::GetLastResultStruct)
+		.function("GetFirstError", &Debugger::GetFirstError)
+		.function("GetFirstErrorStruct", &Debugger::GetFirstErrorStruct)
+		.function("SetVerbosityMode", &Debugger::SetVerbosityMode)
+		.function("SetAssertMode", &Debugger::SetAssertMode)
+		;
 }
