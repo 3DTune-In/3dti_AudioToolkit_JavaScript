@@ -57,6 +57,12 @@ import AudioToolkit from '@reactify/3dti-toolkit'
 const toolkit = AudioToolkit()
 ```
 
+If you need to do some debugging you can import the more debug build:
+
+```js
+import AudioToolkit from '@reactify/3dti-toolkit/build/3dti-toolkit.debug.js'
+```
+
 
 ## API
 
