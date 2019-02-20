@@ -160,14 +160,14 @@ toolkit.HearingAidSim_Process(
 
 #### Instantiating the spatialiser
 
-Due to severe trickiness in porting the toolkit's core and binaural features directly to JavaScript, a `BinauralAPI` wrapper provides the core functionality.
+Due to severe trickiness in porting the toolkit's core and binaural features directly to JavaScript, a `BinauralAPI` wrapper provides the core functionality:
 
 ```js
 import AudioToolkit from '@reactify/3dti-toolkit'
 const binauralApi = new toolkit.BinauralAPI()
 
-// Create a listener (see below how to obtain `hrirsVector`)
-const listener = binauralApi.CreateListener(hrirsVector, 0.0875)
+// Create a listener
+const listener = binauralApi.CreateListener()
 
 // Create a source
 const source = binauralApi.CreateSource()
@@ -187,7 +187,9 @@ import {
 const toolkit = AudioToolkit()
 
 const binauralApi = new toolkit.BinauralAPI()
-const listener = binauralApi.createListener(0.0875)
+
+// Create a listener (with a custom head radius if you want)
+const listener = binauralApi.CreateListener(0.08)
 
 // Fetch an HRTF file
 fetchHrtfFile('/url/to/file.3dti-hrtf').then(hrtfData => {
