@@ -43,7 +43,7 @@ export const registerHrtf = (toolkit, filename, data) => {
   } catch (err) {
     // `EEXISTS` means we've mounted the same HRTF again,
     // which is fine. But the rest needs to be thrown!
-    if (err.code !== 'EEXISTS') {
+    if (err.code !== 'EEXIST') {
       throw err
     }
   }
