@@ -298,4 +298,4 @@ This is a partial JavaScript port of the [3D Tune-In Toolkit](https://github.com
 
 ## Acknowledgements 
 
-![European Union](docs/images/EU_flag.png "European Union") This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 644051. 
+![European Union](https://github.com/3DTune-In/3dti_AudioToolkit/blob/master/docs/images/EU_flag.png "European Union") This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 644051. 
