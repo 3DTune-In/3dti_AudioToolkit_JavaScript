@@ -282,10 +282,13 @@ git push && git push --tags
 3. Go to the releases page on the repo GitHub page and draft a new release from the pushed tag. Give it a title, description and upload all files in `build/`. Publish!
 
 ## Credits
+This software was developed by a team coordinated by 
+-	Lorenzo Picinali ([Imperial College London](https://www.imperial.ac.uk/)). Contact: l.picinali@imperial.ac.uk 
+-	Arcadio Reyes-Lecuona ([University of Malaga](https://www.uma.es/)). Contact: areyes@uma.es  
 
 The members of the development team were (in alphabetical order):
 - [Alexander Wallin](https://github.com/alexanderwallin)
-- 
+ 
 
 ## License and acknowledgements
 
