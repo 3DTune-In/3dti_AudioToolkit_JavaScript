@@ -288,6 +288,7 @@ This software was developed by a team coordinated by
 
 The members of the development team were (in alphabetical order):
 - [Alexander Wallin](https://github.com/alexanderwallin)
+- [Reactify Music](https://github.com/reactify/)
  
 
 ## License 
